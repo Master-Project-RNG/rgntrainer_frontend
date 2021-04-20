@@ -350,4 +350,4 @@ MigrationBackup/
 .ionide/
 
 #Manually added ignores by reffx
-.dart_tool
+.dart_tool/
