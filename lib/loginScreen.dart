@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-enum AuthMode { Signup, Login }
-
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,6 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
     'Benutzername': '',
     'password': '',
@@ -112,18 +109,6 @@ class _AuthCardState extends State<AuthCard> {
     });
   }
 
-  void _switchAuthMode() {
-    if (_authMode == AuthMode.Login) {
-      setState(() {
-        _authMode = AuthMode.Signup;
-      });
-    } else {
-      setState(() {
-        _authMode = AuthMode.Login;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -133,9 +118,8 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 260,
-        constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+        height: 260,
+        constraints: BoxConstraints(minHeight: 260),
         width: deviceSize.width * 0.5,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -143,22 +127,13 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                if (_authMode == AuthMode.Login)
-                  Text(
-                    'Login',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400),
-                  ),
-                if (_authMode == AuthMode.Signup)
-                  Text(
-                    'Registrieren',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400),
-                  ),
+                Text(
+                  'Login',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400),
+                ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Benutzername'),
                   keyboardType: TextInputType.text,
@@ -185,19 +160,6 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['password'] = value;
                   },
                 ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                          }
-                        : null,
-                  ),
                 SizedBox(
                   height: 20,
                 ),
@@ -205,9 +167,7 @@ class _AuthCardState extends State<AuthCard> {
                   CircularProgressIndicator()
                 else
                   RaisedButton(
-                    child: Text(_authMode == AuthMode.Login
-                        ? 'Anmelden'
-                        : 'Registrieren'),
+                    child: Text('Anmelden'),
                     onPressed: _submit,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -219,14 +179,6 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                 SizedBox(
                   height: 20,
-                ),
-                FlatButton(
-                  child: Text(
-                      'Zu ${_authMode == AuthMode.Login ? 'Registrierung' : 'Login'} wechseln'),
-                  onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: Theme.of(context).primaryColor,
                 ),
               ],
             ),
