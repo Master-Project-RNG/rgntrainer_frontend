@@ -408,3 +408,7 @@ analysis_benchmark.json
 
 # Web related
 lib/generated_plugin_registrant.dart
+.dart_tool/package_config_subset
+.dart_tool/package_config.json
+.packages
+pubspec.lock
