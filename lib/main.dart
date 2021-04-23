@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'adminViewScreen.dart';
+import 'loginScreen.dart';
+import 'unknownScreen.dart';
+import 'userViewScreen.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -9,6 +14,31 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      onGenerateRoute: (settings) {
+        // TODO: Update routing to flutter 2.0
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (context) => LoginScreen());
+        }
+
+        if (settings.name == '/admin-view') {
+          return MaterialPageRoute(builder: (context) => AdminViewScreen());
+        }
+
+        if (settings.name == '/user-view') {
+          return MaterialPageRoute(builder: (context) => UserViewScreen());
+        }
+
+        // Handle '/details/:id'
+        /*
+        var uri = Uri.parse(settings.name);
+        if (uri.pathSegments.length == 2 &&
+            uri.pathSegments.first == 'details') {
+          var id = uri.pathSegments[1];
+          return MaterialPageRoute(builder: (context) => AdminViewScreen());
+        }*/
+
+        return MaterialPageRoute(builder: (context) => UnknownScreen());
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -22,7 +52,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoginScreen(),
     );
   }
 }
