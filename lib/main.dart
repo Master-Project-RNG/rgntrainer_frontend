@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/provider/authProvider.dart';
 
 import 'adminViewScreen.dart';
 import 'loginScreen.dart';
@@ -13,23 +15,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      onGenerateRoute: (settings) {
-        // TODO: Update routing to flutter 2.0
-        if (settings.name == '/') {
-          return MaterialPageRoute(builder: (context) => LoginScreen());
-        }
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: AuthProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        onGenerateRoute: (settings) {
+          // TODO: Update routing to flutter 2.0
+          if (settings.name == '/') {
+            return MaterialPageRoute(builder: (context) => LoginScreen());
+          }
 
-        if (settings.name == '/admin-view') {
-          return MaterialPageRoute(builder: (context) => AdminViewScreen());
-        }
+          if (settings.name == '/admin-view') {
+            return MaterialPageRoute(builder: (context) => AdminViewScreen());
+          }
 
-        if (settings.name == '/user-view') {
-          return MaterialPageRoute(builder: (context) => UserViewScreen());
-        }
+          if (settings.name == '/user-view') {
+            return MaterialPageRoute(builder: (context) => UserViewScreen());
+          }
 
-        // Handle '/details/:id'
-        /*
+          // Handle '/details/:id'
+          /*
         var uri = Uri.parse(settings.name);
         if (uri.pathSegments.length == 2 &&
             uri.pathSegments.first == 'details') {
@@ -37,22 +45,23 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(builder: (context) => AdminViewScreen());
         }*/
 
-        return MaterialPageRoute(builder: (context) => UnknownScreen());
-      },
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+          return MaterialPageRoute(builder: (context) => UnknownScreen());
+        },
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.blue,
+        ),
+        home: LoginScreen(),
       ),
-      home: LoginScreen(),
     );
   }
 }
