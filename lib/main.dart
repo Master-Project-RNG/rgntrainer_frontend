@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:rgntrainer_frontend/provider/userResults.dart';
 
 import 'adminViewScreen.dart';
 import 'loginScreen.dart';
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: AuthProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: UserResultsProvider(),
         ),
       ],
       child: MaterialApp(

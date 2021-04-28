@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/provider/userResults.dart';
 
 class UserViewScreen extends StatelessWidget {
   @override
@@ -27,8 +29,37 @@ class UserCard extends StatefulWidget {
 }
 
 class _UserCardState extends State<UserCard> {
+  Future<void> _getData() async {
+    try {
+      await Provider.of<UserResultsProvider>(context, listen: false)
+          .getUserResults('test');
+    } catch (error) {
+      const errorMessage = 'Could not find user. Please try again later.';
+      _showErrorDialog(errorMessage);
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An Error occured!'),
+        content: Text(message),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Okay!'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    _getData();
     return Container(
       child: Column(
         children: [
