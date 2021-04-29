@@ -6,18 +6,13 @@ import 'dart:convert';
 
 class UserResultsProvider with ChangeNotifier {
   Future<void> getUserResults(name) async {
-    final url = 'http://localhost:8080/getUserResults';
+    final url = 'http://localhost:8080/getUserResults?number=%2B41765184147';
     try {
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse(url),
         headers: {
           "content-type": "application/json",
         },
-        body: json.encode(
-          {
-            'name': name,
-          },
-        ),
       );
       final Map<String, dynamic> responseData = json.decode(response.body);
       /* if (responseData['error'] != null) {
