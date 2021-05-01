@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/models/http_exception.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -88,7 +90,15 @@ class _AuthCardState extends State<AuthCard> {
           _authData['password'],
         );
       }*/
-      Navigator.pushNamed(context, '/user-view');
+      if (_authData['username'] == 'admin') {
+        context.vxNav.push(
+          Uri.parse(MyRoutes.adminRoute),
+        );
+      } else if (_authData['username'] == '+41765184147') {
+        context.vxNav.push(
+          Uri.parse(MyRoutes.userRoute),
+        );
+      }
     } on HttpException catch (error) {
       /*
       var errorMessage = 'Authentication failed';
