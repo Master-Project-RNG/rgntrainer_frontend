@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
-import 'package:rgntrainer_frontend/provider/userResults.dart';
+import 'package:rgntrainer_frontend/provider/userResultsProvider.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'adminViewScreen.dart';
 import 'loginScreen.dart';

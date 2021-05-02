@@ -1,6 +1,15 @@
+import 'dart:convert' as convert;
+import 'dart:async';
+import 'dart:convert';
+import 'dart:html';
+import 'dart:io' as dart;
+
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:rgntrainer_frontend/provider/userResults.dart';
+import 'package:rgntrainer_frontend/models/userResults.dart';
+import 'package:rgntrainer_frontend/provider/userResultsProvider.dart';
 
 class UserViewScreen extends StatelessWidget {
   @override
@@ -28,8 +37,35 @@ class UserCard extends StatefulWidget {
   _UserCardState createState() => _UserCardState();
 }
 
+Future<void> getUserResults(name) async {
+  //TODO: Replace mock with api call
+  String userResultString =
+      '[{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:30:33","saidCity":false,"saidName":false,"saidGreeting":false,"reached":true,"callCompleted":true,"responderStarted":false},{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:31:45","saidCity":false,"saidName":false,"saidGreeting":true,"reached":true,"callCompleted":false,"responderStarted":false}]';
+  /*var url2 = Uri.parse(
+      'https://masterbasisproject-default-rtdb.europe-west1.firebasedatabase.app/');
+  final response = await http.get(url2);
+  if (response.statusCode == 200) {
+    var response2 = getUserResults.json;
+    var jsonResponse =
+        convert.jsonDecode(response.body) as Map<String, dynamic>;
+    print(jsonResponse);
+  } else {
+    throw Exception('Failed to load user');
+  }*/
+  var jsonResponse =
+      convert.jsonDecode(userResultString) as List<Map<String, dynamic>>;
+}
+
 class _UserCardState extends State<UserCard> {
-  Future<void> _getData() async {
+  //Future<UserResults> futureUserResults;
+
+  @override
+  void initState() {
+    super.initState();
+    /* futureUserResults =*/ getUserResults('test');
+  }
+
+  Future<void> _fetchUserResults() async {
     try {
       await Provider.of<UserResultsProvider>(context, listen: false)
           .getUserResults('test');
@@ -46,7 +82,7 @@ class _UserCardState extends State<UserCard> {
         title: Text('An Error occured!'),
         content: Text(message),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text('Okay!'),
             onPressed: () {
               Navigator.of(ctx).pop();
@@ -59,7 +95,7 @@ class _UserCardState extends State<UserCard> {
 
   @override
   Widget build(BuildContext context) {
-    _getData();
+    //_getData();
     return Container(
       child: Column(
         children: [
@@ -190,7 +226,8 @@ Widget testEntry() {
         alignment: Alignment.center,
         width: 160,
         child: Text(
-          "+41765184147",
+          'test2',
+          //futureUserResults.number,
           style: TextStyle(fontSize: 20),
         ),
       ),
