@@ -30,38 +30,14 @@ class UserCard extends StatefulWidget {
   _UserCardState createState() => _UserCardState();
 }
 
-getUserResults(name) {
-  //TODO: Replace mock with api call
-  String userResultString =
-      '[{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:30:33","saidCity":false,"saidName":false,"saidGreeting":false,"reached":true,"callCompleted":true,"responderStarted":false},{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:31:45","saidCity":false,"saidName":false,"saidGreeting":true,"reached":true,"callCompleted":false,"responderStarted":false}]';
-  /*var url = Uri.parse(
-      'https://masterbasisproject-default-rtdb.europe-west1.firebasedatabase.app/');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-    var response2 = getUserResults.json;
-    var jsonResponse =
-        convert.jsonDecode(response.body) as Map<String, dynamic>;
-    print(jsonResponse);
-  } else {
-    throw Exception('Failed to load user');
-  }*/
-  List<UserResults> _result = [];
-  final List<dynamic> _temp = json.decode(userResultString);
-  _temp.forEach((test) {
-    final Map<String, dynamic> _temp2 = test;
-    final UserResults userResults = UserResults.fromJson(_temp2);
-    _result.add(userResults);
-  });
-}
-
 class _UserCardState extends State<UserCard> {
-  // var _isLoading = false;
-  //Future<UserResults> futureUserResults;
+  var _isLoading = false;
+  List<UserResults> _fetchedUserResults = [];
 
   @override
   void initState() {
     super.initState();
-    /* futureUserResults =*/ getUserResults('test');
+    _fetchedUserResults = getUserResults('test');
   }
 
   /* Future<void> _fetchUserResults() async {
@@ -73,6 +49,33 @@ class _UserCardState extends State<UserCard> {
       _showErrorDialog(errorMessage);
     }
   } */
+
+  List<UserResults> getUserResults(name) {
+    _isLoading = true;
+    //TODO: Replace mock with api call
+    String userResultString =
+        '[{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:30:33","saidCity":false,"saidName":false,"saidGreeting":false,"reached":true,"callCompleted":true,"responderStarted":false},{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:31:45","saidCity":false,"saidName":false,"saidGreeting":true,"reached":true,"callCompleted":false,"responderStarted":false}]';
+    /*var url = Uri.parse(
+      'https://masterbasisproject-default-rtdb.europe-west1.firebasedatabase.app/');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    var response2 = getUserResults.json;
+    var jsonResponse =
+        convert.jsonDecode(response.body) as Map<String, dynamic>;
+    print(jsonResponse);
+  } else {
+    throw Exception('Failed to load user');
+  }*/
+    List<UserResults> _result = [];
+    final List<dynamic> _temp = json.decode(userResultString);
+    _temp.forEach((test) {
+      final Map<String, dynamic> _temp2 = test;
+      final UserResults userResults = UserResults.fromJson(_temp2);
+      _result.add(userResults);
+    });
+    _isLoading = false;
+    return _result;
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -94,7 +97,6 @@ class _UserCardState extends State<UserCard> {
 
   @override
   Widget build(BuildContext context) {
-    //_getData();
     return Container(
       child: Column(
         children: [
@@ -136,13 +138,25 @@ class _UserCardState extends State<UserCard> {
           SizedBox(
             height: 5,
           ),
-          testEntry(),
-          testEntry2(),
-          testEntry(),
+          Expanded(
+            child: printUserResults(_fetchedUserResults),
+          ),
+          //testEntry2(),
         ],
       ),
     );
   }
+}
+
+printUserResults(_fetchedUserResults) {
+  return ListView.builder(
+    shrinkWrap: true,
+    physics: ClampingScrollPhysics(),
+    itemBuilder: (BuildContext context, int index) {
+      return singleDataRowEntry(/*_fetchedUserResults[index]*/);
+    },
+    itemCount: _fetchedUserResults.length,
+  );
 }
 
 Widget testHeader() {
@@ -217,7 +231,7 @@ Widget testHeader() {
   );
 }
 
-Widget testEntry() {
+Widget singleDataRowEntry() {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
