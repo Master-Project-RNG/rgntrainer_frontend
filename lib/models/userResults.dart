@@ -27,12 +27,12 @@ class UserResults {
       number: json['number'],
       bureau: json['bureau'],
       date: json['date'],
-      saidCity: json['saidCity'],
-      saidName: json['saidName'],
-      saidGreeting: json['saidGreeting'],
-      reached: json['reached'],
-      callCompleted: json['callCompleted'],
-      responderStarted: json['responderStarted'],
+      saidCity: json['saidCity'].toString(),
+      saidName: json['saidName'].toString(),
+      saidGreeting: json['saidGreeting'].toString(),
+      reached: json['reached'].toString(),
+      callCompleted: json['callCompleted'].toString(),
+      responderStarted: json['responderStarted'].toString(),
     );
   }
 }

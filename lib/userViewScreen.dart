@@ -1,15 +1,8 @@
-import 'dart:convert' as convert;
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
-import 'dart:io' as dart;
 
 import 'package:flutter/material.dart';
-
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/userResults.dart';
-import 'package:rgntrainer_frontend/provider/userResultsProvider.dart';
 
 class UserViewScreen extends StatelessWidget {
   @override
@@ -37,13 +30,13 @@ class UserCard extends StatefulWidget {
   _UserCardState createState() => _UserCardState();
 }
 
-Future<void> getUserResults(name) async {
+getUserResults(name) {
   //TODO: Replace mock with api call
   String userResultString =
       '[{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:30:33","saidCity":false,"saidName":false,"saidGreeting":false,"reached":true,"callCompleted":true,"responderStarted":false},{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:31:45","saidCity":false,"saidName":false,"saidGreeting":true,"reached":true,"callCompleted":false,"responderStarted":false}]';
-  /*var url2 = Uri.parse(
+  /*var url = Uri.parse(
       'https://masterbasisproject-default-rtdb.europe-west1.firebasedatabase.app/');
-  final response = await http.get(url2);
+  final response = await http.get(url);
   if (response.statusCode == 200) {
     var response2 = getUserResults.json;
     var jsonResponse =
@@ -52,11 +45,17 @@ Future<void> getUserResults(name) async {
   } else {
     throw Exception('Failed to load user');
   }*/
-  var jsonResponse =
-      convert.jsonDecode(userResultString) as List<Map<String, dynamic>>;
+  List<UserResults> _result = [];
+  final List<dynamic> _temp = json.decode(userResultString);
+  _temp.forEach((test) {
+    final Map<String, dynamic> _temp2 = test;
+    final UserResults userResults = UserResults.fromJson(_temp2);
+    _result.add(userResults);
+  });
 }
 
 class _UserCardState extends State<UserCard> {
+  // var _isLoading = false;
   //Future<UserResults> futureUserResults;
 
   @override
@@ -65,7 +64,7 @@ class _UserCardState extends State<UserCard> {
     /* futureUserResults =*/ getUserResults('test');
   }
 
-  Future<void> _fetchUserResults() async {
+  /* Future<void> _fetchUserResults() async {
     try {
       await Provider.of<UserResultsProvider>(context, listen: false)
           .getUserResults('test');
@@ -73,7 +72,7 @@ class _UserCardState extends State<UserCard> {
       const errorMessage = 'Could not find user. Please try again later.';
       _showErrorDialog(errorMessage);
     }
-  }
+  } */
 
   void _showErrorDialog(String message) {
     showDialog(
