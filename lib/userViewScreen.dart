@@ -31,6 +31,7 @@ class UserCard extends StatefulWidget {
 }
 
 class _UserCardState extends State<UserCard> {
+  //TODO: Show loading icon in case of loading
   var _isLoading = false;
   List<UserResults> _fetchedUserResults = [];
 
@@ -40,23 +41,13 @@ class _UserCardState extends State<UserCard> {
     _fetchedUserResults = getUserResults('test');
   }
 
-  /* Future<void> _fetchUserResults() async {
-    try {
-      await Provider.of<UserResultsProvider>(context, listen: false)
-          .getUserResults('test');
-    } catch (error) {
-      const errorMessage = 'Could not find user. Please try again later.';
-      _showErrorDialog(errorMessage);
-    }
-  } */
-
   List<UserResults> getUserResults(name) {
     _isLoading = true;
     //TODO: Replace mock with api call
     String userResultString =
         '[{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:30:33","saidCity":false,"saidName":false,"saidGreeting":false,"reached":true,"callCompleted":true,"responderStarted":false},{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:31:45","saidCity":false,"saidName":false,"saidGreeting":true,"reached":true,"callCompleted":false,"responderStarted":false}]';
     /*var url = Uri.parse(
-      'https://masterbasisproject-default-rtdb.europe-west1.firebasedatabase.app/');
+      'http://localhost:8080/getUserResults?number=%2B41765184147');
   final response = await http.get(url);
   if (response.statusCode == 200) {
     var response2 = getUserResults.json;
@@ -113,7 +104,7 @@ class _UserCardState extends State<UserCard> {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              "Resultate für User: +4176184147",
+              "Resultate für User: ${_fetchedUserResults[0].number}",
               style: TextStyle(fontSize: 34),
             ),
           ),
@@ -148,12 +139,12 @@ class _UserCardState extends State<UserCard> {
   }
 }
 
-printUserResults(_fetchedUserResults) {
+printUserResults(List<UserResults> _fetchedUserResults) {
   return ListView.builder(
     shrinkWrap: true,
     physics: ClampingScrollPhysics(),
     itemBuilder: (BuildContext context, int index) {
-      return singleDataRowEntry(/*_fetchedUserResults[index]*/);
+      return singleDataRowEntry(_fetchedUserResults[index]);
     },
     itemCount: _fetchedUserResults.length,
   );
@@ -231,7 +222,7 @@ Widget testHeader() {
   );
 }
 
-Widget singleDataRowEntry() {
+Widget singleDataRowEntry(UserResults _fetchedUserResults) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
@@ -239,7 +230,7 @@ Widget singleDataRowEntry() {
         alignment: Alignment.center,
         width: 160,
         child: Text(
-          'test2',
+          _fetchedUserResults.number,
           //futureUserResults.number,
           style: TextStyle(fontSize: 20),
         ),
@@ -248,82 +239,42 @@ Widget singleDataRowEntry() {
         alignment: Alignment.center,
         width: 160,
         child: Text(
-          "07/04/2021 21:31:45",
+          _fetchedUserResults.date,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
       ),
       Container(
         width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
+        child: getCheck(_fetchedUserResults.reached == "true"),
       ),
       Container(
         width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
+        child: getCheck(_fetchedUserResults.saidCity == "true"),
       ),
       Container(
         width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
+        child: getCheck(_fetchedUserResults.saidName == "true"),
       ),
       Container(
         width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
+        child: getCheck(_fetchedUserResults.saidGreeting == "true"),
       ),
       Container(
         width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
+        child: getCheck(_fetchedUserResults.callCompleted == "true"),
       ),
       Container(
         width: 160,
-        child: Icon(Icons.clear, color: Colors.red, size: 24),
+        child: getCheck(_fetchedUserResults.responderStarted == "true"),
       ),
     ],
   );
 }
 
-Widget testEntry2() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "+41765184147",
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "07/04/2021 21:31:45",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
-      ),
-      Container(
-        width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
-      ),
-      Container(
-        width: 160,
-        child: Icon(Icons.clear, color: Colors.red, size: 24),
-      ),
-      Container(
-        width: 160,
-        child: Icon(Icons.check, color: Colors.green, size: 24),
-      ),
-      Container(
-        width: 160,
-        child: Icon(Icons.clear, color: Colors.red, size: 24),
-      ),
-      Container(
-        width: 160,
-        child: Icon(Icons.clear, color: Colors.red, size: 24),
-      ),
-    ],
-  );
+getCheck(bool checked) {
+  if (checked == true) {
+    return Icon(Icons.check, color: Colors.green, size: 24);
+  } else {
+    return Icon(Icons.clear, color: Colors.red, size: 24);
+  }
 }
