@@ -89,6 +89,7 @@ class _AdminCardState extends State<AdminCard> {
                         primary: Colors.green, onPrimary: Colors.white),
                     child: Text('Start'),
                     onPressed: () {
+                      adminCalls.startTrainer(10);
                       print('Short Press!');
                     },
                   ),
@@ -98,6 +99,7 @@ class _AdminCardState extends State<AdminCard> {
                         primary: Colors.red, onPrimary: Colors.white),
                     child: Text('Stop'),
                     onPressed: () {
+                      adminCalls.stopTrainer();
                       print('Short Press!');
                     },
                   )

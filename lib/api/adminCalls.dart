@@ -26,10 +26,43 @@ class AdminCalls with ChangeNotifier {
   getIntervalSeconds() {}
 
   //start the trainer
-  startTrainer(intervalSeconds) {}
+  Future<void> startTrainer(intervalSeconds) async {
+    final url = '${activeHost}/start?intervalSeconds=${intervalSeconds}';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "content-type": "application/json",
+        },
+        body: json.encode(
+          {
+            'intervalSeconds': intervalSeconds,
+          },
+        ),
+      );
+      //final Map<String, dynamic> responseData = json.decode(response.body);
+      /* if (responseData['error'] != null) {*/
+    } catch (error) {
+      throw error;
+    }
+  }
 
   //stop the trainer
-  stopTrainer() {}
+  Future<void> stopTrainer() async {
+    final url = '${activeHost}/stop';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "content-type": "application/json",
+        },
+      );
+      print(response);
+      //final Map<String, dynamic> responseData = json.decode(response.body);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   //download results
   getResults() async {
