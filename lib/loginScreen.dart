@@ -1,7 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/MyRoutes.dart';
+import 'package:rgntrainer_frontend/models/http_exception.dart';
+import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -71,6 +73,10 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     try {
+      await Provider.of<AuthProvider>(context, listen: false).login(
+        _authData['username'],
+        _authData['password'],
+      );
       /*  if (_authMode == AuthMode.Login) {
         // Log user in
         await Provider.of<AuthProvider>(context, listen: false).login(
@@ -84,8 +90,17 @@ class _AuthCardState extends State<AuthCard> {
           _authData['password'],
         );
       }*/
-      Navigator.pushNamed(context, '/userHome');
+      if (_authData['username'] == 'admin') {
+        context.vxNav.push(
+          Uri.parse(MyRoutes.adminRoute),
+        );
+      } else if (_authData['username'] == '+41765184147') {
+        context.vxNav.push(
+          Uri.parse(MyRoutes.userRoute),
+        );
+      }
     } on HttpException catch (error) {
+      /*
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXISTS')) {
         errorMessage = 'This email adress is already in use.';
@@ -98,7 +113,7 @@ class _AuthCardState extends State<AuthCard> {
       } else if (error.toString().contains('INVALID_PASSWORD')) {
         errorMessage = 'Invalid password.';
       }
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(errorMessage); */
     } catch (error) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
@@ -138,8 +153,8 @@ class _AuthCardState extends State<AuthCard> {
                   decoration: InputDecoration(labelText: 'Benutzername'),
                   keyboardType: TextInputType.text,
                   validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
+                    if (value.isEmpty) {
+                      return 'Ungültiger Benutzername!';
                     }
                     return null;
                   },
@@ -152,7 +167,7 @@ class _AuthCardState extends State<AuthCard> {
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
-                    if (value.isEmpty || value.length < 5) {
+                    if (value.isEmpty || value.length < 3) {
                       return 'Password is too short!';
                     }
                   },
