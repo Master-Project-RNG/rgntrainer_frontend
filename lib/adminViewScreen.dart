@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rgntrainer_frontend/api/adminCalls.dart';
+import 'package:http/http.dart' as http;
 
 class AdminViewScreen extends StatelessWidget {
   @override
@@ -34,6 +36,13 @@ class AdminCard extends StatefulWidget {
 }
 
 class _AdminCardState extends State<AdminCard> {
+  var adminCalls = AdminCalls();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   final GlobalKey<FormState> _formKeyAdmin = GlobalKey();
   @override
   Widget build(BuildContext context) {
@@ -83,7 +92,7 @@ class _AdminCardState extends State<AdminCard> {
                       print('Short Press!');
                     },
                   ),
-                  Text('Status: Ausgeschaltet'),
+                  getStatus(),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.red, onPrimary: Colors.white),
@@ -144,6 +153,7 @@ class _AdminCardState extends State<AdminCard> {
                       child: Text('Download'),
                       onPressed: () {
                         print('Short Press!');
+                        adminCalls.getResults();
                       },
                     ),
                   ],
@@ -154,5 +164,22 @@ class _AdminCardState extends State<AdminCard> {
         ),
       ),
     );
+  }
+
+  // _status has to be connected to the class attribute _status in order that setState() works, can't be handed in as a function parameter ;)
+  Widget getStatus() {
+    return FutureBuilder<bool>(
+        future: adminCalls.getTrainerStatus(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            //TODO: TESTEN
+            if (snapshot.data == true) {
+              return Text('Status: Eingeschaltet');
+            } else {
+              return Text('Status: Ausgeschaltet');
+            }
+          } else
+            return CircularProgressIndicator();
+        });
   }
 }
