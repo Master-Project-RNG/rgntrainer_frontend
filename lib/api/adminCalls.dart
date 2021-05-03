@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
