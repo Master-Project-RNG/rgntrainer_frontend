@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinbox/cupertino.dart'; // or flutter_spinbox.dart for both
 
 class AdminViewScreen extends StatelessWidget {
   @override
@@ -111,12 +110,13 @@ class _AdminCardState extends State<AdminCard> {
                   Container(
                     height: 50,
                     width: 200,
-                    child: CupertinoSpinBox(
+                    child:
+                        Container(), /* CupertinoSpinBox(
                       min: 0,
                       max: 600,
                       value: 0,
                       onChanged: (value) => print(value),
-                    ),
+                    ),*/
                   ),
                 ],
               ),
