@@ -23,8 +23,8 @@ jobs:
           # type configurations: your user.email and user.name followed lines 
           # git config --global user.email ripsli@hotmail.com 
           # git config --global user.name reffx
-          git config --global user.email onatcipli@outlook.com
-          git config --global user.name onatcipli
+          git config --global user.email ripsli@hotmail.com 
+          git config --global user.name reffx
           git status
           # change this remote url for examle your remote url is https://github.com/onatcipli/flutter_web.git then the following:
           git remote add origin https://${{secrets.commit_secret}}@github.com/Master-Project-RNG/rgntrainer_frontend.git
