@@ -58,10 +58,45 @@ Inside VsCode, install following extensions:
 
 ### Installation
 
+**Step 1:**
+Download or clone this repo by using the link below:
+
+```
+https://github.com/Master-Project-RNG/rgntrainer_frontend.git
+```
+
+**Step 2:**
+Open the project folder in VScode. 
+
+
+
+**Step 3:**
+Go to project root and execute the following command in console to get the required dependencies: 
+
+```
+flutter pub get 
+```
+
+
+**Step 4:**
+Befor starting the frontend, make sure that the backend is running. Change the api BASE URL in [host.dart](lib/host.dart) so that it accesses a running backend.
+
+
+
+**Step 5:**
+Start the application. 
+
+```
+flutter run -d chrome
+```
+
+
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 ```sh
-TODO: This space will be used to show  examples of how a project can be used. 
+TODO
+This space will be used to show  examples of how a project can be used. 
 Additional screenshots, code examples and demos work will be in this space. 
 ```
 
