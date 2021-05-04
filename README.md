@@ -29,7 +29,6 @@
 
 * [Flutter](https://flutter.dev/)
 
-
 ## Getting Started
 
 ### Prerequisites
@@ -75,9 +74,12 @@ https://github.com/Master-Project-RNG/rgntrainer_frontend.git
 **Step 2:**
 Open the project folder in VScode. 
 
+If you run your application with the help of the container, click on the green button on the left buttom corner. 
+![image](https://user-images.githubusercontent.com/22227408/117004803-c7d4ce00-ace6-11eb-92f2-849fdfa6aaa3.png)
 
+Then choose `Remote - Containers: Reopen in Container`
 
-**Step 3:**
+**Step 3 :**
 Go to project root and execute the following command in console to get the required dependencies: 
 
 ```
@@ -89,13 +91,19 @@ flutter pub get
 Befor starting the frontend, make sure that the backend is running. Change the api BASE URL in [host.dart](lib/host.dart) so that it accesses a running backend.
 
 
-
 **Step 5:**
 Start the application. 
 
+Wihtout container
 ```
 flutter run -d chrome
 ```
+
+With container
+```
+`Press F5` in main.dart
+```
+
 
 
 
