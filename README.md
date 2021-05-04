@@ -20,7 +20,6 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
@@ -33,7 +32,8 @@
 
 ## Getting Started
 
-# Option 1: Using docker!
+### Prerequisites
+#### Option 1: Using docker!
 The easiest way to get the frontend running is by using Visual Studio Code and its extensions + Docker. With docker you don't need to install the Flutter and Android SDK on your developer machine.
 
 * [Install Visual Studio Code](https://code.visualstudio.com/) 
@@ -51,10 +51,12 @@ For debugging, the following chrome extension is needed:
 [Chrome Debug Extension](https://chrome.google.com/webstore/detail/dart-debug-extension/eljbmlghnomdjgdjmbdekegdkbabckhm).
 After installing that please navigate to lib/main.dart and press F5. This will launch a new browser tab and you have to click the Dart debug plugin to finally open the app.
 
-# Option 2: Get it run without docker!
+#### Option 2: Get it run without docker!
 * [Install Visual Studio Code](https://code.visualstudio.com/) 
 
 Inside VsCode, install following extensions:
+
+### Installation
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -64,7 +66,7 @@ Additional screenshots, code examples and demos work will be in this space.
 ```
 
 <!-- ROADMAP -->
-## Roadmad
+## Roadmap
 See the [open issues](https://github.com/Master-Project-RNG/rgntrainer_frontend/issues) for a list of proposed features (and known issues).
 
 <!-- LICENSE -->
