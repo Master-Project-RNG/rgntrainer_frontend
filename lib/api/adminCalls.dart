@@ -9,13 +9,15 @@ import '../host.dart';
 class AdminCalls with ChangeNotifier {
   var activeHost = Host().getActiveHost();
 
-  //get trainer status
+  //get trainer status ()
+  //--- currently unused ---
   Future<bool> getTrainerStatus() async {
     var url = Uri.parse('${activeHost}/status');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       String responseStatus = response.body;
       bool status = responseStatus.toLowerCase() == 'true';
+      print("getTrainerStatus:" + status.toString());
       return status;
     } else {
       throw Exception('Unable to get Status!');
@@ -23,7 +25,18 @@ class AdminCalls with ChangeNotifier {
   }
 
   //getIntervalSeconds
-  getIntervalSeconds() {}
+  //--- currently unused ---
+  Future<int> getIntervalSeconds() async {
+    var url = Uri.parse('${activeHost}/getIntervalSeconds');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      int responseIntervalSeconds = int.parse(response.body);
+      print("getTrainerStatus:" + responseIntervalSeconds.toString());
+      return responseIntervalSeconds;
+    } else {
+      throw Exception('Unable to get IntervalSeconds!');
+    }
+  }
 
   //start the trainer
   Future<void> startTrainer(intervalSeconds) async {
@@ -40,8 +53,8 @@ class AdminCalls with ChangeNotifier {
           },
         ),
       );
-      //final Map<String, dynamic> responseData = json.decode(response.body);
-      /* if (responseData['error'] != null) {*/
+      print("startTrainer:" + response.body);
+      getTrainerStatus();
     } catch (error) {
       throw error;
     }
@@ -57,8 +70,8 @@ class AdminCalls with ChangeNotifier {
           "content-type": "application/json",
         },
       );
-      print(response);
-      //final Map<String, dynamic> responseData = json.decode(response.body);
+      print("stopTrainer:" + response.body);
+      getTrainerStatus();
     } catch (error) {
       throw error;
     }

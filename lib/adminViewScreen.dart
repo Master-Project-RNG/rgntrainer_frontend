@@ -37,6 +37,8 @@ class AdminCard extends StatefulWidget {
 
 class _AdminCardState extends State<AdminCard> {
   var adminCalls = AdminCalls();
+  var statusText = "init";
+  int clickCounter;
 
   @override
   void initState() {
@@ -90,6 +92,9 @@ class _AdminCardState extends State<AdminCard> {
                     child: Text('Start'),
                     onPressed: () {
                       adminCalls.startTrainer(10);
+                      setState(() {
+                        getStatus();
+                      });
                       print('Short Press!');
                     },
                   ),
@@ -100,6 +105,9 @@ class _AdminCardState extends State<AdminCard> {
                     child: Text('Stop'),
                     onPressed: () {
                       adminCalls.stopTrainer();
+                      setState(() {
+                        getStatus();
+                      });
                       print('Short Press!');
                     },
                   )
@@ -176,9 +184,11 @@ class _AdminCardState extends State<AdminCard> {
           if (snapshot.hasData) {
             //TODO: TESTEN
             if (snapshot.data == true) {
-              return Text('Status: Eingeschaltet');
+              var statusText = 'Status: Eingeschaltet';
+              return Text(statusText);
             } else {
-              return Text('Status: Ausgeschaltet');
+              var statusText = 'Status: Ausgeschaltet';
+              return Text(statusText);
             }
           } else
             return CircularProgressIndicator();
