@@ -14,7 +14,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#project-setup">Project Setup</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -55,8 +55,15 @@ After installing that please navigate to lib/main.dart and press F5. This will l
 * [Install Visual Studio Code](https://code.visualstudio.com/) 
 
 Inside VsCode, install following extensions:
+* [Dart](https://marketplace.visualstudio.com/items?itemName=Dart-Code.dart-code)
+* [Flutter](https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter)
 
-### Installation
+Use the following command in the terminal to check wheter flutter is installed correctly.
+```sh
+flutter doctor -v
+```
+
+### Project Setup
 
 **Step 1:**
 Download or clone this repo by using the link below:
