@@ -60220,7 +60220,7 @@ J:function(a,b){var s=null
 return M.Ym(E.a9_(L.bw("Begr\xfcssungs- und Erreichbarkeitstrainer",s,s,s,s,s,s)),M.bd(s,T.rc(E.Zj(M.bd(s,new Z.qz(s),s,s,s,s,s,s,s)),s,s),s,s,s,s,s,new V.az(10,10,10,10),s))}}
 Z.qz.prototype={
 av:function(){$.abm().toString
-return new Z.Ha(new V.zS("http://188.155.65.59:8081",new P.b1(t.V)),new N.bq(null,t.Jv),C.k)}}
+return new Z.Ha(new V.zS("https://188.155.65.59:8081",new P.b1(t.V)),new N.bq(null,t.Jv),C.k)}}
 Z.Ha.prototype={
 aR:function(){this.bq()},
 J:function(a,b){var s,r,q,p,o,n,m,l=this,k=null,j=b.X(t.w).f,i=K.qY(10),h=L.bw("Admin Ansicht",k,k,k,A.cF(k,k,K.an(b).b,k,k,k,k,k,k,k,k,24,k,C.z,k,k,!0,k,k,k,k,k,k),k,k),g=T.dl(k,20,k),f=L.bw("Steuerung f\xfcr den Trainer:",k,k,k,A.cF(k,k,K.an(b).b,k,k,k,k,k,k,k,k,14,k,C.z,k,k,!0,k,k,k,k,k,k),k,k),e=T.dl(k,20,k),d=D.Re(k,k,k,k,k,k,k,C.j,k,k,C.r9,k,k,k,k,k,k)
@@ -60434,7 +60434,7 @@ F.Dl.prototype={
 J:function(a,b){var s,r,q=null
 $.abm().toString
 s=t.V
-r=H.c([new T.rd(new Y.qn(new V.kV("http://188.155.65.59:8081",new P.b1(s)),q,F.atV(),t.ue),q,q,q,t.Tj)],t.JD)
+r=H.c([new T.rd(new Y.qn(new V.kV("https://188.155.65.59:8081",new P.b1(s)),q,F.atV(),t.ue),q,q,q,t.Tj)],t.JD)
 s=new Q.wq(new N.bq(q,t.b7),new P.b1(s))
 s.SA(q,P.ar(["/",new F.Vg(),"/admin",new F.Vh(),"/user",new F.Vi()],t.bD,t.I4))
 return Y.aoF(new S.tN(new D.a1c(),s,"Flutter Demo",X.afn(q,C.kQ),q),r)}}
