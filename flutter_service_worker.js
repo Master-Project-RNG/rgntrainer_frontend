@@ -8,13 +8,13 @@ const RESOURCES = {
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "manifest.json": "78eff3a5aa3f7dba756ed1424d5f20fe",
-"main.dart.js": "fe2c777fc0508da93b934ecfa1f1e1cf",
-"assets/NOTICES": "959443b6f9d09796a4860870ea1e7c59",
-"assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
+"main.dart.js": "95ad8b527168a5b30ef81a1f829ecd3e",
+"assets/NOTICES": "2541d9a2b4bd8c89be697ce744ffa401",
+"assets/fonts/MaterialIcons-Regular.otf": "1288c9e28052e028aba623321f7826ac",
 "assets/AssetManifest.json": "99914b932bd37a50b983c5e7c90ae93b",
 "assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
-"index.html": "f67cc3690d9a69bb32b9ffb7d12d78aa",
-"/": "f67cc3690d9a69bb32b9ffb7d12d78aa"
+"index.html": "6daa398703e57f7b83430e723addf51f",
+"/": "6daa398703e57f7b83430e723addf51f"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -32,7 +32,7 @@ self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
       return cache.addAll(
-        CORE.map((value) => new Request(value, {'cache': 'reload'})));
+        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
     })
   );
 });
