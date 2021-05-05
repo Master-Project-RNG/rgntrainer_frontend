@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/http_exception.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AuthProvider with ChangeNotifier {
+  var activeHost = Host().getActiveHost();
+
   Future<void> _authenticate(String username, String password) async {
-    final url = 'http://localhost:8080/login';
+    final url = '${activeHost}/login';
     try {
       final response = await http.post(
         Uri.parse(url),
