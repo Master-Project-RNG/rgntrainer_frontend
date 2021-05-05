@@ -12,6 +12,6 @@ class Host {
 
   //set the active host!
   String getActiveHost() {
-    return localhost; // <<<----------------------- Change backend here!
+    return production; // <<<----------------------- Change backend here!
   }
 }

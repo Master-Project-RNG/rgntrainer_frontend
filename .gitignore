@@ -412,3 +412,6 @@ lib/generated_plugin_registrant.dart
 .dart_tool/package_config.json
 .packages
 pubspec.lock
+.idea/workspace.xml
+.idea/libraries/Dart_SDK.xml
+android/rgntrainer_frontend_android.iml
