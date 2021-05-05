@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rgntrainer_frontend/host.dart';
-import 'package:rgntrainer_frontend/models/http_exception.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
