@@ -7,12 +7,11 @@ import 'adminViewScreen.dart';
 import 'loginScreen.dart';
 import 'userViewScreen.dart';
 import 'package:url_strategy/url_strategy.dart';
-import 'package:flutter/services.dart';
 
 import 'dart:io';
 
 /*Future<bool> addSelfSignedCertificate() async {
-  ByteData data = await rootBundle.load('assets/keystore.crt.pem');
+  ByteData data = await rootBundle.load('');
   SecurityContext context = SecurityContext.defaultContext;
   context.setTrustedCertificatesBytes(data.buffer.asUint8List(),
       password: 'DXu534heb1U4XL');
