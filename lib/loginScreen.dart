@@ -28,7 +28,7 @@ class LoginScreen extends StatelessWidget {
 
 class AuthCard extends StatefulWidget {
   const AuthCard({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  Map<String, String> _authData = {
+  Map<String, String?> _authData = {
     'Benutzername': '',
     'password': '',
   };
@@ -64,11 +64,11 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
     }
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
@@ -153,7 +153,7 @@ class _AuthCardState extends State<AuthCard> {
                   decoration: InputDecoration(labelText: 'Benutzername'),
                   keyboardType: TextInputType.text,
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return 'Ungültiger Benutzername!';
                     }
                     return null;
@@ -167,7 +167,7 @@ class _AuthCardState extends State<AuthCard> {
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
-                    if (value.isEmpty || value.length < 3) {
+                    if (value!.isEmpty || value.length < 3) {
                       return 'Password is too short!';
                     }
                   },
@@ -190,7 +190,7 @@ class _AuthCardState extends State<AuthCard> {
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
                     color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
+                    textColor: Theme.of(context).primaryTextTheme.button!.color,
                   ),
                 SizedBox(
                   height: 20,
