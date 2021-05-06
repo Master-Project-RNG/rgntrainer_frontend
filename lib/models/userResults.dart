@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class UserResults {
-  final String number;
-  final String bureau;
-  final String date;
+  final String? number;
+  final String? bureau;
+  final String? date;
   final String saidCity;
   final String saidName;
   final String saidGreeting;
@@ -12,15 +12,15 @@ class UserResults {
   final String responderStarted;
 
   UserResults(
-      {@required this.number,
-      @required this.bureau,
-      @required this.date,
-      @required this.saidCity,
-      @required this.saidName,
-      @required this.saidGreeting,
-      @required this.reached,
-      @required this.callCompleted,
-      @required this.responderStarted});
+      {required this.number,
+      required this.bureau,
+      required this.date,
+      required this.saidCity,
+      required this.saidName,
+      required this.saidGreeting,
+      required this.reached,
+      required this.callCompleted,
+      required this.responderStarted});
 
   factory UserResults.fromJson(Map<String, dynamic> json) {
     return UserResults(

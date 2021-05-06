@@ -28,7 +28,7 @@ class AdminViewScreen extends StatelessWidget {
 
 class AdminCard extends StatefulWidget {
   const AdminCard({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -38,7 +38,7 @@ class AdminCard extends StatefulWidget {
 class _AdminCardState extends State<AdminCard> {
   var adminCalls = AdminCalls();
   var statusText = "init";
-  int clickCounter;
+  int clickCounter = 0;
 
   @override
   void initState() {
@@ -49,7 +49,6 @@ class _AdminCardState extends State<AdminCard> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),

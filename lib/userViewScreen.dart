@@ -23,7 +23,7 @@ class UserViewScreen extends StatelessWidget {
 
 class UserCard extends StatefulWidget {
   const UserCard({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -230,7 +230,7 @@ Widget singleDataRowEntry(UserResults _fetchedUserResults) {
         alignment: Alignment.center,
         width: 160,
         child: Text(
-          _fetchedUserResults.number,
+          _fetchedUserResults.number!,
           //futureUserResults.number,
           style: TextStyle(fontSize: 20),
         ),
@@ -239,7 +239,7 @@ Widget singleDataRowEntry(UserResults _fetchedUserResults) {
         alignment: Alignment.center,
         width: 160,
         child: Text(
-          _fetchedUserResults.date,
+          _fetchedUserResults.date!,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
       ),

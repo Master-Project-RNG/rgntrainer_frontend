@@ -91,7 +91,7 @@ class AdminCalls with ChangeNotifier {
       // add the name
       anchor.download = 'resultate.xlsx';
       // trigger download
-      document.body.append(anchor);
+      document.body!.append(anchor);
       anchor.click();
       anchor.remove();
     } else {

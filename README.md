@@ -104,9 +104,6 @@ With container
 `Press F5` in main.dart
 ```
 
-
-
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 ```sh
