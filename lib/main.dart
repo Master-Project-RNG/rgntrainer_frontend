@@ -11,13 +11,13 @@ import 'package:flutter/services.dart';
 
 import 'dart:io';
 
-Future<bool> addSelfSignedCertificate() async {
+/*Future<bool> addSelfSignedCertificate() async {
   ByteData data = await rootBundle.load('assets/keystore.crt.pem');
   SecurityContext context = SecurityContext.defaultContext;
   context.setTrustedCertificatesBytes(data.buffer.asUint8List(),
       password: 'DXu534heb1U4XL');
   return true;
-}
+}*/
 
 void main() {
 //  addSelfSignedCertificate();
