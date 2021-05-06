@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class User {
-  String username;
-  String password;
+  String? username;
+  String? password;
 
   User({
-    @required this.username,
-    @required this.password,
+    required this.username,
+    required this.password,
   });
 }
