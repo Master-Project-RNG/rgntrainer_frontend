@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/api/adminCalls.dart';
-import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 
 class AdminViewScreen extends StatelessWidget {
   @override
@@ -43,6 +41,7 @@ class _AdminCardState extends State<AdminCard> {
   var statusText = "init";
   int clickCounter = 0;
   late User currentUser;
+  var tempInterval = 0;
 
   @override
   void initState() {
@@ -61,8 +60,8 @@ class _AdminCardState extends State<AdminCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: 260,
-        constraints: BoxConstraints(minHeight: 260, minWidth: 500),
+        height: 300,
+        constraints: BoxConstraints(minHeight: 300, minWidth: 500),
         width: deviceSize.width * 0.5,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -96,7 +95,7 @@ class _AdminCardState extends State<AdminCard> {
                         primary: Colors.green, onPrimary: Colors.white),
                     child: Text('Start'),
                     onPressed: () {
-                      adminCalls.startTrainer(10, currentUser.token);
+                      adminCalls.startTrainer(tempInterval, currentUser.token);
                       setState(() {
                         getStatus(currentUser.token);
                       });
@@ -134,13 +133,14 @@ class _AdminCardState extends State<AdminCard> {
                   Container(
                     height: 50,
                     width: 200,
-                    child:
-                        Container(), /* CupertinoSpinBox(
+                    child: SpinBox(
                       min: 0,
                       max: 600,
                       value: 0,
-                      onChanged: (value) => print(value),
-                    ),*/
+                      onChanged: (value) {
+                        tempInterval = value.toInt();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -168,7 +168,7 @@ class _AdminCardState extends State<AdminCard> {
                       child: Text('Download'),
                       onPressed: () {
                         print('Short Press!');
-                        adminCalls.getResults();
+                        adminCalls.getResults(currentUser.token);
                       },
                     ),
                   ],
