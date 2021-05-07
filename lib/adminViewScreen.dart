@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/api/adminCalls.dart';
 import 'package:http/http.dart' as http;
+import 'package:rgntrainer_frontend/models/user.dart';
+import 'package:rgntrainer_frontend/provider/authProvider.dart';
 
 class AdminViewScreen extends StatelessWidget {
   @override
@@ -39,9 +42,12 @@ class _AdminCardState extends State<AdminCard> {
   var adminCalls = AdminCalls();
   var statusText = "init";
   int clickCounter = 0;
+  late User currentUser;
 
   @override
   void initState() {
+    currentUser =
+        Provider.of<AuthProvider>(context, listen: false).loggedInUser;
     super.initState();
   }
 
@@ -90,22 +96,22 @@ class _AdminCardState extends State<AdminCard> {
                         primary: Colors.green, onPrimary: Colors.white),
                     child: Text('Start'),
                     onPressed: () {
-                      adminCalls.startTrainer(10);
+                      adminCalls.startTrainer(10, currentUser.token);
                       setState(() {
-                        getStatus();
+                        getStatus(currentUser.token);
                       });
                       print('Short Press!');
                     },
                   ),
-                  getStatus(),
+                  getStatus(currentUser.token),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.red, onPrimary: Colors.white),
                     child: Text('Stop'),
                     onPressed: () {
-                      adminCalls.stopTrainer();
+                      adminCalls.stopTrainer(currentUser.token);
                       setState(() {
-                        getStatus();
+                        getStatus(currentUser.token);
                       });
                       print('Short Press!');
                     },
@@ -176,9 +182,9 @@ class _AdminCardState extends State<AdminCard> {
   }
 
   // _status has to be connected to the class attribute _status in order that setState() works, can't be handed in as a function parameter ;)
-  Widget getStatus() {
+  Widget getStatus(token) {
     return FutureBuilder<bool>(
-        future: adminCalls.getTrainerStatus(),
+        future: adminCalls.getTrainerStatus(token),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData) {
             //TODO: TESTEN
