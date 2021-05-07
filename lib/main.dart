@@ -11,17 +11,18 @@ import 'package:flutter/services.dart';
 
 import 'dart:io';
 
+/*
 Future<bool> addSelfSignedCertificate() async {
   ByteData data = await rootBundle.load('assets/keystore.crt.pem');
   SecurityContext context = SecurityContext.defaultContext;
   context.setTrustedCertificatesBytes(data.buffer.asUint8List(),
       password: 'DXu534heb1U4XL');
   return true;
-}
+} */
 
 void main() {
 //  addSelfSignedCertificate();
-  HttpOverrides.global = new MyHttpOverrides();
+  // HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
   runApp(MyApp());
 }
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+/*
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -60,4 +61,4 @@ class MyHttpOverrides extends HttpOverrides {
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
   }
-}
+}*/

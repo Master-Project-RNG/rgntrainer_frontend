@@ -11,9 +11,17 @@ class AdminCalls with ChangeNotifier {
 
   //get trainer status ()
   //--- currently unused ---
-  Future<bool> getTrainerStatus() async {
+  Future<bool> getTrainerStatus(token) async {
     var url = Uri.parse('${activeHost}/status');
-    final response = await http.get(url);
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+      }),
+    );
     if (response.statusCode == 200) {
       String responseStatus = response.body;
       bool status = responseStatus.toLowerCase() == 'true';
@@ -39,7 +47,7 @@ class AdminCalls with ChangeNotifier {
   }
 
   //start the trainer
-  Future<void> startTrainer(intervalSeconds) async {
+  Future<void> startTrainer(intervalSeconds, token) async {
     final url = '${activeHost}/start?intervalSeconds=${intervalSeconds}';
     try {
       final response = await http.post(
@@ -54,14 +62,14 @@ class AdminCalls with ChangeNotifier {
         ),
       );
       print("startTrainer:" + response.body);
-      getTrainerStatus();
+      getTrainerStatus(token);
     } catch (error) {
       throw error;
     }
   }
 
   //stop the trainer
-  Future<void> stopTrainer() async {
+  Future<void> stopTrainer(token) async {
     final url = '${activeHost}/stop';
     try {
       final response = await http.post(
@@ -71,7 +79,7 @@ class AdminCalls with ChangeNotifier {
         },
       );
       print("stopTrainer:" + response.body);
-      getTrainerStatus();
+      getTrainerStatus(token);
     } catch (error) {
       throw error;
     }
