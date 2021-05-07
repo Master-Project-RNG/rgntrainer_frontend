@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/models/http_exception.dart';
+import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -36,6 +37,8 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
+  late User currentUser;
+
   final GlobalKey<FormState> _formKey = GlobalKey();
   Map<String, String?> _authData = {
     'Benutzername': '',
@@ -77,43 +80,17 @@ class _AuthCardState extends State<AuthCard> {
         _authData['username'],
         _authData['password'],
       );
-      /*  if (_authMode == AuthMode.Login) {
-        // Log user in
-        await Provider.of<AuthProvider>(context, listen: false).login(
-          _authData['username'],
-          _authData['password'],
-        );
-      } else {
-        // Sign user up
-        await Provider.of<AuthProvider>(context, listen: false).signup(
-          _authData['username'],
-          _authData['password'],
-        );
-      }*/
-      if (_authData['username'] == 'admin') {
+      currentUser =
+          Provider.of<AuthProvider>(context, listen: false).loggedInUser;
+      if (currentUser.usertype == 'admin') {
         context.vxNav.push(
           Uri.parse(MyRoutes.adminRoute),
         );
-      } else if (_authData['username'] == '+41765184147') {
+      } else if (currentUser.usertype == 'user') {
         context.vxNav.push(
           Uri.parse(MyRoutes.userRoute),
         );
       }
-    } on HttpException catch (error) {
-      /*
-      var errorMessage = 'Authentication failed';
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'This email adress is already in use.';
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = 'This is not a valid email adress.';
-      } else if (error.toString().contains('WEAK_PASSWORD')) {
-        errorMessage = 'This password is to weak.';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'Could not find a user with that email.';
-      } else if (error.toString().contains('INVALID_PASSWORD')) {
-        errorMessage = 'Invalid password.';
-      }
-      _showErrorDialog(errorMessage); */
     } catch (error) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
