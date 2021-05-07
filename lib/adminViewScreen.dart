@@ -61,8 +61,8 @@ class _AdminCardState extends State<AdminCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: 260,
-        constraints: BoxConstraints(minHeight: 260, minWidth: 500),
+        height: 300,
+        constraints: BoxConstraints(minHeight: 300, minWidth: 500),
         width: deviceSize.width * 0.5,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -168,7 +168,7 @@ class _AdminCardState extends State<AdminCard> {
                       child: Text('Download'),
                       onPressed: () {
                         print('Short Press!');
-                        adminCalls.getResults();
+                        adminCalls.getResults(currentUser.token);
                       },
                     ),
                   ],

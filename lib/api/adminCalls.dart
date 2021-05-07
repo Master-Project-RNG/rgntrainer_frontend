@@ -58,6 +58,7 @@ class AdminCalls with ChangeNotifier {
         body: json.encode(
           {
             'intervalSeconds': intervalSeconds,
+            'token': token,
           },
         ),
       );
@@ -77,6 +78,11 @@ class AdminCalls with ChangeNotifier {
         headers: {
           "content-type": "application/json",
         },
+        body: json.encode(
+          {
+            'token': token,
+          },
+        ),
       );
       print("stopTrainer:" + response.body);
       getTrainerStatus(token);
@@ -86,10 +92,20 @@ class AdminCalls with ChangeNotifier {
   }
 
   //download results
-  getResults() async {
+  getResults(token) async {
     //TODO: Change URL
     var url = Uri.parse('${activeHost}/downloadResults');
-    final response = await http.get(url);
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode(
+        {
+          'token': token,
+        },
+      ),
+    );
     if (response.statusCode == 200) {
       final blob = Blob([response.bodyBytes],
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
