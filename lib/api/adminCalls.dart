@@ -34,9 +34,17 @@ class AdminCalls with ChangeNotifier {
 
   //getIntervalSeconds
   //--- currently unused ---
-  Future<int> getIntervalSeconds() async {
+  Future<int> getIntervalSeconds(token) async {
     var url = Uri.parse('${activeHost}/getIntervalSeconds');
-    final response = await http.get(url);
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+      }),
+    );
     if (response.statusCode == 200) {
       int responseIntervalSeconds = int.parse(response.body);
       print("getTrainerStatus:" + responseIntervalSeconds.toString());
