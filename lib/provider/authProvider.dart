@@ -41,7 +41,6 @@ class AuthProvider with ChangeNotifier {
       throw error;
     }
   }
-
   Future<void> login(String? username, String? password) async {
     return _authenticate(username!, password!);
   }
