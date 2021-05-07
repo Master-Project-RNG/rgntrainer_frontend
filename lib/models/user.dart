@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 class User {
-  String? username;
-  String? password;
+  String username;
+  String token;
+  String usertype;
+  String? openingHours;
 
   User({
     required this.username,
-    required this.password,
+    required this.token,
+    required this.usertype,
   });
 }

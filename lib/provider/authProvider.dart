@@ -8,6 +8,11 @@ import 'dart:convert';
 
 class AuthProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
+  late User currentUser;
+
+  User get loggedInUser {
+    return currentUser;
+  }
 
   Future<void> _authenticate(String? username, String? password) async {
     final url = '${activeHost}/login';
@@ -25,9 +30,10 @@ class AuthProvider with ChangeNotifier {
       ).then(
         (response) {
           final Map<String, dynamic> responseData = json.decode(response.body);
-          final User newUser = User(
+          currentUser = User(
             username: responseData['username'].toString(),
-            password: responseData['password'].toString(),
+            token: responseData['token'].toString(),
+            usertype: responseData['usertype'].toString(),
           );
         },
       );
