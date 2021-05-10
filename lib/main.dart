@@ -10,6 +10,8 @@ import 'package:rgntrainer_frontend/screens/adminViewScreen.dart';
 import 'package:rgntrainer_frontend/screens/loginScreen.dart';
 import 'package:rgntrainer_frontend/screens/userViewScreen.dart';
 
+import 'dart:io';
+
 /*
 Future<bool> addSelfSignedCertificate() async {
   ByteData data = await rootBundle.load('assets/keystore.crt.pem');
