@@ -4,6 +4,7 @@ import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/models/http_exception.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:rgntrainer_frontend/widgets/errorDialog.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -48,24 +49,6 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('An Error occured!'),
-        content: Text(message),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Okay!'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
@@ -79,22 +62,23 @@ class _AuthCardState extends State<AuthCard> {
       await Provider.of<AuthProvider>(context, listen: false).login(
         _authData['username'],
         _authData['password'],
+        context,
       );
       currentUser =
           Provider.of<AuthProvider>(context, listen: false).loggedInUser;
       if (currentUser.usertype == 'admin') {
-        context.vxNav.push(
+        context.vxNav.replace(
           Uri.parse(MyRoutes.adminRoute),
         );
       } else if (currentUser.usertype == 'user') {
-        context.vxNav.push(
+        context.vxNav.replace(
           Uri.parse(MyRoutes.userRoute),
         );
       }
     } catch (error) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
-      _showErrorDialog(errorMessage);
+      SelfMadeErrorDialog().showErrorDialog(errorMessage, context);
     }
     setState(() {
       _isLoading = false;

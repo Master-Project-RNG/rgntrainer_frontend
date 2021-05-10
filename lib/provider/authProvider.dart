@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
+import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'dart:convert';
+import '../widgets/errorDialog.dart';
 
 class AuthProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
@@ -13,7 +15,7 @@ class AuthProvider with ChangeNotifier {
     return currentUser;
   }
 
-  Future<void> _authenticate(String username, String password) async {
+  Future<void> _authenticate(String username, String password, ctx) async {
     final url = '${activeHost}/login';
     try {
       final response = await http.post(
@@ -33,16 +35,17 @@ class AuthProvider with ChangeNotifier {
         token: responseData['token'].toString(),
         usertype: responseData['usertype'].toString(),
       );
-
+      UserSimplePreferences.setUserToken(responseData['token'].toString());
       /* if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       } --> Dazu ist nichts in der DB */
     } catch (error) {
-      throw error;
+      SelfMadeErrorDialog()
+          .showErrorDialog("Benutzername oder Passwort falsch!", ctx);
     }
   }
 
-  Future<void> login(String? username, String? password) async {
-    return _authenticate(username!, password!);
+  Future<void> login(String? username, String? password, var ctx) async {
+    return _authenticate(username!, password!, ctx);
   }
 }
