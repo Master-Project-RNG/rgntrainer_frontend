@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:velocity_x/velocity_x.dart';
+import 'package:url_strategy/url_strategy.dart';
+//My files
 import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
-import 'package:velocity_x/velocity_x.dart';
-import 'adminViewScreen.dart';
-import 'loginScreen.dart';
-import 'userViewScreen.dart';
-import 'package:url_strategy/url_strategy.dart';
+import 'package:rgntrainer_frontend/screens/adminViewScreen.dart';
+import 'package:rgntrainer_frontend/screens/loginScreen.dart';
+import 'package:rgntrainer_frontend/screens/userViewScreen.dart';
 
 import 'dart:io';
 
@@ -19,10 +21,12 @@ Future<bool> addSelfSignedCertificate() async {
   return true;
 } */
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 //  addSelfSignedCertificate();
   // HttpOverrides.global = new MyHttpOverrides();
   setPathUrlStrategy();
+  await UserSimplePreferences.init();
   runApp(MyApp());
 }
 

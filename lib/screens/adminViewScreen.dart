@@ -5,6 +5,7 @@ import 'package:rgntrainer_frontend/api/adminCalls.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 
 class AdminViewScreen extends StatelessWidget {
   @override
@@ -40,13 +41,12 @@ class _AdminCardState extends State<AdminCard> {
   var adminCalls = AdminCalls();
   var statusText = "init";
   int clickCounter = 0;
-  late User currentUser;
   var tempInterval = 0;
+  late String? _tokenCurrentUser;
 
   @override
   void initState() {
-    currentUser =
-        Provider.of<AuthProvider>(context, listen: false).loggedInUser;
+    _tokenCurrentUser = UserSimplePreferences.getUserToken();
     super.initState();
   }
 
@@ -95,22 +95,22 @@ class _AdminCardState extends State<AdminCard> {
                         primary: Colors.green, onPrimary: Colors.white),
                     child: Text('Start'),
                     onPressed: () {
-                      adminCalls.startTrainer(tempInterval, currentUser.token);
+                      adminCalls.startTrainer(tempInterval, _tokenCurrentUser);
                       setState(() {
-                        getStatus(currentUser.token);
+                        getStatus(_tokenCurrentUser);
                       });
                       print('Short Press!');
                     },
                   ),
-                  getStatus(currentUser.token),
+                  getStatus(_tokenCurrentUser),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.red, onPrimary: Colors.white),
                     child: Text('Stop'),
                     onPressed: () {
-                      adminCalls.stopTrainer(currentUser.token);
+                      adminCalls.stopTrainer(_tokenCurrentUser);
                       setState(() {
-                        getStatus(currentUser.token);
+                        getStatus(_tokenCurrentUser);
                       });
                       print('Short Press!');
                     },
@@ -168,7 +168,7 @@ class _AdminCardState extends State<AdminCard> {
                       child: Text('Download'),
                       onPressed: () {
                         print('Short Press!');
-                        adminCalls.getResults(currentUser.token);
+                        adminCalls.getResults(_tokenCurrentUser);
                       },
                     ),
                   ],
