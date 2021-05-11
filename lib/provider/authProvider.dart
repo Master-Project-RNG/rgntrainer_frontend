@@ -41,11 +41,33 @@ class AuthProvider with ChangeNotifier {
         throw HttpException(responseData['error']['message']);
       } --> Dazu ist nichts in der DB */
     } catch (error) {
+      const errorMessage = 'Login fehlgeschlagen!';
+      SelfMadeErrorDialog().showErrorDialog(errorMessage, ctx);
       debugPrint(error.toString());
     }
   }
 
   Future<void> login(String? username, String? password, var ctx) async {
     return _authenticate(username!, password!, ctx);
+  }
+
+  Future<void> logout(token) async {
+    final url = '${activeHost}/logout';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "content-type": "application/json",
+        },
+        body: json.encode({
+          'token': token,
+        }),
+      );
+      UserSimplePreferences.resetUser();
+      //Logout successful!
+      debugPrint(response.toString());
+    } catch (error) {
+      debugPrint(error.toString());
+    }
   }
 }
