@@ -6,9 +6,9 @@ import 'package:url_strategy/url_strategy.dart';
 //My files
 import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
-import 'package:rgntrainer_frontend/screens/adminViewScreen.dart';
+import 'package:rgntrainer_frontend/screens/adminHomeScreen.dart';
+import 'package:rgntrainer_frontend/screens/userHomeScreen.dart';
 import 'package:rgntrainer_frontend/screens/loginScreen.dart';
-import 'package:rgntrainer_frontend/screens/userViewScreen.dart';
 
 import 'dart:io';
 
@@ -45,8 +45,8 @@ class MyApp extends StatelessWidget {
         routerDelegate: VxNavigator(routes: {
           "/": (_, __) => MaterialPage(child: LoginScreen()),
           MyRoutes.adminRoute: (_, __) =>
-              MaterialPage(child: AdminViewScreen()),
-          MyRoutes.userRoute: (_, __) => MaterialPage(child: UserViewScreen()),
+              MaterialPage(child: AdminHomeScreen()),
+          MyRoutes.userRoute: (_, __) => MaterialPage(child: UserHomeScreen()),
         }),
         title: 'Begrüssungs- und Erreichbarkeitstrainer',
         theme: ThemeData(
