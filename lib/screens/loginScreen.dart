@@ -76,8 +76,7 @@ class _AuthCardState extends State<AuthCard> {
         );
       }
     } catch (error) {
-      const errorMessage =
-          'Could not authenticate you. Please try again later.';
+      const errorMessage = 'Login fehlgeschlagen!';
       SelfMadeErrorDialog().showErrorDialog(errorMessage, context);
     }
     setState(() {

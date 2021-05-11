@@ -31,17 +31,17 @@ class AuthProvider with ChangeNotifier {
 
       final Map<String, dynamic> responseData = json.decode(response.body);
       currentUser = User(
-        username: responseData['username'].toString(),
-        token: responseData['token'].toString(),
-        usertype: responseData['usertype'].toString(),
-      );
+          username: responseData['username'].toString(),
+          token: responseData['token'].toString(),
+          usertype: responseData['usertype'].toString(),
+          organization: responseData['organization'].toString());
       UserSimplePreferences.setUserToken(responseData['token'].toString());
+      UserSimplePreferences.setUser(currentUser);
       /* if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       } --> Dazu ist nichts in der DB */
     } catch (error) {
-      SelfMadeErrorDialog()
-          .showErrorDialog("Benutzername oder Passwort falsch!", ctx);
+      debugPrint(error.toString());
     }
   }
 

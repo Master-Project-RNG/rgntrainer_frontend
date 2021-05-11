@@ -1,9 +1,12 @@
+import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class UserSimplePreferences {
   static late SharedPreferences _preferences;
 
   static const _keyUserToken = "userToken";
+  static const _keyUser = "user";
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
@@ -16,5 +19,17 @@ class UserSimplePreferences {
       return "none";
     } else
       return _preferences.getString(_keyUserToken);
+  }
+
+  static Future setUser(User user) async {
+    final json = jsonEncode(user.toJson());
+
+    await _preferences.setString(_keyUser, json);
+  }
+
+  static User getUser() {
+    final json = _preferences.getString(_keyUser);
+
+    return User.fromJson(jsonDecode(json!));
   }
 }

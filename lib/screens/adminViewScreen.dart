@@ -42,11 +42,11 @@ class _AdminCardState extends State<AdminCard> {
   var statusText = "init";
   int clickCounter = 0;
   var tempInterval = 0;
-  late String? _tokenCurrentUser;
+  late User? _currentUser;
 
   @override
   void initState() {
-    _tokenCurrentUser = UserSimplePreferences.getUserToken();
+    _currentUser = UserSimplePreferences.getUser();
     super.initState();
   }
 
@@ -95,22 +95,23 @@ class _AdminCardState extends State<AdminCard> {
                         primary: Colors.green, onPrimary: Colors.white),
                     child: Text('Start'),
                     onPressed: () {
-                      adminCalls.startTrainer(tempInterval, _tokenCurrentUser);
+                      adminCalls.startTrainer(
+                          tempInterval, _currentUser?.token);
                       setState(() {
-                        getStatus(_tokenCurrentUser);
+                        getStatus(_currentUser?.token);
                       });
                       print('Short Press!');
                     },
                   ),
-                  getStatus(_tokenCurrentUser),
+                  getStatus(_currentUser?.token),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.red, onPrimary: Colors.white),
                     child: Text('Stop'),
                     onPressed: () {
-                      adminCalls.stopTrainer(_tokenCurrentUser);
+                      adminCalls.stopTrainer(_currentUser?.token);
                       setState(() {
-                        getStatus(_tokenCurrentUser);
+                        getStatus(_currentUser?.token);
                       });
                       print('Short Press!');
                     },
@@ -168,7 +169,7 @@ class _AdminCardState extends State<AdminCard> {
                       child: Text('Download'),
                       onPressed: () {
                         print('Short Press!');
-                        adminCalls.getResults(_tokenCurrentUser);
+                        adminCalls.getResults(_currentUser?.token);
                       },
                     ),
                   ],
