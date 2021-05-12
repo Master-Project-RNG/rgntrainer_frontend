@@ -32,7 +32,12 @@ class _UserCardState extends State<UserCard> {
   var _isLoading = false;
   List<UserResults> _fetchedUserResults = [];
   late User _currentUser = User(
-      username: "none", organization: "none", token: "none", usertype: "none");
+      username: "none",
+      organization: "none",
+      token: "none",
+      usertype: "none",
+      openingHours: [],
+      greetingConfiguration: "none");
 
   @override
   void initState() {

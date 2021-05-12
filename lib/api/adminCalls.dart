@@ -4,6 +4,7 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
 import '../host.dart';
 
 class AdminCalls with ChangeNotifier {
@@ -128,6 +129,29 @@ class AdminCalls with ChangeNotifier {
       anchor.remove();
     } else {
       throw Exception('Unable to get Status!');
+    }
+  }
+
+  //getIntervalSeconds
+  //--- currently unused ---
+  Future<bool> getOpeningHours(token) async {
+    var url = Uri.parse('${activeHost}/getOpeningHours');
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      OpeningHoursSummary test = OpeningHoursSummary.fromJson(responseData);
+      debugPrint(test.toString());
+      return false;
+    } else {
+      throw Exception('Unable to get IntervalSeconds!');
     }
   }
 }

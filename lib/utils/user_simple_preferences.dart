@@ -9,7 +9,12 @@ class UserSimplePreferences {
   static const _keyUser = "user";
 
   static User myUser = User(
-      organization: "none", token: "none", username: "none", usertype: "none");
+      organization: "none",
+      token: "none",
+      username: "none",
+      usertype: "none",
+      openingHours: [],
+      greetingConfiguration: "none");
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
@@ -32,11 +37,13 @@ class UserSimplePreferences {
 
   static Future resetUser() async {
     final json = jsonEncode(User(
-            username: "none",
-            organization: "none",
-            token: "none",
-            usertype: "none")
-        .toJson());
+      username: "none",
+      organization: "none",
+      token: "none",
+      usertype: "none",
+      openingHours: [],
+      greetingConfiguration: "none",
+    ).toJson());
 
     await _preferences.setString(_keyUser, json);
   }

@@ -32,7 +32,12 @@ class _AdminCardState extends State<AdminCard> {
   int clickCounter = 0;
   var tempInterval = 0;
   late User _currentUser = User(
-      username: "none", organization: "none", token: "none", usertype: "none");
+      username: "none",
+      organization: "none",
+      token: "none",
+      usertype: "none",
+      openingHours: [],
+      greetingConfiguration: "none");
 
   @override
   void initState() {
@@ -187,6 +192,38 @@ class _AdminCardState extends State<AdminCard> {
                                   onPressed: () {
                                     print('Short Press!');
                                     adminCalls.getResults(_currentUser.token);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'Opening Hours:',
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.blue,
+                                      onPrimary: Colors.white),
+                                  child: Text('Execute'),
+                                  onPressed: () {
+                                    print('Short Press!');
+                                    adminCalls
+                                        .getOpeningHours(_currentUser.token);
                                   },
                                 ),
                               ],

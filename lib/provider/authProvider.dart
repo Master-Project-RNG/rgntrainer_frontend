@@ -30,11 +30,7 @@ class AuthProvider with ChangeNotifier {
       );
 
       final Map<String, dynamic> responseData = json.decode(response.body);
-      currentUser = User(
-          username: responseData['username'].toString(),
-          token: responseData['token'].toString(),
-          usertype: responseData['usertype'].toString(),
-          organization: responseData['organization'].toString());
+      currentUser = User.fromJson(responseData);
       UserSimplePreferences.setUserToken(responseData['token'].toString());
       UserSimplePreferences.setUser(currentUser);
       /* if (responseData['error'] != null) {

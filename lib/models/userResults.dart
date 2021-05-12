@@ -23,7 +23,7 @@ class UserResults {
       required this.responderStarted});
 
   factory UserResults.fromJson(Map<String, dynamic> json) {
-    return UserResults(
+    return new UserResults(
       number: json['number'],
       bureau: json['bureau'],
       date: json['date'],

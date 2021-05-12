@@ -26,7 +26,12 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard> {
   late User _currentUser = User(
-      username: "none", organization: "none", token: "none", usertype: "none");
+      username: "none",
+      organization: "none",
+      token: "none",
+      usertype: "none",
+      openingHours: [],
+      greetingConfiguration: "none");
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   Map<String, String?> _authData = {
