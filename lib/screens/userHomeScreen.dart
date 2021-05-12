@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,10 +5,10 @@ import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:rgntrainer_frontend/models/userResults.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
-import 'package:rgntrainer_frontend/screens/loginScreen.dart';
 import 'package:rgntrainer_frontend/screens/noTokenScreen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/errorDialog.dart';
+import 'package:http/http.dart' as http;
 import 'package:velocity_x/velocity_x.dart';
 
 class UserHomeScreen extends StatelessWidget {
@@ -39,34 +38,35 @@ class _UserCardState extends State<UserCard> {
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
-    _fetchedUserResults = getUserResults('test');
   }
 
-  List<UserResults> getUserResults(name) {
+  Future<List<UserResults>> getUserResults(token) async {
     _isLoading = true;
-    //TODO: Replace mock with api call
-    String userResultString =
-        '[{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:30:33","saidCity":false,"saidName":false,"saidGreeting":false,"reached":true,"callCompleted":true,"responderStarted":false},{"number":"+41765184147","bureau":"Gemeinde Rothenburg","date":"07/04/2021 21:31:45","saidCity":false,"saidName":false,"saidGreeting":true,"reached":true,"callCompleted":false,"responderStarted":false}]';
-    /*var url = Uri.parse(
-      'http://localhost:8080/getUserResults?number=%2B41765184147');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-    var response2 = getUserResults.json;
-    var jsonResponse =
-        convert.jsonDecode(response.body) as Map<String, dynamic>;
-    print(jsonResponse);
-  } else {
-    throw Exception('Failed to load user');
-  }*/
-    List<UserResults> _result = [];
-    final List<dynamic> _temp = json.decode(userResultString);
-    _temp.forEach((test) {
-      final Map<String, dynamic> _temp2 = test;
-      final UserResults userResults = UserResults.fromJson(_temp2);
-      _result.add(userResults);
-    });
-    _isLoading = false;
-    return _result;
+    var url = Uri.parse('http://188.155.65.59:8081/getUserResults');
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+      }),
+    );
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      debugPrint(jsonResponse.toString());
+      List<UserResults> _result = [];
+      final List<dynamic> _temp = jsonResponse;
+      _temp.forEach((test) {
+        final Map<String, dynamic> _temp2 = test;
+        final UserResults userResults = UserResults.fromJson(_temp2);
+        _result.add(userResults);
+      });
+      _isLoading = false;
+      return _result;
+    } else {
+      throw Exception('Failed to load user');
+    }
   }
 
   void _showErrorDialog(String message) {
@@ -128,7 +128,7 @@ class _UserCardState extends State<UserCard> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      "Resultate für User: ${_fetchedUserResults[0].number}",
+                      "Resultate für User: ${_currentUser.username}",
                       style: TextStyle(fontSize: 34),
                     ),
                   ),
@@ -154,7 +154,7 @@ class _UserCardState extends State<UserCard> {
                     height: 5,
                   ),
                   Expanded(
-                    child: printUserResults(_fetchedUserResults),
+                    child: printUserResults(_currentUser.token),
                   ),
                   //testEntry2(),
                 ],
@@ -166,137 +166,148 @@ class _UserCardState extends State<UserCard> {
     }
   }
 
-  printUserResults(List<UserResults> _fetchedUserResults) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        return singleDataRowEntry(_fetchedUserResults[index]);
-      },
-      itemCount: _fetchedUserResults.length,
-    );
+  Widget printUserResults(token) {
+    return FutureBuilder<List<UserResults>>(
+        future: getUserResults(token),
+        builder: (context, AsyncSnapshot<List<UserResults>> snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasData) {
+            _fetchedUserResults = snapshot.data!;
+            //TODO: TESTEN
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return singleDataRowEntry(_fetchedUserResults[index]);
+              },
+              itemCount: _fetchedUserResults.length,
+            );
+          } else
+            return Container();
+        });
   }
+}
 
-  Widget testHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "Nummer",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+Widget testHeader() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "Nummer",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "Datum",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "Datum",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "erreicht",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "erreicht",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "Stadt gesagt",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "Stadt gesagt",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "Name gesagt",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "Name gesagt",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "Begrüssung gesagt",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "Begrüssung gesagt",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "Anruf abgeschlossen",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "Anruf abgeschlossen",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            "Anrufbeantworter",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          "Anrufbeantworter",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
-  Widget singleDataRowEntry(UserResults _fetchedUserResults) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            _fetchedUserResults.number!,
-            //futureUserResults.number,
-            style: TextStyle(fontSize: 20),
-          ),
+Widget singleDataRowEntry(UserResults _fetchedUserResults) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          _fetchedUserResults.number!,
+          //futureUserResults.number,
+          style: TextStyle(fontSize: 20),
         ),
-        Container(
-          alignment: Alignment.center,
-          width: 160,
-          child: Text(
-            _fetchedUserResults.date!,
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-          ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        width: 160,
+        child: Text(
+          _fetchedUserResults.date!,
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
-        Container(
-          width: 160,
-          child: getCheck(_fetchedUserResults.reached == "true"),
-        ),
-        Container(
-          width: 160,
-          child: getCheck(_fetchedUserResults.saidCity == "true"),
-        ),
-        Container(
-          width: 160,
-          child: getCheck(_fetchedUserResults.saidName == "true"),
-        ),
-        Container(
-          width: 160,
-          child: getCheck(_fetchedUserResults.saidGreeting == "true"),
-        ),
-        Container(
-          width: 160,
-          child: getCheck(_fetchedUserResults.callCompleted == "true"),
-        ),
-        Container(
-          width: 160,
-          child: getCheck(_fetchedUserResults.responderStarted == "true"),
-        ),
-      ],
-    );
-  }
+      ),
+      Container(
+        width: 160,
+        child: getCheck(_fetchedUserResults.reached == "true"),
+      ),
+      Container(
+        width: 160,
+        child: getCheck(_fetchedUserResults.saidCity == "true"),
+      ),
+      Container(
+        width: 160,
+        child: getCheck(_fetchedUserResults.saidName == "true"),
+      ),
+      Container(
+        width: 160,
+        child: getCheck(_fetchedUserResults.saidGreeting == "true"),
+      ),
+      Container(
+        width: 160,
+        child: getCheck(_fetchedUserResults.callCompleted == "true"),
+      ),
+      Container(
+        width: 160,
+        child: getCheck(_fetchedUserResults.responderStarted == "true"),
+      ),
+    ],
+  );
 }
 
 getCheck(bool checked) {
