@@ -49,6 +49,7 @@ class _AdminCardState extends State<AdminCard> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+
     if (_currentUser.token == "none" || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
@@ -72,168 +73,17 @@ class _AdminCardState extends State<AdminCard> {
           padding: EdgeInsets.all(10.0),
           child: Center(
             child: SingleChildScrollView(
-              child: Container(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 50,
                   ),
-                  elevation: 8.0,
-                  child: Container(
-                    height: 300,
-                    constraints: BoxConstraints(minHeight: 300, minWidth: 500),
-                    width: deviceSize.width * 0.5,
-                    padding: EdgeInsets.all(16.0),
-                    child: Form(
-                      key: _formKeyAdmin,
-                      child: SingleChildScrollView(
-                        child: Column(children: <Widget>[
-                          Text(
-                            'Admin Ansicht',
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w400),
-                          ),
-                          SizedBox(height: 20),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Steuerung für den Trainer:',
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.green,
-                                    onPrimary: Colors.white),
-                                child: Text('Start'),
-                                onPressed: () {
-                                  adminCalls.startTrainer(
-                                      tempInterval, _currentUser.token);
-                                  setState(() {
-                                    getStatus(_currentUser.token);
-                                  });
-                                  print('Short Press!');
-                                },
-                              ),
-                              getStatus(_currentUser.token),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.red,
-                                    onPrimary: Colors.white),
-                                child: Text('Stop'),
-                                onPressed: () {
-                                  adminCalls.stopTrainer(_currentUser.token);
-                                  setState(() {
-                                    getStatus(_currentUser.token);
-                                  });
-                                  print('Short Press!');
-                                },
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Pause zw. den Anrufen in Sekunden:',
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              Container(
-                                height: 50,
-                                width: 200,
-                                child: SpinBox(
-                                  min: 0,
-                                  max: 600,
-                                  value: 0,
-                                  onChanged: (value) {
-                                    tempInterval = value.toInt();
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  'Resultate:',
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue,
-                                      onPrimary: Colors.white),
-                                  child: Text('Download'),
-                                  onPressed: () {
-                                    print('Short Press!');
-                                    adminCalls.getResults(_currentUser.token);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  'Opening Hours:',
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue,
-                                      onPrimary: Colors.white),
-                                  child: Text('Execute'),
-                                  onPressed: () {
-                                    print('Short Press!');
-                                    adminCalls
-                                        .getOpeningHours(_currentUser.token);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ]),
-                      ),
-                    ),
+                  trainerStartenWidget(deviceSize),
+                  SizedBox(
+                    height: 50,
                   ),
-                ),
+                  anrufZeitenKonfigurieren(deviceSize),
+                ],
               ),
             ),
           ),
@@ -259,5 +109,214 @@ class _AdminCardState extends State<AdminCard> {
           } else
             return CircularProgressIndicator();
         });
+  }
+
+  Widget anrufZeitenKonfigurieren(deviceSize) {
+    return Container(
+      height: 320,
+      constraints: BoxConstraints(minHeight: 320, minWidth: 500),
+      width: deviceSize.width * 0.5,
+      child: Card(
+        borderOnForeground: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 8.0,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 50,
+              child: AppBar(
+                shape: RoundedRectangleBorder(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                  ),
+                ),
+                title: Text("Anrufzeit konfigurieren"),
+                centerTitle: true,
+                elevation: 8.0,
+                leading: InkWell(
+                    child: IconButton(
+                  icon: Icon(Icons.house),
+                  onPressed: () {
+                    AuthProvider().logout(_currentUser.token);
+                    context.vxNav.replace(
+                      Uri.parse(MyRoutes.loginRoute),
+                    );
+                  },
+                )),
+              ),
+            ),
+            Text("Hello"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget trainerStartenWidget(deviceSize) {
+    return Container(
+      height: 320,
+      constraints: BoxConstraints(minHeight: 320, minWidth: 500),
+      width: deviceSize.width * 0.5,
+      child: Card(
+        borderOnForeground: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 8.0,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 50,
+              child: AppBar(
+                shape: RoundedRectangleBorder(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                  ),
+                ),
+                title: Text("Trainer starten"),
+                centerTitle: true,
+                elevation: 8.0,
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Steuerung für den Trainer:',
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.green, onPrimary: Colors.white),
+                  child: Text('Start'),
+                  onPressed: () {
+                    adminCalls.startTrainer(tempInterval, _currentUser.token);
+                    setState(() {
+                      getStatus(_currentUser.token);
+                    });
+                    print('Short Press!');
+                  },
+                ),
+                getStatus(_currentUser.token),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.red, onPrimary: Colors.white),
+                  child: Text('Stop'),
+                  onPressed: () {
+                    adminCalls.stopTrainer(_currentUser.token);
+                    setState(() {
+                      getStatus(_currentUser.token);
+                    });
+                    print('Short Press!');
+                  },
+                )
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  'Pause zw. den Anrufen in Sekunden:',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400),
+                ),
+                Container(
+                  height: 50,
+                  width: 200,
+                  child: SpinBox(
+                    min: 0,
+                    max: 600,
+                    value: 0,
+                    onChanged: (value) {
+                      tempInterval = value.toInt();
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              alignment: Alignment.centerLeft,
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    'Resultate:',
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blue, onPrimary: Colors.white),
+                    child: Text('Download'),
+                    onPressed: () {
+                      print('Short Press!');
+                      adminCalls.getResults(_currentUser.token);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              alignment: Alignment.centerLeft,
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    'Opening Hours:',
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blue, onPrimary: Colors.white),
+                    child: Text('Execute'),
+                    onPressed: () {
+                      print('Short Press!');
+                      adminCalls.getOpeningHours(_currentUser.token);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
