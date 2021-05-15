@@ -134,7 +134,7 @@ class AdminCalls with ChangeNotifier {
 
   //getIntervalSeconds
   //--- currently unused ---
-  Future<bool> getOpeningHours(token) async {
+  Future<OpeningHoursSummary> getOpeningHours(token) async {
     var url = Uri.parse('${activeHost}/getOpeningHours');
     final response = await http.post(
       url,
@@ -149,7 +149,7 @@ class AdminCalls with ChangeNotifier {
       final Map<String, dynamic> responseData = json.decode(response.body);
       OpeningHoursSummary test = OpeningHoursSummary.fromJson(responseData);
       debugPrint(test.toString());
-      return false;
+      return test;
     } else {
       throw Exception('Unable to get IntervalSeconds!');
     }

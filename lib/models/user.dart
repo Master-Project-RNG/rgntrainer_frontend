@@ -9,6 +9,16 @@ class User {
   List<OpeningHours>? openingHours = [];
   String greetingConfiguration;
 
+  factory User.init() {
+    return User(
+        username: "none",
+        organization: "none",
+        token: "none",
+        usertype: "none",
+        openingHours: [],
+        greetingConfiguration: "none");
+  }
+
   User({
     required this.username,
     required this.token,

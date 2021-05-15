@@ -3,15 +3,30 @@ import 'package:rgntrainer_frontend/models/user.dart';
 class OpeningHoursSummary {
   String name;
   List<Bureaus>? bureaus;
-  List<User>? users;
-  List<OpeningHours>? openingHours;
+  List<User> users;
+  List<OpeningHours> openingHours;
   String? greetingConfiguration;
+
+  factory OpeningHoursSummary.init() {
+    return OpeningHoursSummary(
+        name: "None",
+        bureaus: [],
+        users: [User.init()],
+        openingHours: [
+          OpeningHours.init(),
+          OpeningHours.init(),
+          OpeningHours.init(),
+          OpeningHours.init(),
+          OpeningHours.init()
+        ],
+        greetingConfiguration: "none");
+  }
 
   OpeningHoursSummary(
       {required this.name,
       required this.bureaus,
       required this.users,
-      this.openingHours,
+      required this.openingHours,
       this.greetingConfiguration});
 
   factory OpeningHoursSummary.fromJson(Map<String, dynamic> json) {
@@ -52,10 +67,10 @@ class OpeningHoursSummary {
       data['bureaus'] = this.bureaus?.map((v) => v.toJson()).toList();
     }
     if (this.users != null) {
-      data['users'] = this.users?.map((v) => v.toJson()).toList();
+      data['users'] = this.users.map((v) => v.toJson()).toList();
     }
     if (this.openingHours != null) {
-      data['openingHours'] = this.openingHours?.map((v) => v.toJson()).toList();
+      data['openingHours'] = this.openingHours.map((v) => v.toJson()).toList();
     }
     data['greetingConfiguration'] = this.greetingConfiguration;
     return data;
@@ -111,6 +126,15 @@ class OpeningHours {
       required this.morningClose,
       required this.afternoonOpen,
       required this.afternoonClose});
+
+  factory OpeningHours.init() {
+    return OpeningHours(
+        morningOpen: "08:00:00",
+        morningClose: "12:00:00",
+        afternoonOpen: "13:00:00",
+        afternoonClose: "17:00:00",
+        weekday: "none");
+  }
 
   factory OpeningHours.fromJson(Map<String, dynamic> json) => new OpeningHours(
         weekday: json['weekday'],
