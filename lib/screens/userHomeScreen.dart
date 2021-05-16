@@ -31,8 +31,7 @@ class _UserCardState extends State<UserCard> {
   //TODO: Show loading icon in case of loading
   var _isLoading = false;
   List<UserResults> _fetchedUserResults = [];
-  late User _currentUser = User(
-      username: "none", organization: "none", token: "none", usertype: "none");
+  late User _currentUser = User.init();
 
   @override
   void initState() {

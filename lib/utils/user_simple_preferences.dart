@@ -8,8 +8,7 @@ class UserSimplePreferences {
   static const _keyUserToken = "userToken";
   static const _keyUser = "user";
 
-  static User myUser = User(
-      organization: "none", token: "none", username: "none", usertype: "none");
+  static User myUser = User.init();
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
@@ -31,12 +30,7 @@ class UserSimplePreferences {
   }
 
   static Future resetUser() async {
-    final json = jsonEncode(User(
-            username: "none",
-            organization: "none",
-            token: "none",
-            usertype: "none")
-        .toJson());
+    final json = jsonEncode(User.init().toJson());
 
     await _preferences.setString(_keyUser, json);
   }
