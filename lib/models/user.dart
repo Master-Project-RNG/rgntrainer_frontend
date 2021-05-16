@@ -3,11 +3,12 @@ import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
 
 class User {
   String username;
-  String token;
-  String usertype;
-  String organization;
+  String? token;
+  String? usertype;
+  String? organization;
+  bool activeOpeningHours;
   List<OpeningHours>? openingHours = [];
-  String greetingConfiguration;
+  String? greetingConfiguration;
 
   factory User.init() {
     return User(
@@ -15,6 +16,7 @@ class User {
         organization: "none",
         token: "none",
         usertype: "none",
+        activeOpeningHours: false,
         openingHours: [],
         greetingConfiguration: "none");
   }
@@ -24,6 +26,7 @@ class User {
     required this.token,
     required this.usertype,
     required this.organization,
+    required this.activeOpeningHours,
     this.openingHours,
     required this.greetingConfiguration,
   });
@@ -37,18 +40,20 @@ class User {
     }
 
     return User(
-        username: json['username'].toString(),
-        token: json['token'].toString(),
-        usertype: json['usertype'].toString(),
-        organization: json['organization'].toString(),
+        username: json['username'],
+        token: json['token'],
+        usertype: json['usertype'],
+        activeOpeningHours: json['activeOpeningHours'],
+        organization: json['organization'],
         openingHours: openingHoursList,
-        greetingConfiguration: json['greetingConfiguration'].toString());
+        greetingConfiguration: json['greetingConfiguration']);
   }
 
   Map<String, dynamic> toJson() => {
         'username': username,
         'token': token,
         'usertype': usertype,
+        'activeOpeningHours': activeOpeningHours,
         'organization': organization,
         'openingHours': openingHours,
         'greetingConfiguration': greetingConfiguration,

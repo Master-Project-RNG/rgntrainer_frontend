@@ -40,22 +40,18 @@ class _AdminCardState extends State<AdminCard> {
   var _isLoading = true;
   late OpeningHoursSummary _openingHours = OpeningHoursSummary.init();
   late User _currentUser = User.init();
-  late TextEditingController _controller;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
+  Map<String, String?> _openingHoursData = {
+    'init': 'test',
+    'init2': 'test2',
+  };
 
   @override
   void initState() {
     _currentUser = UserSimplePreferences.getUser();
     asyncLoadingData();
     super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   void asyncLoadingData() async {
@@ -100,9 +96,6 @@ class _AdminCardState extends State<AdminCard> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 50,
-                  ),
                   trainerStartenWidget(deviceSize),
                   SizedBox(
                     height: 50,
@@ -140,8 +133,8 @@ class _AdminCardState extends State<AdminCard> {
     return DefaultTabController(
       length: 3,
       child: Container(
-        height: 320,
-        constraints: BoxConstraints(minHeight: 320, minWidth: 500),
+        height: 500,
+        constraints: BoxConstraints(minHeight: 500, minWidth: 500),
         width: deviceSize.width * 0.5,
         child: Card(
           borderOnForeground: true,
@@ -194,7 +187,7 @@ class _AdminCardState extends State<AdminCard> {
                 child: Expanded(
                   child: TabBarView(
                     children: [
-                      openingHours("Kommune"),
+                      openingHours(_currentUser.token, "Kommune"),
                       Text("Abteilung"),
                       Text("Nummer"),
                     ],
@@ -208,7 +201,7 @@ class _AdminCardState extends State<AdminCard> {
     );
   }
 
-  Widget openingHours(tabType) {
+  Widget openingHours(token, tabType) {
     /*if (tabType == "Kommune") {*/
     ///  }
     if (_isLoading == true) {
@@ -222,6 +215,7 @@ class _AdminCardState extends State<AdminCard> {
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SingleRowCallConfig(
                   "Montag",
@@ -235,16 +229,33 @@ class _AdminCardState extends State<AdminCard> {
                   _openingHours.openingHours[1].morningClose,
                   _openingHours.openingHours[1].afternoonOpen,
                   _openingHours.openingHours[1].afternoonClose),
-              Row(
-                children: [Text("Dienstag")],
+              SingleRowCallConfig(
+                  "Mittwoch",
+                  _openingHours.openingHours[2].morningOpen,
+                  _openingHours.openingHours[2].morningClose,
+                  _openingHours.openingHours[2].afternoonOpen,
+                  _openingHours.openingHours[2].afternoonClose),
+              SingleRowCallConfig(
+                  "Donnerstag",
+                  _openingHours.openingHours[3].morningOpen,
+                  _openingHours.openingHours[3].morningClose,
+                  _openingHours.openingHours[3].afternoonOpen,
+                  _openingHours.openingHours[3].afternoonClose),
+              SingleRowCallConfig(
+                  "Freitag",
+                  _openingHours.openingHours[4].morningOpen,
+                  _openingHours.openingHours[4].morningClose,
+                  _openingHours.openingHours[4].afternoonOpen,
+                  _openingHours.openingHours[4].afternoonClose),
+              SizedBox(
+                height: 20,
               ),
-              Row(),
-              Row(),
-              Row(),
-              Text(tabType),
               ElevatedButton(
                 child: Text('Speichern'),
                 onPressed: _submit,
+              ),
+              SizedBox(
+                height: 20,
               ),
             ],
           ),
@@ -255,7 +266,7 @@ class _AdminCardState extends State<AdminCard> {
   Widget SingleRowCallConfig(
       weekday, _morningOpen, _morningClose, _afternoonOpen, _afternoonClose) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           alignment: Alignment.centerLeft,
@@ -290,7 +301,7 @@ class _AdminCardState extends State<AdminCard> {
             },
             onSaved: (value) {
               if (value != null) {
-                _morningOpen = value;
+                _openingHoursData[weekday + '_morningOpen'] = value;
               }
             },
           ),
@@ -320,7 +331,7 @@ class _AdminCardState extends State<AdminCard> {
             },
             onSaved: (value) {
               if (value != null) {
-                _morningClose = value;
+                _openingHoursData[weekday + '_morningClose'] = value;
               }
             },
           ),
@@ -348,7 +359,7 @@ class _AdminCardState extends State<AdminCard> {
             },
             onSaved: (value) {
               if (value != null) {
-                _afternoonOpen = value;
+                _openingHoursData[weekday + '_afternoonOpen'] = value;
               }
             },
           ),
@@ -374,10 +385,9 @@ class _AdminCardState extends State<AdminCard> {
                 return Validator.validateTime(value);
               }
             },
-            controller: _controller,
             onSaved: (value) {
               if (value != null) {
-                _afternoonClose = value;
+                _openingHoursData[weekday + '_afternoonClose'] = value;
               }
             },
           ),
@@ -386,7 +396,7 @@ class _AdminCardState extends State<AdminCard> {
     );
   }
 
-  _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invali
       return;
@@ -395,7 +405,94 @@ class _AdminCardState extends State<AdminCard> {
     setState(() {
       _isLoading = true;
     });
+    //Montag
+    if (_openingHoursData['Montag_morningOpen'] != "") {
+      _openingHours.openingHours[0].morningOpen =
+          _openingHoursData['Montag_morningOpen']!.toString();
+    }
+    if (_openingHoursData['Montag_morningClose'] != "") {
+      _openingHours.openingHours[0].morningClose =
+          _openingHoursData['Montag_morningClose']!.toString();
+    }
+    if (_openingHoursData['Montag_afternoonOpen'] != "") {
+      _openingHours.openingHours[0].afternoonOpen =
+          _openingHoursData['Montag_afternoonOpen']!.toString();
+    }
+    if (_openingHoursData['Montag_afternoonClose'] != "") {
+      _openingHours.openingHours[0].afternoonClose =
+          _openingHoursData['Montag_afternoonClose']!.toString();
+    }
+    //Dienstag
+    if (_openingHoursData['Dienstag_morningOpen'] != "") {
+      _openingHours.openingHours[1].morningOpen =
+          _openingHoursData['Dienstag_morningOpen']!.toString();
+    }
+    if (_openingHoursData['Dienstag_morningClose'] != "") {
+      _openingHours.openingHours[1].morningClose =
+          _openingHoursData['Dienstag_morningClose']!.toString();
+    }
+    if (_openingHoursData['Dienstag_afternoonOpen'] != "") {
+      _openingHours.openingHours[1].afternoonOpen =
+          _openingHoursData['Dienstag_afternoonOpen']!.toString();
+    }
+    if (_openingHoursData['Dienstag_afternoonClose'] != "") {
+      _openingHours.openingHours[1].afternoonClose =
+          _openingHoursData['Dienstag_afternoonClose']!.toString();
+    }
+    //Mittwoch
+    if (_openingHoursData['Mittwoch_morningOpen'] != "") {
+      _openingHours.openingHours[2].morningOpen =
+          _openingHoursData['Mittwoch_morningOpen']!.toString();
+    }
+    if (_openingHoursData['Mittwoch_morningClose'] != "") {
+      _openingHours.openingHours[2].morningClose =
+          _openingHoursData['Mittwoch_morningClose']!.toString();
+    }
+    if (_openingHoursData['Mittwoch_afternoonOpen'] != "") {
+      _openingHours.openingHours[2].afternoonOpen =
+          _openingHoursData['Mittwoch_afternoonOpen']!.toString();
+    }
+    if (_openingHoursData['Mittwoch_afternoonClose'] != "") {
+      _openingHours.openingHours[2].afternoonClose =
+          _openingHoursData['Mittwoch_afternoonClose']!.toString();
+    }
+    //Donnerstag
+    if (_openingHoursData['Donnerstag_morningOpen'] != "") {
+      _openingHours.openingHours[3].morningOpen =
+          _openingHoursData['Donnerstag_morningOpen']!.toString();
+    }
+    if (_openingHoursData['Donnerstag_morningClose'] != "") {
+      _openingHours.openingHours[3].morningClose =
+          _openingHoursData['Donnerstag_morningClose']!.toString();
+    }
+    if (_openingHoursData['Donnerstag_afternoonOpen'] != "") {
+      _openingHours.openingHours[3].afternoonOpen =
+          _openingHoursData['Donnerstag_afternoonOpen']!.toString();
+    }
+    if (_openingHoursData['Donnerstag_afternoonClose'] != "") {
+      _openingHours.openingHours[3].afternoonClose =
+          _openingHoursData['Donnerstag_afternoonClose']!.toString();
+    }
+    //Freitag
+    if (_openingHoursData['Freitag_morningOpen'] != "") {
+      _openingHours.openingHours[4].morningOpen =
+          _openingHoursData['Freitag_morningOpen']!.toString();
+    }
+    if (_openingHoursData['Freitag_morningClose'] != "") {
+      _openingHours.openingHours[4].morningClose =
+          _openingHoursData['Freitag_morningClose']!.toString();
+    }
+    if (_openingHoursData['Freitag_afternoonOpen'] != "") {
+      _openingHours.openingHours[4].afternoonOpen =
+          _openingHoursData['Freitag_afternoonOpen']!.toString();
+    }
+    if (_openingHoursData['Freitag_afternoonClose'] != "") {
+      _openingHours.openingHours[4].afternoonClose =
+          _openingHoursData['Freitag_afternoonClose']!.toString();
+    }
 //TODO: LOGIC
+    await AdminCalls().setOpeningHours(_currentUser.token, _openingHours);
+    await AdminCalls().getOpeningHours(_currentUser.token);
     setState(() {
       _isLoading = false;
     });

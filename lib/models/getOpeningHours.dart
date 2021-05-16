@@ -60,8 +60,9 @@ class OpeningHoursSummary {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson(token) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['token'] = token;
     data['name'] = this.name;
     if (this.bureaus != null) {
       data['bureaus'] = this.bureaus?.map((v) => v.toJson()).toList();
@@ -80,11 +81,13 @@ class OpeningHoursSummary {
 class Bureaus {
   String name;
   List<OpeningHours>? openingHours;
+  bool? activeOpeningHours;
   String? greetingConfiguration;
 
   Bureaus(
       {required this.name,
       required this.openingHours,
+      required this.activeOpeningHours,
       required this.greetingConfiguration});
 
   factory Bureaus.fromJson(Map<String, dynamic> json) {
@@ -97,6 +100,7 @@ class Bureaus {
 
     return Bureaus(
       name: json['name'],
+      activeOpeningHours: json['activeOpeningHours'],
       openingHours: openingHoursList,
       greetingConfiguration: json['greetingConfiguration'],
     );
@@ -105,6 +109,7 @@ class Bureaus {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
+    data['activeOpeningHours'] = this.activeOpeningHours;
     if (this.openingHours != null) {
       data['openingHours'] = this.openingHours?.map((v) => v.toJson()).toList();
     }

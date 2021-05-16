@@ -128,12 +128,10 @@ class AdminCalls with ChangeNotifier {
       anchor.click();
       anchor.remove();
     } else {
-      throw Exception('Unable to get Status!');
+      throw Exception('Unable to download results!');
     }
   }
 
-  //getIntervalSeconds
-  //--- currently unused ---
   Future<OpeningHoursSummary> getOpeningHours(token) async {
     var url = Uri.parse('${activeHost}/getOpeningHours');
     final response = await http.post(
@@ -151,7 +149,26 @@ class AdminCalls with ChangeNotifier {
       debugPrint(test.toString());
       return test;
     } else {
-      throw Exception('Unable to get IntervalSeconds!');
+      throw Exception('Unable to get OpeningHours!');
+    }
+  }
+
+  Future<void> setOpeningHours(token, OpeningHoursSummary _openingHours) async {
+    var url = Uri.parse('${activeHost}/setOpeningHours');
+
+    final openingJson = jsonEncode(_openingHours.toJson(token));
+
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: openingJson,
+    );
+    if (response.statusCode == 200) {
+      debugPrint(response.toString());
+    } else {
+      throw Exception('Unable to set OpeningHours!');
     }
   }
 }
