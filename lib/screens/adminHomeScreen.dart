@@ -8,12 +8,10 @@ import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
-import 'package:rgntrainer_frontend/screens/loginScreen.dart';
 import 'package:rgntrainer_frontend/screens/noTokenScreen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/utils/validator.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:characters/characters.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   @override
@@ -41,16 +39,20 @@ class _AdminCardState extends State<AdminCard>
   var _isLoading = true;
   late User _currentUser = User.init();
   bool _showAbteilungList = false;
+  bool _showNummerList = false;
   late OpeningHoursSummary _openingHours = OpeningHoursSummary.init();
   late Bureaus _pickedBureau;
+  late User _pickedUser;
 
   late TabController _tabController;
   ScrollController _scrollControllerAbteilung = new ScrollController();
+  ScrollController _scrollControllerNummer = new ScrollController();
 
   var currentTabIndex = 0;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   final GlobalKey<FormState> _formKeyAbteilung = GlobalKey();
+  final GlobalKey<FormState> _formKeyNummer = GlobalKey();
   final GlobalKey<FormState> _formKeyAdmin = GlobalKey();
 
 //Used for managing the different openinHours
@@ -86,6 +88,7 @@ class _AdminCardState extends State<AdminCard>
     });
     _openingHours = await adminCalls.getOpeningHours(_currentUser.token);
     _pickedBureau = _openingHours.bureaus![0];
+    _pickedUser = _openingHours.users[0];
     setState(() {
       _isLoading = false;
     });
@@ -159,8 +162,8 @@ class _AdminCardState extends State<AdminCard>
     return DefaultTabController(
       length: 3,
       child: Container(
-        height: 500,
-        constraints: BoxConstraints(minHeight: 500, minWidth: 500),
+        height: 600,
+        constraints: BoxConstraints(minHeight: 600, minWidth: 500),
         width: deviceSize.width * 0.5,
         child: Card(
           borderOnForeground: true,
@@ -194,12 +197,32 @@ class _AdminCardState extends State<AdminCard>
                                 if (_showAbteilungList == false) {
                                   _showAbteilungList = true;
                                   _scrollControllerAbteilung.animateTo(
-                                    200.0,
+                                    320.0,
                                     curve: Curves.easeOut,
                                     duration: const Duration(milliseconds: 300),
                                   );
                                 } else {
                                   _showAbteilungList = false;
+                                }
+                              });
+                            },
+                          ),
+                        );
+                      } else if (currentTabIndex == 2) {
+                        return InkWell(
+                          child: IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              setState(() {
+                                if (_showNummerList == false) {
+                                  _showNummerList = true;
+                                  _scrollControllerNummer.animateTo(
+                                    320.0,
+                                    curve: Curves.easeOut,
+                                    duration: const Duration(milliseconds: 300),
+                                  );
+                                } else {
+                                  _showNummerList = false;
                                 }
                               });
                             },
@@ -232,7 +255,7 @@ class _AdminCardState extends State<AdminCard>
                     children: [
                       openingHours(_currentUser.token, "Kommune"),
                       openingHours(_currentUser.token, "Abteilung"),
-                      Text("Nummer"),
+                      openingHours(_currentUser.token, "Nummer"),
                     ],
                   ),
                 ),
@@ -265,7 +288,8 @@ class _AdminCardState extends State<AdminCard>
               ),
               ElevatedButton(
                 child: Text('Speichern'),
-                onPressed: () => {_submit(_openingHours.name, _formKey)},
+                onPressed: () =>
+                    {_submit(_openingHours.name, _formKey, tabType)},
               ),
               SizedBox(
                 height: 20,
@@ -274,7 +298,7 @@ class _AdminCardState extends State<AdminCard>
           ),
         ),
       );
-    } else
+    } else if (tabType == "Abteilung") {
       return Container(
         child: Form(
           key: _formKeyAbteilung,
@@ -282,8 +306,12 @@ class _AdminCardState extends State<AdminCard>
             controller: _scrollControllerAbteilung,
             children: [
               Container(
+                height: 50,
                 alignment: Alignment.center,
-                child: Text(_pickedBureau.name),
+                child: Text(
+                  _pickedBureau.name,
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
               GeneralWeekOpeningHours(_pickedBureau.name, _pickedBureau),
               SizedBox(
@@ -294,15 +322,12 @@ class _AdminCardState extends State<AdminCard>
                   'Speichern',
                 ),
                 onPressed: () =>
-                    {_submit(_pickedBureau.name, _formKeyAbteilung)},
-              ),
-              SizedBox(
-                height: 20,
+                    {_submit(_pickedBureau.name, _formKeyAbteilung, tabType)},
               ),
               (() {
                 if (_showAbteilungList == true) {
                   return Container(
-                    height: 200,
+                    height: 400,
                     child: Column(
                       children: [
                         const Divider(
@@ -315,6 +340,7 @@ class _AdminCardState extends State<AdminCard>
                             child: Text(
                               "Abteilungen",
                               textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 20),
                             ),
                           ),
                         ),
@@ -336,6 +362,90 @@ class _AdminCardState extends State<AdminCard>
                                           _openingHours.bureaus![index];
                                       setState(() {
                                         _showAbteilungList = false;
+                                      });
+                                    },
+                                  ),
+                                  Divider(
+                                    height: 0,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else
+                  return Container();
+              }()),
+            ],
+          ),
+        ),
+      );
+    } else //Nummer
+      return Container(
+        child: Form(
+          key: _formKeyNummer,
+          child: ListView(
+            controller: _scrollControllerNummer,
+            children: [
+              Container(
+                height: 50,
+                alignment: Alignment.center,
+                child: Text(
+                  _pickedUser.username,
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              GeneralWeekOpeningHours(_pickedUser.username, _pickedUser),
+              SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                child: Text(
+                  'Speichern',
+                ),
+                onPressed: () =>
+                    {_submit(_pickedUser.username, _formKeyNummer, tabType)},
+              ),
+              (() {
+                if (_showNummerList == true) {
+                  return Container(
+                    height: 400,
+                    child: Column(
+                      children: [
+                        const Divider(
+                          thickness: 1,
+                          height: 0,
+                        ),
+                        Container(
+                          height: 50,
+                          child: Center(
+                            child: Text(
+                              "Nummer",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                        const Divider(
+                          thickness: 1,
+                          height: 0,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: _openingHours.users.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                        _openingHours.users[index].username),
+                                    onTap: () {
+                                      _pickedUser = _openingHours.users[index];
+                                      setState(() {
+                                        _showNummerList = false;
                                       });
                                     },
                                   ),
@@ -536,7 +646,7 @@ class _AdminCardState extends State<AdminCard>
     );
   }
 
-  Future<void> _submit(id, formKeySubmit) async {
+  Future<void> _submit(id, formKeySubmit, tabType) async {
     if (!formKeySubmit.currentState!.validate()) {
       // Invali
       return;
@@ -545,9 +655,26 @@ class _AdminCardState extends State<AdminCard>
     setState(() {
       _isLoading = true;
     });
+    List<OpeningHours> temp = [];
     //Idee: Hier ein Temp machen, und am Ende das Temp am richtigen ort einzügen!
-    List<OpeningHours> temp = _openingHours
-        .openingHours; //Change to picked! <-------------------------------------------------------------------------
+    if (tabType == "Kommune") {
+      temp = _openingHours.openingHours;
+    } else if (tabType == "Abteilung") {
+      _openingHours.bureaus?.forEach((element) {
+        if (element.name == id) {
+          temp = element.openingHours!;
+        }
+      });
+    } else if (tabType == "Nummer") {
+      _openingHours.users.forEach((element) {
+        if (element.username == id) {
+          temp = element.openingHours!;
+        }
+      });
+    } else {
+      throw Exception("Unbekannter TabType");
+    }
+    //Change to picked! <-------------------------------------------------------------------------
     //Montag
     if (_openingHoursData[id + '_Montag_morningOpen'] != "") {
       temp[0].morningOpen =
@@ -633,8 +760,27 @@ class _AdminCardState extends State<AdminCard>
       temp[4].afternoonClose =
           _openingHoursData[id + '_Freitag_afternoonClose']!.toString();
     }
-//TODO: Input temp on the Right place! <-----------------------------------------------------------------
-
+    // Save temp on the right place!
+    if (tabType == "Kommune") {
+      _openingHours.openingHours = temp;
+    } else if (tabType == "Abteilung") {
+      _openingHours.bureaus?.forEach((element) {
+        if (element.name == id) {
+          element.openingHours = temp;
+        }
+      });
+    } else if (tabType == "Nummer") {
+      //To be tested!
+      //TODO: Exactly same thing as for Abeilung
+      _openingHours.users.forEach((element) {
+        if (element.username == id) {
+          element.openingHours = temp;
+        }
+      });
+      //----------------------<<< To be tested
+    } else {
+      throw Exception("Unbekannter TabType");
+    }
     await AdminCalls().setOpeningHours(_currentUser.token, _openingHours);
     await AdminCalls().getOpeningHours(_currentUser.token);
     setState(() {
@@ -773,34 +919,6 @@ class _AdminCardState extends State<AdminCard>
             ),
             SizedBox(
               height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              alignment: Alignment.centerLeft,
-              child: Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    'Opening Hours:',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.blue, onPrimary: Colors.white),
-                    child: Text('Execute'),
-                    onPressed: () {
-                      print('Short Press!');
-                      adminCalls.getOpeningHours(_currentUser.token);
-                    },
-                  ),
-                ],
-              ),
             ),
           ],
         ),
