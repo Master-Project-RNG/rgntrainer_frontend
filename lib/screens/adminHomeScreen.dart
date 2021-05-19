@@ -162,8 +162,8 @@ class _AdminCardState extends State<AdminCard>
     return DefaultTabController(
       length: 3,
       child: Container(
-        height: 600,
-        constraints: BoxConstraints(minHeight: 600, minWidth: 500),
+        height: 520,
+        constraints: BoxConstraints(minHeight: 520, minWidth: 500),
         width: deviceSize.width * 0.5,
         child: Card(
           borderOnForeground: true,
@@ -216,11 +216,6 @@ class _AdminCardState extends State<AdminCard>
                               setState(() {
                                 if (_showNummerList == false) {
                                   _showNummerList = true;
-                                  _scrollControllerNummer.animateTo(
-                                    320.0,
-                                    curve: Curves.easeOut,
-                                    duration: const Duration(milliseconds: 300),
-                                  );
                                 } else {
                                   _showNummerList = false;
                                 }
@@ -299,172 +294,164 @@ class _AdminCardState extends State<AdminCard>
         ),
       );
     } else if (tabType == "Abteilung") {
-      return Container(
-        child: Form(
-          key: _formKeyAbteilung,
-          child: ListView(
-            controller: _scrollControllerAbteilung,
+      if (_showAbteilungList == false) {
+        return Container(
+          child: Form(
+            key: _formKeyAbteilung,
+            child: ListView(
+              controller: _scrollControllerAbteilung,
+              children: [
+                Container(
+                  height: 50,
+                  alignment: Alignment.center,
+                  child: Text(
+                    _pickedBureau.name,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                GeneralWeekOpeningHours(_pickedBureau.name, _pickedBureau),
+                SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  child: Text(
+                    'Speichern',
+                  ),
+                  onPressed: () => {
+                    _submit(_pickedBureau.name, _formKeyAbteilung, tabType),
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          height: 400,
+          child: Column(
             children: [
+              const Divider(
+                thickness: 1,
+                height: 0,
+              ),
               Container(
                 height: 50,
-                alignment: Alignment.center,
-                child: Text(
-                  _pickedBureau.name,
-                  style: TextStyle(fontSize: 20),
+                child: Center(
+                  child: Text(
+                    "Abteilungen",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
               ),
-              GeneralWeekOpeningHours(_pickedBureau.name, _pickedBureau),
-              SizedBox(
-                height: 20,
+              const Divider(
+                thickness: 1,
+                height: 0,
               ),
-              ElevatedButton(
-                child: Text(
-                  'Speichern',
-                ),
-                onPressed: () =>
-                    {_submit(_pickedBureau.name, _formKeyAbteilung, tabType)},
-              ),
-              (() {
-                if (_showAbteilungList == true) {
-                  return Container(
-                    height: 400,
-                    child: Column(
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _openingHours.bureaus?.length,
+                  itemBuilder: (context, index) {
+                    return Column(
                       children: [
-                        const Divider(
-                          thickness: 1,
+                        ListTile(
+                          title: Text(_openingHours.bureaus![index].name),
+                          onTap: () {
+                            _pickedBureau = _openingHours.bureaus![index];
+                            setState(() {
+                              _showAbteilungList = false;
+                            });
+                          },
+                        ),
+                        Divider(
                           height: 0,
-                        ),
-                        Container(
-                          height: 50,
-                          child: Center(
-                            child: Text(
-                              "Abteilungen",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        const Divider(
-                          thickness: 1,
-                          height: 0,
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: _openingHours.bureaus?.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                        _openingHours.bureaus![index].name),
-                                    onTap: () {
-                                      _pickedBureau =
-                                          _openingHours.bureaus![index];
-                                      setState(() {
-                                        _showAbteilungList = false;
-                                      });
-                                    },
-                                  ),
-                                  Divider(
-                                    height: 0,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
                         ),
                       ],
-                    ),
-                  );
-                } else
-                  return Container();
-              }()),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
-        ),
-      );
+        );
+      }
     } else //Nummer
+    if (_showNummerList == false) {
       return Container(
-        child: Form(
-          key: _formKeyNummer,
-          child: ListView(
-            controller: _scrollControllerNummer,
-            children: [
-              Container(
-                height: 50,
-                alignment: Alignment.center,
+          child: Form(
+        key: _formKeyNummer,
+        child: ListView(
+          controller: _scrollControllerNummer,
+          children: [
+            Container(
+              height: 50,
+              alignment: Alignment.center,
+              child: Text(
+                _pickedUser.username,
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            GeneralWeekOpeningHours(_pickedUser.username, _pickedUser),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              child: Text(
+                'Speichern',
+              ),
+              onPressed: () =>
+                  {_submit(_pickedUser.username, _formKeyNummer, tabType)},
+            ),
+          ],
+        ),
+      ));
+    } else
+      return Container(
+        height: 400,
+        child: Column(
+          children: [
+            const Divider(
+              thickness: 1,
+              height: 0,
+            ),
+            Container(
+              height: 50,
+              child: Center(
                 child: Text(
-                  _pickedUser.username,
+                  "Nummer",
+                  textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
-              GeneralWeekOpeningHours(_pickedUser.username, _pickedUser),
-              SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                child: Text(
-                  'Speichern',
-                ),
-                onPressed: () =>
-                    {_submit(_pickedUser.username, _formKeyNummer, tabType)},
-              ),
-              (() {
-                if (_showNummerList == true) {
-                  return Container(
-                    height: 400,
-                    child: Column(
-                      children: [
-                        const Divider(
-                          thickness: 1,
-                          height: 0,
-                        ),
-                        Container(
-                          height: 50,
-                          child: Center(
-                            child: Text(
-                              "Nummer",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        const Divider(
-                          thickness: 1,
-                          height: 0,
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: _openingHours.users.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                        _openingHours.users[index].username),
-                                    onTap: () {
-                                      _pickedUser = _openingHours.users[index];
-                                      setState(() {
-                                        _showNummerList = false;
-                                      });
-                                    },
-                                  ),
-                                  Divider(
-                                    height: 0,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+            ),
+            const Divider(
+              thickness: 1,
+              height: 0,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _openingHours.users.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(_openingHours.users[index].username),
+                        onTap: () {
+                          _pickedUser = _openingHours.users[index];
+                          setState(() {
+                            _showNummerList = false;
+                          });
+                        },
+                      ),
+                      Divider(
+                        height: 0,
+                      ),
+                    ],
                   );
-                } else
-                  return Container();
-              }()),
-            ],
-          ),
+                },
+              ),
+            ),
+          ],
         ),
       );
   }
