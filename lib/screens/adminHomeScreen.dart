@@ -1,5 +1,4 @@
-import 'dart:ui' as ui;
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rgntrainer_frontend/MyRoutes.dart';
@@ -283,8 +282,13 @@ class _AdminCardState extends State<AdminCard>
               ),
               ElevatedButton(
                 child: Text('Speichern'),
-                onPressed: () =>
-                    {_submit(_openingHours.name, _formKey, tabType)},
+                onPressed: () => {
+                  _submit(
+                    _openingHours.name,
+                    _formKey,
+                    tabType,
+                  ),
+                },
               ),
               SizedBox(
                 height: 20,
@@ -399,8 +403,13 @@ class _AdminCardState extends State<AdminCard>
               child: Text(
                 'Speichern',
               ),
-              onPressed: () =>
-                  {_submit(_pickedUser.username, _formKeyNummer, tabType)},
+              onPressed: () => {
+                _submit(
+                  _pickedUser.username,
+                  _formKeyNummer,
+                  tabType,
+                )
+              },
             ),
           ],
         ),
@@ -436,10 +445,33 @@ class _AdminCardState extends State<AdminCard>
                     children: [
                       ListTile(
                         title: Text(_openingHours.users[index].username),
+                        trailing: CupertinoSwitch(
+                          onChanged: (bool value) {
+                            setState(() {
+                              _openingHours.users[index].activeOpeningHours =
+                                  value;
+                            });
+                            _submitActiveOpeningHours(
+                                _openingHours.users[index].username,
+                                value,
+                                tabType);
+                          },
+                          value: _openingHours.users[index].activeOpeningHours,
+                        ),
                         onTap: () {
                           _pickedUser = _openingHours.users[index];
                           setState(() {
                             _showNummerList = false;
+                            _openingHours.users[index].activeOpeningHours ==
+                                    true
+                                ? _openingHours
+                                        .users[index].activeOpeningHours =
+                                    !_openingHours
+                                        .users[index].activeOpeningHours
+                                : _openingHours
+                                        .users[index].activeOpeningHours =
+                                    _openingHours
+                                        .users[index].activeOpeningHours;
                           });
                         },
                       ),
@@ -631,6 +663,32 @@ class _AdminCardState extends State<AdminCard>
         ),
       ],
     );
+  }
+
+  Future<void> _submitActiveOpeningHours(
+      id, activeOpeningHours, tabType) async {
+    print("_submitActiveOpeningHours!");
+    setState(() {
+      _isLoading = true;
+    });
+    if (tabType == "Abteilung") {
+      _openingHours.bureaus?.forEach((element) {
+        if (element.name == id) {
+          element.activeOpeningHours = activeOpeningHours;
+        }
+      });
+    } else if (tabType == "Nummer") {
+      _openingHours.users.forEach((element) {
+        if (element.username == id) {
+          element.activeOpeningHours = activeOpeningHours;
+        }
+      });
+      await AdminCalls().setOpeningHours(_currentUser.token, _openingHours);
+      await AdminCalls().getOpeningHours(_currentUser.token);
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _submit(id, formKeySubmit, tabType) async {
