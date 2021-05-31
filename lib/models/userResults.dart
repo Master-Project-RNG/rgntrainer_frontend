@@ -1,38 +1,61 @@
-import 'package:flutter/material.dart';
-
 class UserResults {
-  final String? number;
   final String? bureau;
+  final bool? callCompleted;
+  final bool? callbackDone;
+  final bool? callbackInTime;
   final String? date;
-  final String saidCity;
-  final String saidName;
-  final String saidGreeting;
-  final String reached;
-  final String callCompleted;
-  final String responderStarted;
+  final String? department;
+  final String? number;
+  final bool? reached;
+  final bool? responderCorrect;
+  final bool? responderStarted;
+  final bool? saidBureau;
+  final bool? saidDepartment;
+  final bool? saidFirstname;
+  final bool? saidGreeting;
+  final bool? saidName;
+  final bool? saidOrganization;
+  final bool? saidSpecificWords;
 
-  UserResults(
-      {required this.number,
-      required this.bureau,
-      required this.date,
-      required this.saidCity,
-      required this.saidName,
-      required this.saidGreeting,
-      required this.reached,
-      required this.callCompleted,
-      required this.responderStarted});
+  UserResults({
+    required this.bureau,
+    required this.callCompleted,
+    required this.callbackDone,
+    required this.callbackInTime,
+    required this.date,
+    required this.department,
+    required this.number,
+    required this.reached,
+    required this.responderCorrect,
+    required this.responderStarted,
+    required this.saidBureau,
+    required this.saidDepartment,
+    required this.saidFirstname,
+    required this.saidGreeting,
+    required this.saidName,
+    required this.saidOrganization,
+    required this.saidSpecificWords,
+  });
 
   factory UserResults.fromJson(Map<String, dynamic> json) {
     return UserResults(
-      number: json['number'],
       bureau: json['bureau'],
+      callCompleted: json['callCompleted'],
+      callbackDone: json['callbackDone'],
+      callbackInTime: json['callbackInTime'],
       date: json['date'],
-      saidCity: json['saidCity'].toString(),
-      saidName: json['saidName'].toString(),
-      saidGreeting: json['saidGreeting'].toString(),
-      reached: json['reached'].toString(),
-      callCompleted: json['callCompleted'].toString(),
-      responderStarted: json['responderStarted'].toString(),
+      department: json['department'],
+      number: json['number'],
+      reached: json['reached'],
+      responderCorrect: json['responderCorrect'],
+      responderStarted: json['responderStarted'],
+      saidBureau: json['saidBureau'],
+      saidDepartment: json['saidDepartment'],
+      saidFirstname: json['saidFirstname'],
+      saidGreeting: json['saidGreeting'],
+      saidName: json['saidName'],
+      saidOrganization: json['saidOrganization'],
+      saidSpecificWords: json['saidSpecificWords'],
     );
   }
 }

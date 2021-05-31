@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
-
 import 'package:flutter/material.dart';
-import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
 import '../host.dart';
@@ -100,9 +98,8 @@ class AdminCalls with ChangeNotifier {
     }
   }
 
-  //download results
+  //download
   getResults(token) async {
-    //TODO: Change URL
     var url = Uri.parse('${activeHost}/downloadResults');
     final response = await http.post(
       url,
