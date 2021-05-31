@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: AuthProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: UserResultsProvider(),
         ),
       ],
       child: MaterialApp.router(

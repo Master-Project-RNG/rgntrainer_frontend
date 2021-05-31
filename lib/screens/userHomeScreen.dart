@@ -5,10 +5,10 @@ import 'package:rgntrainer_frontend/MyRoutes.dart';
 import 'package:rgntrainer_frontend/models/user.dart';
 import 'package:rgntrainer_frontend/models/userResults.dart';
 import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/noTokenScreen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
-import 'package:rgntrainer_frontend/widgets/errorDialog.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class UserHomeScreen extends StatelessWidget {
@@ -37,53 +37,19 @@ class _UserCardState extends State<UserCard> {
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
+    _fetchUserResults();
   }
 
-  Future<List<UserResults>> getUserResults(token) async {
-    _isLoading = true;
-    var url = Uri.parse('http://188.155.65.59:8081/getUserResults');
-    final response = await http.post(
-      url,
-      headers: {
-        "content-type": "application/json",
-      },
-      body: json.encode({
-        'token': token,
-      }),
-    );
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      debugPrint(jsonResponse.toString());
-      List<UserResults> _result = [];
-      final List<dynamic> _temp = jsonResponse;
-      _temp.forEach((test) {
-        final Map<String, dynamic> _temp2 = test;
-        final UserResults userResults = UserResults.fromJson(_temp2);
-        _result.add(userResults);
-      });
+  //Fetch all Listings
+  Future _fetchUserResults() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await Provider.of<UserResultsProvider>(context, listen: false)
+        .getUserResults(_currentUser.token);
+    setState(() {
       _isLoading = false;
-      return _result;
-    } else {
-      throw Exception('Failed to load user');
-    }
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('An Error occured!'),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Okay!'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          ),
-        ],
-      ),
-    );
+    });
   }
 
   @override
@@ -92,6 +58,7 @@ class _UserCardState extends State<UserCard> {
       AuthProvider().logout(_currentUser.token);
       return NoTokenScreen();
     } else {
+      final _myUserResultsProvider = context.watch<UserResultsProvider>();
       return Scaffold(
         appBar: AppBar(
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
@@ -111,53 +78,40 @@ class _UserCardState extends State<UserCard> {
         body: Container(
           padding: EdgeInsets.all(100.0),
           child: Container(
-            child: Container(
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "User Ansicht",
-                      style: TextStyle(fontSize: 42),
-                    ),
+            child: ListView(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "User Ansicht",
+                    style: TextStyle(fontSize: 42),
                   ),
-                  SizedBox(
-                    height: 50,
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Resultate für User: ${_currentUser.username}",
+                    style: TextStyle(fontSize: 34),
                   ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Resultate für User: ${_currentUser.username}",
-                      style: TextStyle(fontSize: 34),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    height: 3,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  testHeader(),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    height: 3,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Expanded(
-                    child: printUserResults(_currentUser.token),
-                  ),
-                  //testEntry2(),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Container(
+                  height: 2,
+                  color: Colors.grey,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: userResultsData(_myUserResultsProvider),
+                ),
+              ],
             ),
           ),
         ),
@@ -165,151 +119,85 @@ class _UserCardState extends State<UserCard> {
     }
   }
 
-  Widget printUserResults(token) {
-    return FutureBuilder<List<UserResults>>(
-        future: getUserResults(token),
-        builder: (context, AsyncSnapshot<List<UserResults>> snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasData) {
-            _fetchedUserResults = snapshot.data!;
-            //TODO: TESTEN
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                return singleDataRowEntry(_fetchedUserResults[index]);
-              },
-              itemCount: _fetchedUserResults.length,
-            );
-          } else
-            return Container();
-        });
+  Widget userResultsData(UserResultsProvider _myUserResultsProvider) {
+    return DataTable(
+        columns: const <DataColumn>[
+          DataColumn(
+            label: Text("Nummer"),
+          ),
+          DataColumn(
+            label: Text("Abteilung"),
+          ),
+          DataColumn(
+            label: Text("Datum"),
+          ),
+          DataColumn(
+            label: Text("erreicht"),
+          ),
+          DataColumn(
+            label: Text("Organisation gesagt"),
+          ),
+          DataColumn(
+            label: Text("Abteilung gesagt"),
+          ),
+          DataColumn(
+            label: Text("Büro gesagt"),
+          ),
+          DataColumn(
+            label: Text("Vorname gesagt"),
+          ),
+          DataColumn(
+            label: Text("Nachname gesagt"),
+          ),
+          DataColumn(
+            label: Text("Begrüssung gesagt"),
+          ),
+          DataColumn(
+            label: Text("Spezifische Wörter gesagt"),
+          ),
+          DataColumn(
+            label: Text("Anrufbeantworter gestartet"),
+          ),
+          DataColumn(
+            label: Text("Anrufbeantworter korrekt"),
+          ),
+          DataColumn(
+            label: Text("Zurückgerufen (Falls AB)"),
+          ),
+          DataColumn(
+            label: Text("Rückruf rechtzeitig (Falls AB)"),
+          ),
+          DataColumn(
+            label: Text("Anruf abgeschlossen"),
+          ),
+        ],
+        rows: _myUserResultsProvider.userResults
+            .map((data) => DataRow(cells: [
+                  DataCell(Text(data.number.toString())),
+                  DataCell(Text(data.department.toString())),
+                  DataCell(Text(data.date.toString())),
+                  DataCell(getCheck(data.reached)),
+                  DataCell(getCheck(data.saidOrganization)),
+                  DataCell(getCheck(data.saidDepartment)),
+                  DataCell(getCheck(data.saidBureau)),
+                  DataCell(getCheck(data.saidFirstname)),
+                  DataCell(getCheck(data.saidName)),
+                  DataCell(getCheck(data.saidGreeting)),
+                  DataCell(getCheck(data.saidSpecificWords)),
+                  DataCell(getCheck(data.responderStarted)),
+                  DataCell(getCheck(data.responderCorrect)),
+                  DataCell(getCheck(data.callbackDone)),
+                  DataCell(getCheck(data.callbackInTime)),
+                  DataCell(getCheck(data.callCompleted)),
+                ]))
+            .toList());
   }
 }
 
-Widget testHeader() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "Nummer",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "Datum",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "erreicht",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "Stadt gesagt",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "Name gesagt",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "Begrüssung gesagt",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "Anruf abgeschlossen",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          "Anrufbeantworter",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-    ],
-  );
-}
-
-Widget singleDataRowEntry(UserResults _fetchedUserResults) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          _fetchedUserResults.number!,
-          //futureUserResults.number,
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-      Container(
-        alignment: Alignment.center,
-        width: 160,
-        child: Text(
-          _fetchedUserResults.date!,
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-        ),
-      ),
-      Container(
-        width: 160,
-        child: getCheck(_fetchedUserResults.reached == "true"),
-      ),
-      Container(
-        width: 160,
-        child: getCheck(_fetchedUserResults.saidCity == "true"),
-      ),
-      Container(
-        width: 160,
-        child: getCheck(_fetchedUserResults.saidName == "true"),
-      ),
-      Container(
-        width: 160,
-        child: getCheck(_fetchedUserResults.saidGreeting == "true"),
-      ),
-      Container(
-        width: 160,
-        child: getCheck(_fetchedUserResults.callCompleted == "true"),
-      ),
-      Container(
-        width: 160,
-        child: getCheck(_fetchedUserResults.responderStarted == "true"),
-      ),
-    ],
-  );
-}
-
-getCheck(bool checked) {
+getCheck(bool? checked) {
+  if (checked == null) {
+    return Icon(Icons.minimize, color: Colors.grey, size: 24);
+  }
   if (checked == true) {
     return Icon(Icons.check, color: Colors.green, size: 24);
   } else {
