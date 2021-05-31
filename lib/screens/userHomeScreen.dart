@@ -11,6 +11,8 @@ import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import 'dart:html' as html;
+
 class UserHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,11 @@ class _UserCardState extends State<UserCard> {
 
   @override
   Widget build(BuildContext context) {
+    html.window.onBeforeUnload.listen((event) async {
+      // do something
+      _currentUser = UserSimplePreferences.getUser();
+    });
+
     if (_currentUser.token == "none" || _currentUser.usertype != "user") {
       AuthProvider().logout(_currentUser.token);
       return NoTokenScreen();
