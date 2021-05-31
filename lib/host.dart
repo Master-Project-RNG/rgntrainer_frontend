@@ -1,6 +1,7 @@
 class Host {
-  static const String localhost = "http://192.168.43.109:8080";
+  static const String localhost = "http://localhost:8080";
   static const String production = "http://188.155.65.59:8081";
+  static const String development = "http://188.155.65.59:8082";
 
   static final Host _host = Host._internal();
 
