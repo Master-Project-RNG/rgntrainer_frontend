@@ -1,4 +1,4 @@
-import 'package:rgntrainer_frontend/models/user.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -18,7 +18,7 @@ class UserSimplePreferences {
 
   static String? getUserToken() {
     if (_preferences.getString(_keyUserToken) == null) {
-      return "none";
+      return null;
     } else
       return _preferences.getString(_keyUserToken);
   }
