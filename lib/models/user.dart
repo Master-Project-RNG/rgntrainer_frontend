@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
 
 class User {
-  String username;
+  String? username;
   String? token;
   String? usertype;
   String? organization;
@@ -12,13 +12,13 @@ class User {
 
   factory User.init() {
     return User(
-        username: "none",
-        organization: "none",
-        token: "none",
-        usertype: "none",
+        username: null,
+        organization: null,
+        token: null,
+        usertype: null,
         activeOpeningHours: false,
-        openingHours: [],
-        greetingConfiguration: "none");
+        openingHours: null,
+        greetingConfiguration: null);
   }
 
   User({
