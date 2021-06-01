@@ -7,8 +7,8 @@ import 'package:url_strategy/url_strategy.dart';
 //My files
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:rgntrainer_frontend/screens/adminHomeScreen.dart';
-import 'package:rgntrainer_frontend/screens/userHomeScreen.dart';
+import 'package:rgntrainer_frontend/screens/admin_home_screen.dart';
+import 'package:rgntrainer_frontend/screens/user_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/login_screen.dart';
 
 /*
