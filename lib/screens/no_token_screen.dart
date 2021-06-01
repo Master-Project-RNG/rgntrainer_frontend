@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rgntrainer_frontend/MyRoutes.dart';
+import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class NoTokenScreen extends StatelessWidget {
@@ -30,9 +30,9 @@ class _NoTokenCardState extends State<NoTokenCard> {
         padding: EdgeInsets.all(10.0),
         child: AlertDialog(
           title: Text('Fehler!'),
-          content: Text("Nicht eingeloggt!"),
+          content: Text("Kein gültiger Token!"),
           actions: <Widget>[
-            FlatButton(
+            ElevatedButton(
               child: Text('Okay!'),
               onPressed: () {
                 context.vxNav.replace(

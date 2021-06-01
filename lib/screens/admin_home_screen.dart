@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rgntrainer_frontend/MyRoutes.dart';
-import 'package:rgntrainer_frontend/api/adminCalls.dart';
-import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
-import 'package:rgntrainer_frontend/models/user.dart';
-import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:rgntrainer_frontend/my_routes.dart';
+import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
+import 'package:rgntrainer_frontend/models/opening_hours_model.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
+import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
-import 'package:rgntrainer_frontend/screens/noTokenScreen.dart';
+import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/utils/validator.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -97,7 +97,7 @@ class _AdminCardState extends State<AdminCard>
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
 
-    if (_currentUser.token == "none" || _currentUser.usertype != "admin") {
+    if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
       return Scaffold(
@@ -360,10 +360,35 @@ class _AdminCardState extends State<AdminCard>
                       children: [
                         ListTile(
                           title: Text(_openingHours.bureaus![index].name),
+                          trailing: CupertinoSwitch(
+                            onChanged: (bool value) {
+                              setState(() {
+                                _openingHours
+                                    .bureaus![index].activeOpeningHours = value;
+                              });
+                              _submitActiveOpeningHours(
+                                  _openingHours.bureaus![index].name,
+                                  value,
+                                  tabType);
+                            },
+                            value: _openingHours
+                                .bureaus![index].activeOpeningHours!,
+                          ),
                           onTap: () {
                             _pickedBureau = _openingHours.bureaus![index];
                             setState(() {
                               _showAbteilungList = false;
+                              _openingHours
+                                          .bureaus![index].activeOpeningHours ==
+                                      true
+                                  ? _openingHours
+                                          .bureaus![index].activeOpeningHours =
+                                      _openingHours
+                                          .bureaus![index].activeOpeningHours
+                                  : _openingHours
+                                          .bureaus![index].activeOpeningHours =
+                                      _openingHours
+                                          .bureaus![index].activeOpeningHours;
                             });
                           },
                         ),
@@ -683,12 +708,12 @@ class _AdminCardState extends State<AdminCard>
           element.activeOpeningHours = activeOpeningHours;
         }
       });
-      await AdminCalls().setOpeningHours(_currentUser.token, _openingHours);
-      await AdminCalls().getOpeningHours(_currentUser.token);
-      setState(() {
-        _isLoading = false;
-      });
     }
+    await AdminCalls().setOpeningHours(_currentUser.token, _openingHours);
+    await AdminCalls().getOpeningHours(_currentUser.token);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _submit(id, formKeySubmit, tabType) async {
@@ -938,7 +963,6 @@ class _AdminCardState extends State<AdminCard>
               margin: EdgeInsets.only(left: 10),
               alignment: Alignment.centerLeft,
               child: Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
                     'Resultate:',
@@ -967,39 +991,6 @@ class _AdminCardState extends State<AdminCard>
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _BottomSheetContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      child: Column(
-        children: [
-          Container(
-            height: 70,
-            child: Center(
-              child: Text(
-                "GalleryLocalizations.of(context).demoBottomSheetHeader",
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          const Divider(thickness: 1),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 21,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text("hi"),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

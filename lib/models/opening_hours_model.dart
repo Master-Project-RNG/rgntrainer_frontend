@@ -1,7 +1,7 @@
-import 'package:rgntrainer_frontend/models/user.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
 
 class OpeningHoursSummary {
-  String name;
+  String? name;
   List<Bureaus>? bureaus;
   List<User> users;
   List<OpeningHours> openingHours;
@@ -9,7 +9,7 @@ class OpeningHoursSummary {
 
   factory OpeningHoursSummary.init() {
     return OpeningHoursSummary(
-        name: "None",
+        name: null,
         bureaus: [],
         users: [User.init()],
         openingHours: [
@@ -19,7 +19,7 @@ class OpeningHoursSummary {
           OpeningHours.init(),
           OpeningHours.init()
         ],
-        greetingConfiguration: "none");
+        greetingConfiguration: null);
   }
 
   OpeningHoursSummary(

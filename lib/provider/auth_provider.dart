@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/host.dart';
-import 'package:rgntrainer_frontend/models/user.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'dart:convert';
-import '../widgets/errorDialog.dart';
+import '../widgets/error_dialog.dart';
 
 class AuthProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
