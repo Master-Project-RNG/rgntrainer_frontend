@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
+import 'package:rgntrainer_frontend/models/opening_hours_model.dart';
 
 class User {
   String? username;

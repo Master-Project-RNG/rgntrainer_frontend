@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:rgntrainer_frontend/host.dart';
-import 'package:rgntrainer_frontend/models/userResults.dart';
+import 'package:rgntrainer_frontend/models/user_results_model.dart';
 
 class UserResultsProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();

@@ -5,11 +5,11 @@ import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:url_strategy/url_strategy.dart';
 //My files
-import 'package:rgntrainer_frontend/MyRoutes.dart';
-import 'package:rgntrainer_frontend/provider/authProvider.dart';
-import 'package:rgntrainer_frontend/screens/adminHomeScreen.dart';
-import 'package:rgntrainer_frontend/screens/userHomeScreen.dart';
-import 'package:rgntrainer_frontend/screens/loginScreen.dart';
+import 'package:rgntrainer_frontend/my_routes.dart';
+import 'package:rgntrainer_frontend/provider/auth_provider.dart';
+import 'package:rgntrainer_frontend/screens/admin_home_screen.dart';
+import 'package:rgntrainer_frontend/screens/user_home_screen.dart';
+import 'package:rgntrainer_frontend/screens/login_screen.dart';
 
 import 'dart:io';
 
@@ -47,10 +47,15 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         routeInformationParser: VxInformationParser(),
         routerDelegate: VxNavigator(routes: {
-          "/": (_, __) => MaterialPage(child: LoginScreen()),
-          MyRoutes.adminRoute: (_, __) =>
-              MaterialPage(child: AdminHomeScreen()),
-          MyRoutes.userRoute: (_, __) => MaterialPage(child: UserHomeScreen()),
+          "/": (_, __) => MaterialPage(
+                child: LoginScreen(),
+              ),
+          MyRoutes.adminRoute: (_, __) => MaterialPage(
+                child: AdminHomeScreen(),
+              ),
+          MyRoutes.userRoute: (_, __) => MaterialPage(
+                child: UserHomeScreen(),
+              ),
         }),
         title: 'Begrüssungs- und Erreichbarkeitstrainer',
         theme: ThemeData(
