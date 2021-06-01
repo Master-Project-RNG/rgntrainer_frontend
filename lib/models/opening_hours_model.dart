@@ -7,6 +7,14 @@ class OpeningHoursSummary {
   List<OpeningHours> openingHours;
   String? greetingConfiguration;
 
+  OpeningHoursSummary({
+    this.greetingConfiguration,
+    required this.name,
+    required this.bureaus,
+    required this.users,
+    required this.openingHours,
+  });
+
   factory OpeningHoursSummary.init() {
     return OpeningHoursSummary(
         name: null,
@@ -21,13 +29,6 @@ class OpeningHoursSummary {
         ],
         greetingConfiguration: null);
   }
-
-  OpeningHoursSummary(
-      {required this.name,
-      required this.bureaus,
-      required this.users,
-      required this.openingHours,
-      this.greetingConfiguration});
 
   factory OpeningHoursSummary.fromJson(Map<String, dynamic> json) {
     List<Bureaus> bureausList = [];
