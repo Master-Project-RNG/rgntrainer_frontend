@@ -52,6 +52,11 @@ class _AuthCardState extends State<AuthCard> {
         context,
       );
       _currentUser = UserSimplePreferences.getUser();
+      if (_currentUser.token == null) {
+        SelfMadeErrorDialog()
+            .showErrorDialog("Fehler, versuche es nochmals!", context);
+        throw Exception();
+      }
       if (_currentUser.usertype == 'admin') {
         context.vxNav.replace(
           Uri.parse(MyRoutes.adminRoute),
