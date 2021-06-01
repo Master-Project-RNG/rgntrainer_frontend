@@ -48,6 +48,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout(token) async {
+    UserSimplePreferences.resetUser();
     final url = '${activeHost}/logout';
     try {
       final response = await http.post(
@@ -59,7 +60,6 @@ class AuthProvider with ChangeNotifier {
           'token': token,
         }),
       );
-      UserSimplePreferences.resetUser();
       //Logout successful!
       debugPrint(response.toString());
     } catch (error) {
