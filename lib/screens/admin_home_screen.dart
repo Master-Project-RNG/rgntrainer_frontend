@@ -360,10 +360,35 @@ class _AdminCardState extends State<AdminCard>
                       children: [
                         ListTile(
                           title: Text(_openingHours.bureaus![index].name),
+                          trailing: CupertinoSwitch(
+                            onChanged: (bool value) {
+                              setState(() {
+                                _openingHours
+                                    .bureaus![index].activeOpeningHours = value;
+                              });
+                              _submitActiveOpeningHours(
+                                  _openingHours.bureaus![index].name,
+                                  value,
+                                  tabType);
+                            },
+                            value: _openingHours
+                                .bureaus![index].activeOpeningHours!,
+                          ),
                           onTap: () {
                             _pickedBureau = _openingHours.bureaus![index];
                             setState(() {
                               _showAbteilungList = false;
+                              _openingHours
+                                          .bureaus![index].activeOpeningHours ==
+                                      true
+                                  ? _openingHours
+                                          .bureaus![index].activeOpeningHours =
+                                      _openingHours
+                                          .bureaus![index].activeOpeningHours
+                                  : _openingHours
+                                          .bureaus![index].activeOpeningHours =
+                                      _openingHours
+                                          .bureaus![index].activeOpeningHours;
                             });
                           },
                         ),
@@ -683,12 +708,12 @@ class _AdminCardState extends State<AdminCard>
           element.activeOpeningHours = activeOpeningHours;
         }
       });
-      await AdminCalls().setOpeningHours(_currentUser.token, _openingHours);
-      await AdminCalls().getOpeningHours(_currentUser.token);
-      setState(() {
-        _isLoading = false;
-      });
     }
+    await AdminCalls().setOpeningHours(_currentUser.token, _openingHours);
+    await AdminCalls().getOpeningHours(_currentUser.token);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _submit(id, formKeySubmit, tabType) async {
@@ -938,7 +963,6 @@ class _AdminCardState extends State<AdminCard>
               margin: EdgeInsets.only(left: 10),
               alignment: Alignment.centerLeft,
               child: Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
                     'Resultate:',
@@ -967,39 +991,6 @@ class _AdminCardState extends State<AdminCard>
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _BottomSheetContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      child: Column(
-        children: [
-          Container(
-            height: 70,
-            child: Center(
-              child: Text(
-                "GalleryLocalizations.of(context).demoBottomSheetHeader",
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          const Divider(thickness: 1),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 21,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text("hi"),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }
