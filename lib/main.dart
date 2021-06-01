@@ -26,7 +26,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 //  addSelfSignedCertificate();
   // HttpOverrides.global = new MyHttpOverrides();
-  setPathUrlStrategy();
+  //setPathUrlStrategy();
   await UserSimplePreferences.init();
   runApp(MyApp());
 }
