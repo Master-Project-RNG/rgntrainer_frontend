@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rgntrainer_frontend/MyRoutes.dart';
-import 'package:rgntrainer_frontend/api/adminCalls.dart';
-import 'package:rgntrainer_frontend/models/getOpeningHours.dart';
-import 'package:rgntrainer_frontend/models/user.dart';
-import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:rgntrainer_frontend/my_routes.dart';
+import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
+import 'package:rgntrainer_frontend/models/opening_hours_model.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
+import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
-import 'package:rgntrainer_frontend/screens/noTokenScreen.dart';
+import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/utils/validator.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -97,7 +97,7 @@ class _AdminCardState extends State<AdminCard>
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
 
-    if (_currentUser.token == "none" || _currentUser.usertype != "admin") {
+    if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
       return Scaffold(

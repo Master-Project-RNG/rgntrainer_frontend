@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rgntrainer_frontend/MyRoutes.dart';
-import 'package:rgntrainer_frontend/models/http_exception.dart';
-import 'package:rgntrainer_frontend/models/user.dart';
-import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:rgntrainer_frontend/my_routes.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
+import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
-import 'package:rgntrainer_frontend/widgets/errorDialog.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -52,11 +50,6 @@ class _AuthCardState extends State<AuthCard> {
         context,
       );
       _currentUser = UserSimplePreferences.getUser();
-      if (_currentUser.token == null) {
-        SelfMadeErrorDialog()
-            .showErrorDialog("Fehler, versuche es nochmals!", context);
-        throw Exception();
-      }
       if (_currentUser.usertype == 'admin') {
         context.vxNav.replace(
           Uri.parse(MyRoutes.adminRoute),

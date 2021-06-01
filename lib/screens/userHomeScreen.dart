@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:rgntrainer_frontend/MyRoutes.dart';
-import 'package:rgntrainer_frontend/models/user.dart';
-import 'package:rgntrainer_frontend/models/userResults.dart';
-import 'package:rgntrainer_frontend/provider/authProvider.dart';
+import 'package:rgntrainer_frontend/my_routes.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
+import 'package:rgntrainer_frontend/models/user_results_model.dart';
+import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
-import 'package:rgntrainer_frontend/screens/noTokenScreen.dart';
+import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -61,7 +59,7 @@ class _UserCardState extends State<UserCard> {
       _currentUser = UserSimplePreferences.getUser();
     });
 
-    if (_currentUser.token == "none" || _currentUser.usertype != "user") {
+    if (_currentUser.token == null || _currentUser.usertype != "user") {
       AuthProvider().logout(_currentUser.token);
       return NoTokenScreen();
     } else {
