@@ -391,7 +391,7 @@ class _AdminCardState extends State<AdminCard>
               height: 50,
               alignment: Alignment.center,
               child: Text(
-                _pickedUser.username,
+                _pickedUser.username!,
                 style: TextStyle(fontSize: 20),
               ),
             ),
@@ -444,7 +444,7 @@ class _AdminCardState extends State<AdminCard>
                   return Column(
                     children: [
                       ListTile(
-                        title: Text(_openingHours.users[index].username),
+                        title: Text(_openingHours.users[index].username!),
                         trailing: CupertinoSwitch(
                           onChanged: (bool value) {
                             setState(() {

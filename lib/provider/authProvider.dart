@@ -44,6 +44,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> login(String? username, String? password, var ctx) async {
+    UserSimplePreferences.resetUser();
     return _authenticate(username!, password!, ctx);
 
   }
