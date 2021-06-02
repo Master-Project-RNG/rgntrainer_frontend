@@ -192,4 +192,25 @@ class AdminCalls with ChangeNotifier {
       throw Exception('Unable to get GreetingConfiguration!');
     }
   }
+
+  Future<void> setGreetingConfiguration(
+      token, ConfigurartionSummary _greetingConfiguration) async {
+    var url = Uri.parse('${activeHost}/setGreetingConfiguration');
+
+    final openingJson =
+        jsonEncode(_greetingConfiguration.toJsonGreeting(token));
+
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: openingJson,
+    );
+    if (response.statusCode == 200) {
+      debugPrint(response.toString());
+    } else {
+      throw Exception('Unable to set GreetingConfiguration!');
+    }
+  }
 }
