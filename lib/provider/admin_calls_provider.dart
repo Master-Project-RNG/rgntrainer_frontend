@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:rgntrainer_frontend/models/opening_hours_model.dart';
+import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import '../host.dart';
 
 class AdminCalls with ChangeNotifier {
@@ -129,7 +129,7 @@ class AdminCalls with ChangeNotifier {
     }
   }
 
-  Future<OpeningHoursSummary> getOpeningHours(token) async {
+  Future<ConfigurartionSummary> getOpeningHours(token) async {
     var url = Uri.parse('${activeHost}/getOpeningHours');
     final response = await http.post(
       url,
@@ -142,7 +142,8 @@ class AdminCalls with ChangeNotifier {
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
-      OpeningHoursSummary test = OpeningHoursSummary.fromJson(responseData);
+      ConfigurartionSummary test =
+          ConfigurartionSummary.fromJsonOpeningHours(responseData);
       debugPrint(test.toString());
       return test;
     } else {
@@ -150,10 +151,11 @@ class AdminCalls with ChangeNotifier {
     }
   }
 
-  Future<void> setOpeningHours(token, OpeningHoursSummary _openingHours) async {
+  Future<void> setOpeningHours(
+      token, ConfigurartionSummary _openingHours) async {
     var url = Uri.parse('${activeHost}/setOpeningHours');
 
-    final openingJson = jsonEncode(_openingHours.toJson(token));
+    final openingJson = jsonEncode(_openingHours.toJsonOpeningHours(token));
 
     final response = await http.post(
       url,
@@ -166,6 +168,28 @@ class AdminCalls with ChangeNotifier {
       debugPrint(response.toString());
     } else {
       throw Exception('Unable to set OpeningHours!');
+    }
+  }
+
+  Future<ConfigurartionSummary> getGreetingConfiguration(token) async {
+    var url = Uri.parse('${activeHost}/getGreetingConfiguration');
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      ConfigurartionSummary test =
+          ConfigurartionSummary.fromJsonGreeting(responseData);
+      debugPrint(test.toString());
+      return test;
+    } else {
+      throw Exception('Unable to get GreetingConfiguration!');
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rgntrainer_frontend/models/opening_hours_model.dart';
+import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/utils/validator.dart';
@@ -25,7 +25,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
   final GlobalKey<FormState> _formKeyAbteilung = GlobalKey();
   final GlobalKey<FormState> _formKeyNummer = GlobalKey();
 
-  late OpeningHoursSummary _openingHours = OpeningHoursSummary.init();
+  late ConfigurartionSummary _openingHoursConfiguration =
+      ConfigurartionSummary.init();
+
   late Bureaus _pickedBureau;
   late User _pickedUser;
 
@@ -63,9 +65,10 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     setState(() {
       _isLoading = true;
     });
-    _openingHours = await adminCalls.getOpeningHours(widget.currentUser.token);
-    _pickedBureau = _openingHours.bureaus![0];
-    _pickedUser = _openingHours.users[0];
+    _openingHoursConfiguration =
+        await adminCalls.getOpeningHours(widget.currentUser.token);
+    _pickedBureau = _openingHoursConfiguration.bureaus![0];
+    _pickedUser = _openingHoursConfiguration.users[0];
     setState(() {
       _isLoading = false;
     });
@@ -116,11 +119,6 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
                               setState(() {
                                 if (_showAbteilungList == false) {
                                   _showAbteilungList = true;
-                                  _scrollControllerAbteilung.animateTo(
-                                    320.0,
-                                    curve: Curves.easeOut,
-                                    duration: const Duration(milliseconds: 300),
-                                  );
                                 } else {
                                   _showAbteilungList = false;
                                 }
@@ -196,14 +194,15 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            generalWeekOpeningHours(_openingHours.name!, _openingHours),
+            generalWeekOpeningHours(
+                _openingHoursConfiguration.name!, _openingHoursConfiguration),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(
               onPressed: () => {
                 _submit(
-                  _openingHours.name,
+                  _openingHoursConfiguration.name,
                   _formKey,
                   tabType,
                 ),
@@ -271,40 +270,43 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: _openingHours.bureaus?.length,
+                  itemCount: _openingHoursConfiguration.bureaus?.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
                         ListTile(
-                          title: Text(_openingHours.bureaus![index].name),
+                          title: Text(
+                              _openingHoursConfiguration.bureaus![index].name),
                           trailing: CupertinoSwitch(
                             onChanged: (bool value) {
                               setState(() {
-                                _openingHours
+                                _openingHoursConfiguration
                                     .bureaus![index].activeOpeningHours = value;
                               });
                               _submitActiveOpeningHours(
-                                  _openingHours.bureaus![index].name,
+                                  _openingHoursConfiguration
+                                      .bureaus![index].name,
                                   value,
                                   tabType);
                             },
-                            value: _openingHours
+                            value: _openingHoursConfiguration
                                 .bureaus![index].activeOpeningHours!,
                           ),
                           onTap: () {
-                            _pickedBureau = _openingHours.bureaus![index];
+                            _pickedBureau =
+                                _openingHoursConfiguration.bureaus![index];
                             setState(() {
                               _showAbteilungList = false;
-                              _openingHours
+                              _openingHoursConfiguration
                                           .bureaus![index].activeOpeningHours ==
                                       true
-                                  ? _openingHours
+                                  ? _openingHoursConfiguration
                                           .bureaus![index].activeOpeningHours =
-                                      _openingHours
+                                      _openingHoursConfiguration
                                           .bureaus![index].activeOpeningHours
-                                  : _openingHours
+                                  : _openingHoursConfiguration
                                           .bureaus![index].activeOpeningHours =
-                                      _openingHours
+                                      _openingHoursConfiguration
                                           .bureaus![index].activeOpeningHours;
                             });
                           },
@@ -381,38 +383,42 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: _openingHours.users.length,
+                itemCount: _openingHoursConfiguration.users.length,
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
                       ListTile(
-                        title: Text(_openingHours.users[index].username!),
+                        title: Text(
+                            _openingHoursConfiguration.users[index].username!),
                         trailing: CupertinoSwitch(
                           onChanged: (bool value) {
                             setState(() {
-                              _openingHours.users[index].activeOpeningHours =
-                                  value;
+                              _openingHoursConfiguration
+                                  .users[index].activeOpeningHours = value;
                             });
                             _submitActiveOpeningHours(
-                                _openingHours.users[index].username,
+                                _openingHoursConfiguration
+                                    .users[index].username,
                                 value,
                                 tabType);
                           },
-                          value: _openingHours.users[index].activeOpeningHours,
+                          value: _openingHoursConfiguration
+                              .users[index].activeOpeningHours!,
                         ),
                         onTap: () {
-                          _pickedUser = _openingHours.users[index];
+                          _pickedUser = _openingHoursConfiguration.users[index];
                           setState(() {
                             _showNummerList = false;
-                            _openingHours.users[index].activeOpeningHours ==
+                            _openingHoursConfiguration
+                                        .users[index].activeOpeningHours ==
                                     true
-                                ? _openingHours
+                                ? _openingHoursConfiguration
                                         .users[index].activeOpeningHours =
-                                    !_openingHours
-                                        .users[index].activeOpeningHours
-                                : _openingHours
+                                    !_openingHoursConfiguration
+                                        .users[index].activeOpeningHours!
+                                : _openingHoursConfiguration
                                         .users[index].activeOpeningHours =
-                                    _openingHours
+                                    _openingHoursConfiguration
                                         .users[index].activeOpeningHours;
                           });
                         },
@@ -615,19 +621,20 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
       _isLoading = true;
     });
     if (tabType == "Abteilung") {
-      _openingHours.bureaus?.forEach((element) {
+      _openingHoursConfiguration.bureaus?.forEach((element) {
         if (element.name == id) {
           element.activeOpeningHours = activeOpeningHours;
         }
       });
     } else if (tabType == "Nummer") {
-      _openingHours.users.forEach((element) {
+      _openingHoursConfiguration.users.forEach((element) {
         if (element.username == id) {
           element.activeOpeningHours = activeOpeningHours;
         }
       });
     }
-    await AdminCalls().setOpeningHours(widget.currentUser.token, _openingHours);
+    await AdminCalls()
+        .setOpeningHours(widget.currentUser.token, _openingHoursConfiguration);
     await AdminCalls().getOpeningHours(widget.currentUser.token);
     setState(() {
       _isLoading = false;
@@ -646,15 +653,15 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     List<OpeningHours> temp = [];
     //Idee: Hier ein Temp machen, und am Ende das Temp am richtigen ort einzügen!
     if (tabType == "Kommune") {
-      temp = _openingHours.openingHours;
+      temp = _openingHoursConfiguration.openingHours!;
     } else if (tabType == "Abteilung") {
-      _openingHours.bureaus?.forEach((element) {
+      _openingHoursConfiguration.bureaus?.forEach((element) {
         if (element.name == id) {
           temp = element.openingHours!;
         }
       });
     } else if (tabType == "Nummer") {
-      _openingHours.users.forEach((element) {
+      _openingHoursConfiguration.users.forEach((element) {
         if (element.username == id) {
           temp = element.openingHours!;
         }
@@ -750,9 +757,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     }
     // Save temp on the right place!
     if (tabType == "Kommune") {
-      _openingHours.openingHours = temp;
+      _openingHoursConfiguration.openingHours = temp;
     } else if (tabType == "Abteilung") {
-      _openingHours.bureaus?.forEach((element) {
+      _openingHoursConfiguration.bureaus?.forEach((element) {
         if (element.name == id) {
           element.openingHours = temp;
         }
@@ -760,7 +767,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     } else if (tabType == "Nummer") {
       //To be tested!
       //TODO: Exactly same thing as for Abeilung
-      _openingHours.users.forEach((element) {
+      _openingHoursConfiguration.users.forEach((element) {
         if (element.username == id) {
           element.openingHours = temp;
         }
@@ -769,7 +776,8 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     } else {
       throw Exception("Unbekannter TabType");
     }
-    await AdminCalls().setOpeningHours(widget.currentUser.token, _openingHours);
+    await AdminCalls()
+        .setOpeningHours(widget.currentUser.token, _openingHoursConfiguration);
     await AdminCalls().getOpeningHours(widget.currentUser.token);
     setState(() {
       _isLoading = false;

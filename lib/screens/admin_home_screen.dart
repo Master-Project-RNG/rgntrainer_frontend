@@ -8,6 +8,7 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/call_time_config.dart';
+import 'package:rgntrainer_frontend/widgets/greeting_config.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -73,7 +74,16 @@ class _AdminCardState extends State<AdminCard> {
                   SizedBox(
                     height: 50,
                   ),
-                  CallTimeConfiguration(deviceSize, _currentUser),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CallTimeConfiguration(deviceSize, _currentUser),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      GreetingConfigurationWidget(deviceSize, _currentUser),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -105,9 +115,8 @@ class _AdminCardState extends State<AdminCard> {
 
   Widget trainerStartenWidget(deviceSize) {
     return Container(
-      height: 320,
-      constraints: BoxConstraints(minHeight: 320, minWidth: 500),
-      width: deviceSize.width * 0.5,
+      constraints: BoxConstraints(minHeight: 280, minWidth: 500),
+      width: deviceSize.width * 0.825,
       child: Card(
         borderOnForeground: true,
         shape: RoundedRectangleBorder(
@@ -231,9 +240,6 @@ class _AdminCardState extends State<AdminCard> {
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 20,
             ),
           ],
         ),
