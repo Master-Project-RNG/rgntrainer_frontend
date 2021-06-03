@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 
 class SingleRowSpecWordsConfig extends StatefulWidget {
   final id;
   final String inhalt;
   final List<String> specificWords;
   final String tabType;
-  final currentUser;
   SingleRowSpecWordsConfig(this.id, String this.inhalt,
-      List<String> this.specificWords, this.tabType, this.currentUser);
+      List<String> this.specificWords, this.tabType);
 
   @override
   _SingleRowSpecWordsConfigState createState() =>
@@ -19,6 +20,14 @@ class SingleRowSpecWordsConfig extends StatefulWidget {
 class _SingleRowSpecWordsConfigState extends State<SingleRowSpecWordsConfig> {
   bool _isLoadingPopUpMenu = false;
   final GlobalKey<FormState> _formKey = GlobalKey();
+
+  late User _currentUser;
+
+  @override
+  initState() {
+    super.initState();
+    _currentUser = UserSimplePreferences.getUser();
+  }
 
   get items {
     if (_isLoadingPopUpMenu) {
@@ -237,10 +246,9 @@ class _SingleRowSpecWordsConfigState extends State<SingleRowSpecWordsConfig> {
         }
       });
     }
-    await AdminCallsProvider().setGreetingConfiguration(
-        widget.currentUser.token, _greetingConfiguration);
     await AdminCallsProvider()
-        .getGreetingConfiguration(widget.currentUser.token);
+        .setGreetingConfiguration(_currentUser.token, _greetingConfiguration);
+    await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
     setState(() {
       _isLoadingPopUpMenu = false;
       items;

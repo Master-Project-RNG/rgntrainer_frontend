@@ -254,4 +254,10 @@ class AdminCallsProvider with ChangeNotifier {
       throw Exception('Unable to set GreetingConfiguration!');
     }
   }
+
+  final Map<String, dynamic> _greetingData = {};
+
+  get getGreetingData {
+    return _greetingData;
+  }
 }

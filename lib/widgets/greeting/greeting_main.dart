@@ -18,6 +18,10 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
   int currentTabIndex = 0;
   late TabController _tabController;
 
+  void setShowAbteilung(bool a) {
+    _showNummerList = a;
+  }
+
   @override
   initState() {
     super.initState();

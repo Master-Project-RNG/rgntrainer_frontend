@@ -8,7 +8,7 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/call_time_config.dart';
-import 'package:rgntrainer_frontend/widgets/greeting/greeting_config.dart';
+import 'package:rgntrainer_frontend/widgets/greeting/greeting_main.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AdminHomeScreen extends StatelessWidget {

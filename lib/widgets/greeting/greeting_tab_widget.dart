@@ -5,12 +5,13 @@ import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
-import 'package:rgntrainer_frontend/widgets/greeting/single_row_specific_words.dart';
+
+import 'general_greeting.dart';
 
 class GreetingTabWidget extends StatefulWidget {
   final String tabType;
-  bool _showAbteilungList;
-  bool _showNummerList;
+  final bool _showAbteilungList;
+  final bool _showNummerList;
 
   GreetingTabWidget(
       String this.tabType, this._showAbteilungList, this._showNummerList);
@@ -63,11 +64,12 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
             SizedBox(
               height: 25,
             ),
-            generalGreetingConfigurationWidget(
+            GeneralGreetingConfigurationWidget(
                 myAdminCallProvider.getGreetingConfigurationSummary.name!,
                 myAdminCallProvider
                     .getGreetingConfigurationSummary.greetingConfiguration,
-                widget.tabType),
+                widget.tabType,
+                myAdminCallProvider.getGreetingData),
             const SizedBox(
               height: 20,
             ),
@@ -81,6 +83,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                       //_formKey,
                       widget.tabType,
                       myAdminCallProvider.getGreetingConfigurationSummary,
+                      myAdminCallProvider.getGreetingData,
                     ),
                   },
                   child: const Text('Speichern'),
@@ -108,11 +111,12 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
-              generalGreetingConfigurationWidget(
+              GeneralGreetingConfigurationWidget(
                   myAdminCallProvider.getPickerBureauGreeting.name,
                   myAdminCallProvider
                       .getPickerBureauGreeting.greetingConfiguration,
-                  widget.tabType),
+                  widget.tabType,
+                  myAdminCallProvider.getGreetingData),
               const SizedBox(
                 height: 20,
               ),
@@ -124,7 +128,8 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                       _submit(
                           myAdminCallProvider.getPickerBureauGreeting.name,
                           /*_formKeyBureau,*/ widget.tabType,
-                          myAdminCallProvider.getGreetingConfigurationSummary),
+                          myAdminCallProvider.getGreetingConfigurationSummary,
+                          myAdminCallProvider.getGreetingData),
                     },
                     child: const Text(
                       'Speichern',
@@ -200,7 +205,6 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                                     .bureaus![index]);
                             ;
                             setState(() {
-                              widget._showAbteilungList = false;
                               myAdminCallProvider
                                           .getGreetingConfigurationSummary
                                           .bureaus![index]
@@ -253,10 +257,11 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                 style: const TextStyle(fontSize: 20),
               ),
             ),
-            generalGreetingConfigurationWidget(
+            GeneralGreetingConfigurationWidget(
                 myAdminCallProvider.getPickerUserGreeting.username!,
                 myAdminCallProvider.getPickerUserGreeting.greetingConfiguration,
-                widget.tabType),
+                widget.tabType,
+                myAdminCallProvider.getGreetingData),
             const SizedBox(
               height: 20,
             ),
@@ -270,6 +275,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                       /*_formKeyNumber,*/
                       widget.tabType,
                       myAdminCallProvider.getGreetingConfigurationSummary,
+                      myAdminCallProvider.getGreetingData,
                     )
                   },
                   child: const Text(
@@ -345,7 +351,6 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                                   .getGreetingConfigurationSummary
                                   .users[index]);
                           setState(() {
-                            widget._showNummerList = false;
                             myAdminCallProvider
                                         .getGreetingConfigurationSummary
                                         .users[index]
@@ -384,80 +389,8 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     }
   }
 
-  final Map<String, dynamic> _greetingData = {};
-
-  Widget generalGreetingConfigurationWidget(
-    String id,
-    GreetingConfiguration? greetingConfig,
-    String tabType, {
-    String? bureau,
-    String? department,
-    String? organization,
-    String? salutation,
-  }) {
-    _greetingData[id + "_Bureau"] == null
-        ? _greetingData[id + "_Bureau"] = greetingConfig?.bureau
-        : null;
-    _greetingData[id + "_Department"] == null
-        ? _greetingData[id + "_Department"] = greetingConfig?.department
-        : null;
-    _greetingData[id + "_Vorname"] == null
-        ? _greetingData[id + "_Vorname"] = greetingConfig?.firstName
-        : null;
-    _greetingData[id + "_Nachname"] == null
-        ? _greetingData[id + "_Nachname"] = greetingConfig?.lastName
-        : null;
-    _greetingData[id + "_Organization"] == null
-        ? _greetingData[id + "_Organization"] = greetingConfig?.organizationName
-        : null;
-    _greetingData[id + "_Begrüssung"] == null
-        ? _greetingData[id + "_Begrüssung"] = greetingConfig?.salutation
-        : null;
-    return Column(
-      children: [
-        singleRowConfig(id, "Bureau", greetingConfig?.bureau),
-        singleRowConfig(id, "Department", greetingConfig?.department),
-        singleRowConfig(id, "Vorname", greetingConfig?.firstName),
-        singleRowConfig(id, "Nachname", greetingConfig?.lastName),
-        singleRowConfig(id, "Organization", greetingConfig?.organizationName),
-        singleRowConfig(id, "Begrüssung", greetingConfig?.salutation),
-        //singleRowCallConfig(id, "Bureau", greetingConfig.organizationName),
-        SingleRowSpecWordsConfig(id, "specificWords",
-            greetingConfig!.specificWords, tabType, _currentUser),
-      ],
-    );
-  }
-
-  Widget singleRowConfig(id, String inhalt, bool? greetingConfigBoolean) {
-    //Used for managing the different openinHours
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          height: 40,
-          width: 100,
-          child: Text(inhalt),
-        ),
-        Container(
-          alignment: Alignment.centerLeft,
-          height: 40,
-          width: 60,
-          child: Checkbox(
-            value: _greetingData[id + '_' + inhalt],
-            onChanged: (value) {
-              setState(() {
-                _greetingData[id + '_' + inhalt] = value;
-              });
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _submit(
-      id, /*formKeySubmit,*/ tabType, _greetingConfiguration) async {
+  Future<void> _submit(id, /*formKeySubmit,*/ tabType, _greetingConfiguration,
+      _greetingData) async {
     /*if (!formKeySubmit.currentState!.validate()) {
       // Invali
       return;
