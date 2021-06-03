@@ -3,10 +3,18 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
 import '../host.dart';
 
-class AdminCalls with ChangeNotifier {
+class AdminCallsProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
+
+  ConfigurartionSummary greetingConfigurationSummary =
+      ConfigurartionSummary.init();
+
+  ConfigurartionSummary get getGreetingConfigurationSummary {
+    return greetingConfigurationSummary;
+  }
 
   //get trainer status ()
   //--- currently unused ---
@@ -171,7 +179,32 @@ class AdminCalls with ChangeNotifier {
     }
   }
 
-  Future<ConfigurartionSummary> getGreetingConfiguration(token) async {
+  bool _isLoadingGetGreeting = false;
+  bool get isLoadingGetGreeting {
+    return _isLoadingGetGreeting;
+  }
+
+  Bureaus _pickedBureauGreeting = Bureaus.init();
+  Bureaus get getPickerBureauGreeting {
+    return _pickedBureauGreeting;
+  }
+
+  Bureaus setPickerBureauGreeting(Bureaus b) {
+    return _pickedBureauGreeting = b;
+  }
+
+  User _pickedUserGreeting = User.init();
+  User get getPickerUserGreeting {
+    return _pickedUserGreeting;
+  }
+
+  User setPickedUserGreeting(User u) {
+    return _pickedUserGreeting = u;
+  }
+
+  Future<void> getGreetingConfiguration(token) async {
+    _isLoadingGetGreeting = true;
+
     var url = Uri.parse('${activeHost}/getGreetingConfiguration');
     final response = await http.post(
       url,
@@ -187,7 +220,15 @@ class AdminCalls with ChangeNotifier {
       ConfigurartionSummary test =
           ConfigurartionSummary.fromJsonGreeting(responseData);
       debugPrint(test.toString());
-      return test;
+      greetingConfigurationSummary = test;
+      //  if (_pickedBureauGreeting == null) {
+      _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
+      //}
+      //if (_pickedUserGreeting == null) {
+      _pickedUserGreeting = greetingConfigurationSummary.users[0];
+      // }
+      _isLoadingGetGreeting = false;
+      notifyListeners();
     } else {
       throw Exception('Unable to get GreetingConfiguration!');
     }

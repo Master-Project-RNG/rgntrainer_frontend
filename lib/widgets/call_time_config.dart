@@ -18,12 +18,12 @@ class CallTimeConfiguration extends StatefulWidget {
 class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     with
         SingleTickerProviderStateMixin /*SingleTickerProviderStateMixin used for TabController vsync*/ {
-  final ScrollController _scrollControllerAbteilung = ScrollController();
+  final ScrollController _scrollControllerBureau = ScrollController();
   final ScrollController _scrollControllerNummer = ScrollController();
 
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  final GlobalKey<FormState> _formKeyAbteilung = GlobalKey();
-  final GlobalKey<FormState> _formKeyNummer = GlobalKey();
+  final GlobalKey<FormState> _formKeyOrganization = GlobalKey();
+  final GlobalKey<FormState> _formKeyBureau = GlobalKey();
+  final GlobalKey<FormState> _formKeyNumber = GlobalKey();
 
   late ConfigurartionSummary _openingHoursConfiguration =
       ConfigurartionSummary.init();
@@ -39,7 +39,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
   int currentTabIndex = 0;
   late TabController _tabController;
 
-  AdminCalls adminCalls = AdminCalls();
+  AdminCallsProvider adminCalls = AdminCallsProvider();
 
 //Used for managing the different openinHours
   final Map<String, String?> _openingHoursData = {
@@ -180,17 +180,13 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
   }
 
   Widget openingHours(token, tabType) {
-    /*if (tabType == "Kommune") {*/
-    ///  }
     if (_isLoading == true) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     } else if (tabType == "Kommune") {
-      return
-          //color: Colors.red,
-          Form(
-        key: _formKey,
+      return Form(
+        key: _formKeyOrganization,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -203,7 +199,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
               onPressed: () => {
                 _submit(
                   _openingHoursConfiguration.name,
-                  _formKey,
+                  _formKeyOrganization,
                   tabType,
                 ),
               },
@@ -218,9 +214,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     } else if (tabType == "Abteilung") {
       if (_showAbteilungList == false) {
         return Form(
-          key: _formKeyAbteilung,
+          key: _formKeyBureau,
           child: ListView(
-            controller: _scrollControllerAbteilung,
+            controller: _scrollControllerBureau,
             children: [
               Container(
                 height: 50,
@@ -236,7 +232,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
               ),
               ElevatedButton(
                 onPressed: () => {
-                  _submit(_pickedBureau.name, _formKeyAbteilung, tabType),
+                  _submit(_pickedBureau.name, _formKeyBureau, tabType),
                 },
                 child: const Text(
                   'Speichern',
@@ -327,7 +323,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     if (_showNummerList == false) {
       return Container(
           child: Form(
-        key: _formKeyNummer,
+        key: _formKeyNumber,
         child: ListView(
           controller: _scrollControllerNummer,
           children: [
@@ -347,7 +343,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
               onPressed: () => {
                 _submit(
                   _pickedUser.username,
-                  _formKeyNummer,
+                  _formKeyNumber,
                   tabType,
                 )
               },
@@ -616,7 +612,6 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
 
   Future<void> _submitActiveOpeningHours(
       id, activeOpeningHours, tabType) async {
-    print("_submitActiveOpeningHours!");
     setState(() {
       _isLoading = true;
     });
@@ -633,9 +628,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
         }
       });
     }
-    await AdminCalls()
+    await AdminCallsProvider()
         .setOpeningHours(widget.currentUser.token, _openingHoursConfiguration);
-    await AdminCalls().getOpeningHours(widget.currentUser.token);
+    await AdminCallsProvider().getOpeningHours(widget.currentUser.token);
     setState(() {
       _isLoading = false;
     });
@@ -651,7 +646,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
       _isLoading = true;
     });
     List<OpeningHours> temp = [];
-    //Idee: Hier ein Temp machen, und am Ende das Temp am richtigen ort einzügen!
+    //Create a temp variable (and set it on the right place later!)
     if (tabType == "Kommune") {
       temp = _openingHoursConfiguration.openingHours!;
     } else if (tabType == "Abteilung") {
@@ -669,7 +664,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     } else {
       throw Exception("Unbekannter TabType");
     }
-    //Change to picked! <-------------------------------------------------------------------------
+    //Change to picked! <-------------------------------------------------------
     //Montag
     if (_openingHoursData[id + '_Montag_morningOpen'] != "") {
       temp[0].morningOpen =
@@ -765,20 +760,17 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
         }
       });
     } else if (tabType == "Nummer") {
-      //To be tested!
-      //TODO: Exactly same thing as for Abeilung
       _openingHoursConfiguration.users.forEach((element) {
         if (element.username == id) {
           element.openingHours = temp;
         }
       });
-      //----------------------<<< To be tested
     } else {
       throw Exception("Unbekannter TabType");
     }
-    await AdminCalls()
+    await AdminCallsProvider()
         .setOpeningHours(widget.currentUser.token, _openingHoursConfiguration);
-    await AdminCalls().getOpeningHours(widget.currentUser.token);
+    await AdminCallsProvider().getOpeningHours(widget.currentUser.token);
     setState(() {
       _isLoading = false;
     });

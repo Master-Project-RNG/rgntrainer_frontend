@@ -1,188 +1,61 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
+import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:rgntrainer_frontend/widgets/greeting/single_row_specific_words.dart';
 
-class GreetingConfigurationWidget extends StatefulWidget {
-  final deviceSize;
-  final User currentUser;
-  const GreetingConfigurationWidget(this.deviceSize, this.currentUser);
+class GreetingTabWidget extends StatefulWidget {
+  final String tabType;
+  bool _showAbteilungList;
+  bool _showNummerList;
+
+  GreetingTabWidget(
+      String this.tabType, this._showAbteilungList, this._showNummerList);
 
   @override
-  _GreetingConfigurationState createState() => _GreetingConfigurationState();
+  _GreetingTabWidgetState createState() => _GreetingTabWidgetState();
 }
 
-class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
-    with
-        SingleTickerProviderStateMixin /*SingleTickerProviderStateMixin used for TabController vsync*/ {
-  AdminCalls adminCalls = AdminCalls();
-
-  late ConfigurartionSummary _greetingConfiguration =
-      ConfigurartionSummary.init();
-
-  late Bureaus _pickedBureau;
-  late User _pickedUser;
-
-  bool _showAbteilungList = false;
-  bool _showNummerList = false;
+class _GreetingTabWidgetState extends State<GreetingTabWidget> {
+  final GlobalKey<FormState> _formKeyOrganization = GlobalKey();
+  final GlobalKey<FormState> _formKeyBureau = GlobalKey();
+  final GlobalKey<FormState> _formKeyNumber = GlobalKey();
+  final ScrollController _scrollControllerBureau = ScrollController();
+  final ScrollController _scrollControllerNumber = ScrollController();
 
   bool _isLoading = false;
-
-  int currentTabIndex = 0;
-  late TabController _tabController;
-
-  final Map<String, dynamic> _greetingData = {
-    'init': 'test',
-    'init2': 'test2',
-  };
+  late User _currentUser = User.init();
 
   @override
-  void initState() {
+  initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: 3);
-    _tabController.addListener(_handleTabSelection);
+    _currentUser = UserSimplePreferences.getUser();
     asyncLoadingData();
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  Future<void> asyncLoadingData() async {
+  Future asyncLoadingData() async {
     setState(() {
       _isLoading = true;
     });
-    _greetingConfiguration =
-        await adminCalls.getGreetingConfiguration(widget.currentUser.token);
-    /* _greetingConfiguration =
-        await MyMockupDataProvider().getMockupData(context);*/
-    _pickedBureau = _greetingConfiguration.bureaus![0];
-    _pickedUser = _greetingConfiguration.users[0];
+    await Provider.of<AdminCallsProvider>(context, listen: false)
+        .getGreetingConfiguration(_currentUser.token);
     setState(() {
       _isLoading = false;
     });
   }
 
-  void _handleTabSelection() {
-    setState(() {
-      currentTabIndex = _tabController.index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Container(
-        height: 520,
-        constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
-        width: widget.deviceSize.width * 0.3,
-        child: Card(
-          borderOnForeground: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          elevation: 8.0,
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 100,
-                child: AppBar(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0),
-                    ),
-                  ),
-                  title: const Text("Begrüssung konfigurieren"),
-                  centerTitle: true,
-                  elevation: 8.0,
-                  automaticallyImplyLeading: false,
-                  actions: <Widget>[
-                    (() {
-                      if (currentTabIndex == 1) {
-                        return InkWell(
-                          child: IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              setState(() {
-                                if (_showAbteilungList == false) {
-                                  _showAbteilungList = true;
-                                } else {
-                                  _showAbteilungList = false;
-                                }
-                              });
-                            },
-                          ),
-                        );
-                      } else if (currentTabIndex == 2) {
-                        return InkWell(
-                          child: IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              setState(() {
-                                if (_showNummerList == false) {
-                                  _showNummerList = true;
-                                } else {
-                                  _showNummerList = false;
-                                }
-                              });
-                            },
-                          ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }()),
-                  ],
-                  bottom: TabBar(
-                    controller: _tabController,
-                    tabs: const [
-                      Tab(
-                        text: "Kommune",
-                      ),
-                      Tab(
-                        text: "Abteilung",
-                      ),
-                      Tab(
-                        text: "Nummer",
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    greetingTabWidget(widget.currentUser.token, "Kommune"),
-                    greetingTabWidget(widget.currentUser.token, "Abteilung"),
-                    greetingTabWidget(widget.currentUser.token, "Nummer"),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget greetingTabWidget(token, tabType) {
-    final GlobalKey<FormState> _formKeyOrganization = GlobalKey();
-    final GlobalKey<FormState> _formKeyBureau = GlobalKey();
-    final GlobalKey<FormState> _formKeyNumber = GlobalKey();
-    final ScrollController _scrollControllerBureau = ScrollController();
-    final ScrollController _scrollControllerNumber = ScrollController();
-
+    final AdminCallsProvider myAdminCallProvider =
+        context.watch<AdminCallsProvider>();
     if (_isLoading == true) {
       return const Center(
         child: CircularProgressIndicator(),
       );
-    } else if (tabType == "Kommune") {
+    } else if (widget.tabType == "Kommune") {
       return Form(
         key: _formKeyOrganization,
         child: ListView(
@@ -190,8 +63,11 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
             SizedBox(
               height: 25,
             ),
-            generalGreetingConfigurationWidget(_greetingConfiguration.name!,
-                _greetingConfiguration.greetingConfiguration),
+            generalGreetingConfigurationWidget(
+                myAdminCallProvider.getGreetingConfigurationSummary.name!,
+                myAdminCallProvider
+                    .getGreetingConfigurationSummary.greetingConfiguration,
+                widget.tabType),
             const SizedBox(
               height: 20,
             ),
@@ -201,9 +77,10 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                 child: ElevatedButton(
                   onPressed: () => {
                     _submit(
-                      _greetingConfiguration.name,
+                      myAdminCallProvider.getGreetingConfigurationSummary.name,
                       //_formKey,
-                      tabType,
+                      widget.tabType,
+                      myAdminCallProvider.getGreetingConfigurationSummary,
                     ),
                   },
                   child: const Text('Speichern'),
@@ -216,8 +93,8 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
           ],
         ),
       );
-    } else if (tabType == "Abteilung") {
-      if (_showAbteilungList == false) {
+    } else if (widget.tabType == "Abteilung") {
+      if (widget._showAbteilungList == false) {
         return Form(
           key: _formKeyBureau,
           child: ListView(
@@ -227,12 +104,15 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                 height: 50,
                 alignment: Alignment.center,
                 child: Text(
-                  _pickedBureau.name,
+                  myAdminCallProvider.getPickerBureauGreeting.name,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
               generalGreetingConfigurationWidget(
-                  _pickedBureau.name, _pickedBureau.greetingConfiguration),
+                  myAdminCallProvider.getPickerBureauGreeting.name,
+                  myAdminCallProvider
+                      .getPickerBureauGreeting.greetingConfiguration,
+                  widget.tabType),
               const SizedBox(
                 height: 20,
               ),
@@ -241,7 +121,10 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                   width: 150,
                   child: ElevatedButton(
                     onPressed: () => {
-                      _submit(_pickedBureau.name, /*_formKeyBureau,*/ tabType),
+                      _submit(
+                          myAdminCallProvider.getPickerBureauGreeting.name,
+                          /*_formKeyBureau,*/ widget.tabType,
+                          myAdminCallProvider.getGreetingConfigurationSummary),
                     },
                     child: const Text(
                       'Speichern',
@@ -277,42 +160,67 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: _greetingConfiguration.bureaus?.length,
+                  itemCount: myAdminCallProvider
+                      .getGreetingConfigurationSummary.bureaus?.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
                         ListTile(
-                          title:
-                              Text(_greetingConfiguration.bureaus![index].name),
+                          title: Text(myAdminCallProvider
+                              .getGreetingConfigurationSummary
+                              .bureaus![index]
+                              .name),
                           trailing: CupertinoSwitch(
                             onChanged: (bool value) {
                               setState(() {
-                                _greetingConfiguration.bureaus![index]
+                                myAdminCallProvider
+                                    .getGreetingConfigurationSummary
+                                    .bureaus![index]
                                     .activeGreetingConfiguration = value;
                               });
                               _submitActiveGreeting(
-                                  _greetingConfiguration.bureaus?[index].name,
+                                  myAdminCallProvider
+                                      .getGreetingConfigurationSummary
+                                      .bureaus?[index]
+                                      .name,
                                   value,
-                                  tabType);
+                                  widget.tabType,
+                                  myAdminCallProvider
+                                      .getGreetingConfigurationSummary);
                             },
-                            value: _greetingConfiguration
-                                .bureaus![index].activeGreetingConfiguration!,
+                            value: myAdminCallProvider
+                                .getGreetingConfigurationSummary
+                                .bureaus![index]
+                                .activeGreetingConfiguration!,
                           ),
                           onTap: () {
-                            _pickedBureau =
-                                _greetingConfiguration.bureaus![index];
+                            myAdminCallProvider.setPickerBureauGreeting(
+                                myAdminCallProvider
+                                    .getGreetingConfigurationSummary
+                                    .bureaus![index]);
+                            ;
                             setState(() {
-                              _showAbteilungList = false;
-                              _greetingConfiguration.bureaus![index]
+                              widget._showAbteilungList = false;
+                              myAdminCallProvider
+                                          .getGreetingConfigurationSummary
+                                          .bureaus![index]
                                           .activeGreetingConfiguration ==
                                       true
-                                  ? _greetingConfiguration.bureaus![index]
+                                  ? myAdminCallProvider
+                                          .getGreetingConfigurationSummary
+                                          .bureaus![index]
                                           .activeGreetingConfiguration =
-                                      _greetingConfiguration.bureaus![index]
+                                      myAdminCallProvider
+                                          .getGreetingConfigurationSummary
+                                          .bureaus![index]
                                           .activeGreetingConfiguration
-                                  : _greetingConfiguration.bureaus![index]
+                                  : myAdminCallProvider
+                                          .getGreetingConfigurationSummary
+                                          .bureaus![index]
                                           .activeGreetingConfiguration =
-                                      _greetingConfiguration.bureaus![index]
+                                      myAdminCallProvider
+                                          .getGreetingConfigurationSummary
+                                          .bureaus![index]
                                           .activeGreetingConfiguration;
                             });
                           },
@@ -330,7 +238,7 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
         );
       }
     } else //Nummer
-    if (_showNummerList == false) {
+    if (widget._showNummerList == false) {
       return Container(
           child: Form(
         key: _formKeyNumber,
@@ -341,12 +249,14 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
               height: 50,
               alignment: Alignment.center,
               child: Text(
-                _pickedUser.username!,
+                myAdminCallProvider.getPickerUserGreeting.username!,
                 style: const TextStyle(fontSize: 20),
               ),
             ),
             generalGreetingConfigurationWidget(
-                _pickedUser.username!, _pickedUser.greetingConfiguration),
+                myAdminCallProvider.getPickerUserGreeting.username!,
+                myAdminCallProvider.getPickerUserGreeting.greetingConfiguration,
+                widget.tabType),
             const SizedBox(
               height: 20,
             ),
@@ -356,9 +266,10 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                 child: ElevatedButton(
                   onPressed: () => {
                     _submit(
-                      _pickedUser.username,
+                      myAdminCallProvider.getPickerUserGreeting.username,
                       /*_formKeyNumber,*/
-                      tabType,
+                      widget.tabType,
+                      myAdminCallProvider.getGreetingConfigurationSummary,
                     )
                   },
                   child: const Text(
@@ -395,41 +306,66 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: _greetingConfiguration.users.length,
+                itemCount: myAdminCallProvider
+                    .getGreetingConfigurationSummary.users.length,
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
                       ListTile(
-                        title:
-                            Text(_greetingConfiguration.users[index].username!),
+                        title: Text(myAdminCallProvider
+                            .getGreetingConfigurationSummary
+                            .users[index]
+                            .username!),
                         trailing: CupertinoSwitch(
                           onChanged: (bool value) {
                             setState(() {
-                              _greetingConfiguration.users[index]
+                              myAdminCallProvider
+                                  .getGreetingConfigurationSummary
+                                  .users[index]
                                   .activeGreetingConfiguration = value;
                             });
                             _submitActiveGreeting(
-                                _greetingConfiguration.users[index].username,
+                                myAdminCallProvider
+                                    .getGreetingConfigurationSummary
+                                    .users[index]
+                                    .username,
                                 value,
-                                tabType);
+                                widget.tabType,
+                                myAdminCallProvider
+                                    .getGreetingConfigurationSummary);
                           },
-                          value: _greetingConfiguration
-                              .users[index].activeGreetingConfiguration!,
+                          value: myAdminCallProvider
+                              .getGreetingConfigurationSummary
+                              .users[index]
+                              .activeGreetingConfiguration!,
                         ),
                         onTap: () {
-                          _pickedUser = _greetingConfiguration.users[index];
+                          myAdminCallProvider.setPickedUserGreeting(
+                              myAdminCallProvider
+                                  .getGreetingConfigurationSummary
+                                  .users[index]);
                           setState(() {
-                            _showNummerList = false;
-                            _greetingConfiguration.users[index]
+                            widget._showNummerList = false;
+                            myAdminCallProvider
+                                        .getGreetingConfigurationSummary
+                                        .users[index]
                                         .activeGreetingConfiguration ==
                                     true
-                                ? _greetingConfiguration.users[index]
+                                ? myAdminCallProvider
+                                        .getGreetingConfigurationSummary
+                                        .users[index]
                                         .activeGreetingConfiguration =
-                                    !_greetingConfiguration.users[index]
+                                    !myAdminCallProvider
+                                        .getGreetingConfigurationSummary
+                                        .users[index]
                                         .activeGreetingConfiguration!
-                                : _greetingConfiguration.users[index]
+                                : myAdminCallProvider
+                                        .getGreetingConfigurationSummary
+                                        .users[index]
                                         .activeGreetingConfiguration =
-                                    _greetingConfiguration.users[index]
+                                    myAdminCallProvider
+                                        .getGreetingConfigurationSummary
+                                        .users[index]
                                         .activeGreetingConfiguration;
                           });
                         },
@@ -448,12 +384,17 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
     }
   }
 
+  final Map<String, dynamic> _greetingData = {};
+
   Widget generalGreetingConfigurationWidget(
-      String id, GreetingConfiguration? greetingConfig,
-      {String? bureau,
-      String? department,
-      String? organization,
-      String? salutation}) {
+    String id,
+    GreetingConfiguration? greetingConfig,
+    String tabType, {
+    String? bureau,
+    String? department,
+    String? organization,
+    String? salutation,
+  }) {
     _greetingData[id + "_Bureau"] == null
         ? _greetingData[id + "_Bureau"] = greetingConfig?.bureau
         : null;
@@ -481,6 +422,8 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
         singleRowConfig(id, "Organization", greetingConfig?.organizationName),
         singleRowConfig(id, "Begrüssung", greetingConfig?.salutation),
         //singleRowCallConfig(id, "Bureau", greetingConfig.organizationName),
+        SingleRowSpecWordsConfig(id, "specificWords",
+            greetingConfig!.specificWords, tabType, _currentUser),
       ],
     );
   }
@@ -513,32 +456,8 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
     );
   }
 
-  Future<void> _submitActiveGreeting(id, activeGreeting, tabType) async {
-    setState(() {
-      _isLoading = true;
-    });
-    if (tabType == "Abteilung") {
-      _greetingConfiguration.bureaus?.forEach((element) {
-        if (element.name == id) {
-          element.activeGreetingConfiguration = activeGreeting;
-        }
-      });
-    } else if (tabType == "Nummer") {
-      _greetingConfiguration.users.forEach((element) {
-        if (element.username == id) {
-          element.activeGreetingConfiguration = activeGreeting;
-        }
-      });
-    }
-    await AdminCalls().setGreetingConfiguration(
-        widget.currentUser.token, _greetingConfiguration);
-    await AdminCalls().getGreetingConfiguration(widget.currentUser.token);
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _submit(id, /*formKeySubmit,*/ tabType) async {
+  Future<void> _submit(
+      id, /*formKeySubmit,*/ tabType, _greetingConfiguration) async {
     /*if (!formKeySubmit.currentState!.validate()) {
       // Invali
       return;
@@ -591,26 +510,53 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
     if (tabType == "Kommune") {
       _greetingConfiguration.greetingConfiguration = temp;
     } else if (tabType == "Abteilung") {
-      _greetingConfiguration.bureaus?.forEach((element) {
-        if (element.name == id) {
-          element.greetingConfiguration = temp;
-        }
-      });
+      _greetingConfiguration.bureaus?.forEach(
+        (element) {
+          if (element.name == id) {
+            element.greetingConfiguration = temp;
+          }
+        },
+      );
     } else if (tabType == "Nummer") {
-      //To be tested!
-      //TODO: Exactly same thing as for Abeilung
-      _greetingConfiguration.users.forEach((element) {
-        if (element.username == id) {
-          element.greetingConfiguration = temp;
-        }
-      });
-      //----------------------<<< To be tested
+      _greetingConfiguration.users.forEach(
+        (element) {
+          if (element.username == id) {
+            element.greetingConfiguration = temp;
+          }
+        },
+      );
     } else {
       throw Exception("Unbekannter TabType");
     }
-    await AdminCalls().setGreetingConfiguration(
-        widget.currentUser.token, _greetingConfiguration);
-    await AdminCalls().getGreetingConfiguration(widget.currentUser.token);
+    await AdminCallsProvider()
+        .setGreetingConfiguration(_currentUser.token, _greetingConfiguration);
+    await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _submitActiveGreeting(
+      id, activeGreeting, tabType, _greetingConfiguration) async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (tabType == "Abteilung") {
+      _greetingConfiguration.bureaus?.forEach((element) {
+        if (element.name == id) {
+          element.activeGreetingConfiguration = activeGreeting;
+        }
+      });
+    } else if (tabType == "Nummer") {
+      _greetingConfiguration.users.forEach((element) {
+        if (element.username == id) {
+          element.activeGreetingConfiguration = activeGreeting;
+        }
+      });
+    }
+    await AdminCallsProvider()
+        .setGreetingConfiguration(_currentUser.token, _greetingConfiguration);
+    await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
     setState(() {
       _isLoading = false;
     });

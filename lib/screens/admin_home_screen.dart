@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
-import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
+import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/call_time_config.dart';
-import 'package:rgntrainer_frontend/widgets/greeting_config.dart';
+import 'package:rgntrainer_frontend/widgets/greeting/greeting_config.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -28,7 +28,7 @@ class AdminCard extends StatefulWidget {
 }
 
 class _AdminCardState extends State<AdminCard> {
-  var adminCalls = AdminCalls();
+  var adminCalls = AdminCallsProvider();
   var statusText = "init";
   var tempInterval = 0;
   late User _currentUser = User.init();
@@ -81,7 +81,7 @@ class _AdminCardState extends State<AdminCard> {
                       SizedBox(
                         width: 50,
                       ),
-                      GreetingConfigurationWidget(deviceSize, _currentUser),
+                      GreetingConfigurationWidget(deviceSize),
                     ],
                   ),
                 ],

@@ -136,6 +136,15 @@ class Bureaus {
       this.greetingConfiguration,
       this.activeGreetingConfiguration});
 
+  factory Bureaus.init() {
+    return Bureaus(
+        name: "None",
+        activeGreetingConfiguration: null,
+        activeOpeningHours: null,
+        greetingConfiguration: null,
+        openingHours: null);
+  }
+
   //Used for OpeningHours
   factory Bureaus.fromJsonOpeningHours(Map<String, dynamic> json) {
     List<OpeningHours> openingHoursList = [];
@@ -233,7 +242,7 @@ class GreetingConfiguration {
   bool? bureau;
   bool? department;
   bool? salutation;
-  List<String>? specificWords;
+  List<String> specificWords = [];
 
   GreetingConfiguration({
     this.organizationName,
@@ -242,7 +251,7 @@ class GreetingConfiguration {
     this.bureau,
     this.department,
     this.salutation,
-    this.specificWords,
+    required this.specificWords,
   });
 
   factory GreetingConfiguration.fromJson(Map<String, dynamic> json) =>
@@ -255,7 +264,7 @@ class GreetingConfiguration {
         salutation: json['salutation'],
         specificWords: json["specificWords"] != null
             ? List<String>.from(json["specificWords"].map!((x) => x))
-            : null,
+            : [],
       );
 
   Map<String, dynamic> toJson() {
@@ -266,9 +275,8 @@ class GreetingConfiguration {
     data['bureau'] = this.bureau;
     data['department'] = this.department;
     data['salutation'] = this.salutation;
-    data['specificWords'] = data['specificWords'] != null
-        ? List<dynamic>.from(specificWords!.map((x) => x))
-        : null;
+    data['specificWords'] =
+        List<dynamic>.from(this.specificWords.map((x) => x));
     return data;
   }
 }
