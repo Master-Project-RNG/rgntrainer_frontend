@@ -1,13 +1,13 @@
 import 'package:rgntrainer_frontend/models/user_model.dart';
 
-class ConfigurartionSummary {
+class ConfigurationSummary {
   String? name;
   List<Bureaus>? bureaus;
   List<User> users;
   List<OpeningHours>? openingHours;
   GreetingConfiguration? greetingConfiguration;
 
-  ConfigurartionSummary({
+  ConfigurationSummary({
     this.greetingConfiguration,
     required this.name,
     required this.bureaus,
@@ -15,8 +15,8 @@ class ConfigurartionSummary {
     this.openingHours,
   });
 
-  factory ConfigurartionSummary.init() {
-    return ConfigurartionSummary(
+  factory ConfigurationSummary.init() {
+    return ConfigurationSummary(
         name: null,
         bureaus: [],
         users: [User.init()],
@@ -31,8 +31,7 @@ class ConfigurartionSummary {
   }
 
   // Used for getting OpeningHours information
-  factory ConfigurartionSummary.fromJsonOpeningHours(
-      Map<String, dynamic> json) {
+  factory ConfigurationSummary.fromJsonOpeningHours(Map<String, dynamic> json) {
     List<Bureaus> bureausList = [];
     if (json['bureaus'] != null) {
       var list = json['bureaus'] as List;
@@ -54,7 +53,7 @@ class ConfigurartionSummary {
       openingHoursList = list3.map((i) => OpeningHours.fromJson(i)).toList();
     }
 
-    return ConfigurartionSummary(
+    return ConfigurationSummary(
       name: json['name'],
       bureaus: bureausList,
       users: usersList,
@@ -82,7 +81,7 @@ class ConfigurartionSummary {
   }
 
   // Used for getting Greeting information
-  factory ConfigurartionSummary.fromJsonGreeting(Map<String, dynamic> json) {
+  factory ConfigurationSummary.fromJsonGreeting(Map<String, dynamic> json) {
     List<Bureaus> bureausList = [];
     if (json['bureaus'] != null) {
       var list = json['bureaus'] as List;
@@ -97,7 +96,7 @@ class ConfigurartionSummary {
       usersList = list2.map((i) => User.fromJson(i)).toList();
     }
 
-    return ConfigurartionSummary(
+    return ConfigurationSummary(
       name: json['name'],
       bureaus: bureausList,
       users: usersList,

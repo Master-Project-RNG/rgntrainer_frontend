@@ -13,7 +13,7 @@ class GeneralGreetingConfigurationWidget extends StatelessWidget {
   final String? organization;
   final String? salutation;
 
-  GeneralGreetingConfigurationWidget(
+  const GeneralGreetingConfigurationWidget(
     this.id,
     this.greetingConfig,
     this.tabType,

@@ -10,11 +10,11 @@ import 'general_greeting.dart';
 
 class GreetingTabWidget extends StatefulWidget {
   final String tabType;
-  final bool _showAbteilungList;
-  final bool _showNummerList;
+  bool showAbteilungList;
+  bool showNumberList;
 
-  GreetingTabWidget(
-      String this.tabType, this._showAbteilungList, this._showNummerList);
+  GreetingTabWidget(this.tabType,
+      {required this.showNumberList, required this.showAbteilungList});
 
   @override
   _GreetingTabWidgetState createState() => _GreetingTabWidgetState();
@@ -31,7 +31,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
   late User _currentUser = User.init();
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
     asyncLoadingData();
@@ -61,7 +61,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
         key: _formKeyOrganization,
         child: ListView(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 25,
             ),
             GeneralGreetingConfigurationWidget(
@@ -97,7 +97,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
         ),
       );
     } else if (widget.tabType == "Abteilung") {
-      if (widget._showAbteilungList == false) {
+      if (widget.showAbteilungList == false) {
         return Form(
           key: _formKeyBureau,
           child: ListView(
@@ -205,6 +205,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                                     .bureaus![index]);
                             ;
                             setState(() {
+                              widget.showAbteilungList = false;
                               myAdminCallProvider
                                           .getGreetingConfigurationSummary
                                           .bureaus![index]
@@ -242,7 +243,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
         );
       }
     } else //Nummer
-    if (widget._showNummerList == false) {
+    if (widget.showNumberList == false) {
       return Container(
           child: Form(
         key: _formKeyNumber,
@@ -325,6 +326,8 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                         trailing: CupertinoSwitch(
                           onChanged: (bool value) {
                             setState(() {
+                              widget.showNumberList = false;
+
                               myAdminCallProvider
                                   .getGreetingConfigurationSummary
                                   .users[index]
@@ -351,6 +354,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                                   .getGreetingConfigurationSummary
                                   .users[index]);
                           setState(() {
+                            widget.showNumberList = false;
                             myAdminCallProvider
                                         .getGreetingConfigurationSummary
                                         .users[index]
@@ -389,8 +393,8 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     }
   }
 
-  Future<void> _submit(id, /*formKeySubmit,*/ tabType, _greetingConfiguration,
-      _greetingData) async {
+  Future<void> _submit(id, /*formKeySubmit,*/ tabType,
+      ConfigurationSummary _greetingConfiguration, _greetingData) async {
     /*if (!formKeySubmit.currentState!.validate()) {
       // Invali
       return;
@@ -399,7 +403,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     setState(() {
       _isLoading = true;
     });
-    GreetingConfiguration? temp = null;
+    GreetingConfiguration? temp;
     //Idee: Hier ein Temp machen, und am Ende das Temp am richtigen ort einzügen!
     if (tabType == "Kommune") {
       temp = _greetingConfiguration.greetingConfiguration!;
@@ -462,15 +466,15 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
       throw Exception("Unbekannter TabType");
     }
     await AdminCallsProvider()
-        .setGreetingConfiguration(_currentUser.token, _greetingConfiguration);
+        .setGreetingConfiguration(_currentUser.token!, _greetingConfiguration);
     await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
     setState(() {
       _isLoading = false;
     });
   }
 
-  Future<void> _submitActiveGreeting(
-      id, activeGreeting, tabType, _greetingConfiguration) async {
+  Future<void> _submitActiveGreeting(String? id, bool activeGreeting,
+      String tabType, ConfigurationSummary _greetingConfiguration) async {
     setState(() {
       _isLoading = true;
     });
@@ -488,7 +492,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
       });
     }
     await AdminCallsProvider()
-        .setGreetingConfiguration(_currentUser.token, _greetingConfiguration);
+        .setGreetingConfiguration(_currentUser.token!, _greetingConfiguration);
     await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
     setState(() {
       _isLoading = false;

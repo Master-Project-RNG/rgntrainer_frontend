@@ -25,8 +25,8 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
   final GlobalKey<FormState> _formKeyBureau = GlobalKey();
   final GlobalKey<FormState> _formKeyNumber = GlobalKey();
 
-  late ConfigurartionSummary _openingHoursConfiguration =
-      ConfigurartionSummary.init();
+  late ConfigurationSummary _openingHoursConfiguration =
+      ConfigurationSummary.init();
 
   late Bureaus _pickedBureau;
   late User _pickedUser;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rgntrainer_frontend/widgets/greeting/greeting_tab_widget.dart';
 
 class GreetingConfigurationWidget extends StatefulWidget {
-  final deviceSize;
+  final Size deviceSize;
   const GreetingConfigurationWidget(this.deviceSize);
 
   @override
@@ -14,16 +14,16 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
     with
         SingleTickerProviderStateMixin /*SingleTickerProviderStateMixin used for TabController vsync*/ {
   bool _showAbteilungList = false;
-  bool _showNummerList = false;
+  bool _showNumberList = false;
   int currentTabIndex = 0;
   late TabController _tabController;
 
   void setShowAbteilung(bool a) {
-    _showNummerList = a;
+    _showNumberList = a;
   }
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 3);
     _tabController.addListener(_handleTabSelection);
@@ -57,7 +57,7 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
           elevation: 8.0,
           child: Column(
             children: <Widget>[
-              Container(
+              SizedBox(
                 height: 100,
                 child: AppBar(
                   shape: const RoundedRectangleBorder(
@@ -93,10 +93,10 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                             icon: const Icon(Icons.edit),
                             onPressed: () {
                               setState(() {
-                                if (_showNummerList == false) {
-                                  _showNummerList = true;
+                                if (_showNumberList == false) {
+                                  _showNumberList = true;
                                 } else {
-                                  _showNummerList = false;
+                                  _showNumberList = false;
                                 }
                               });
                             },
@@ -127,12 +127,15 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    GreetingTabWidget(
-                        "Kommune", _showAbteilungList, _showNummerList),
-                    GreetingTabWidget(
-                        "Abteilung", _showAbteilungList, _showNummerList),
-                    GreetingTabWidget(
-                        "Nummer", _showAbteilungList, _showNummerList),
+                    GreetingTabWidget("Kommune",
+                        showAbteilungList: _showAbteilungList,
+                        showNumberList: _showNumberList),
+                    GreetingTabWidget("Abteilung",
+                        showAbteilungList: _showAbteilungList,
+                        showNumberList: _showNumberList),
+                    GreetingTabWidget("Nummer",
+                        showAbteilungList: _showAbteilungList,
+                        showNumberList: _showNumberList),
                   ],
                 ),
               ),

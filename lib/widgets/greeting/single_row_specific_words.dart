@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 
 class SingleRowSpecWordsConfig extends StatefulWidget {
-  final id;
+  final String id;
   final String inhalt;
   final List<String> specificWords;
   final String tabType;
-  SingleRowSpecWordsConfig(this.id, String this.inhalt,
-      List<String> this.specificWords, this.tabType);
+  const SingleRowSpecWordsConfig(
+      this.id, this.inhalt, this.specificWords, this.tabType);
 
   @override
   _SingleRowSpecWordsConfigState createState() =>
@@ -24,18 +25,18 @@ class _SingleRowSpecWordsConfigState extends State<SingleRowSpecWordsConfig> {
   late User _currentUser;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
   }
 
-  get items {
+  Object get items {
     if (_isLoadingPopUpMenu) {
       return Container(
         height: 500,
         width: 500,
         color: Colors.red,
-        child: CircularProgressIndicator(),
+        child: const CircularProgressIndicator(),
       );
     } else {
       return List.generate(
@@ -53,13 +54,13 @@ class _SingleRowSpecWordsConfigState extends State<SingleRowSpecWordsConfig> {
                           _formKey.currentState?.save();
                         })
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.remove_circle,
                         color: Colors.red,
                       ),
                     ),
                     Text(
-                      (widget.specificWords[index]),
+                      widget.specificWords[index],
                     ),
                   ],
                 );
@@ -226,8 +227,8 @@ class _SingleRowSpecWordsConfigState extends State<SingleRowSpecWordsConfig> {
     }
   }
 
-  Future<void> _submitSpecificWords(
-      id, tabType, value, _greetingConfiguration, currentUser) async {
+  Future<void> _submitSpecificWords(id, tabType, String value,
+      ConfigurationSummary _greetingConfiguration, currentUser) async {
     setState(() {
       _isLoadingPopUpMenu = true;
     });
@@ -247,7 +248,7 @@ class _SingleRowSpecWordsConfigState extends State<SingleRowSpecWordsConfig> {
       });
     }
     await AdminCallsProvider()
-        .setGreetingConfiguration(_currentUser.token, _greetingConfiguration);
+        .setGreetingConfiguration(_currentUser.token!, _greetingConfiguration);
     await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
     setState(() {
       _isLoadingPopUpMenu = false;

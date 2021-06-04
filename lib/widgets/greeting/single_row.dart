@@ -6,7 +6,7 @@ class SingleRowConfig extends StatefulWidget {
   final bool? greetingConfigBoolean;
   final Map<String, dynamic> greetingData;
 
-  SingleRowConfig(
+  const SingleRowConfig(
       this.id, this.inhalt, this.greetingConfigBoolean, this.greetingData);
 
   @override
@@ -32,10 +32,10 @@ class _SingleRowConfigState extends State<SingleRowConfig> {
           height: 40,
           width: 60,
           child: Checkbox(
-            value: widget.greetingData[widget.id + '_' + widget.inhalt],
+            value: widget.greetingData['${widget.id}_${widget.inhalt}'],
             onChanged: (value) {
               setState(() {
-                widget.greetingData[widget.id + '_' + widget.inhalt] = value;
+                widget.greetingData['${widget.id}_${widget.inhalt}'] = value;
               });
             },
           ),

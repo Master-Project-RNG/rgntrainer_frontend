@@ -9,10 +9,10 @@ import '../host.dart';
 class AdminCallsProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
 
-  ConfigurartionSummary greetingConfigurationSummary =
-      ConfigurartionSummary.init();
+  ConfigurationSummary greetingConfigurationSummary =
+      ConfigurationSummary.init();
 
-  ConfigurartionSummary get getGreetingConfigurationSummary {
+  ConfigurationSummary get getGreetingConfigurationSummary {
     return greetingConfigurationSummary;
   }
 
@@ -137,7 +137,7 @@ class AdminCallsProvider with ChangeNotifier {
     }
   }
 
-  Future<ConfigurartionSummary> getOpeningHours(token) async {
+  Future<ConfigurationSummary> getOpeningHours(token) async {
     var url = Uri.parse('${activeHost}/getOpeningHours');
     final response = await http.post(
       url,
@@ -150,8 +150,8 @@ class AdminCallsProvider with ChangeNotifier {
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
-      ConfigurartionSummary test =
-          ConfigurartionSummary.fromJsonOpeningHours(responseData);
+      ConfigurationSummary test =
+          ConfigurationSummary.fromJsonOpeningHours(responseData);
       debugPrint(test.toString());
       return test;
     } else {
@@ -160,7 +160,7 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   Future<void> setOpeningHours(
-      token, ConfigurartionSummary _openingHours) async {
+      token, ConfigurationSummary _openingHours) async {
     var url = Uri.parse('${activeHost}/setOpeningHours');
 
     final openingJson = jsonEncode(_openingHours.toJsonOpeningHours(token));
@@ -217,8 +217,8 @@ class AdminCallsProvider with ChangeNotifier {
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
-      ConfigurartionSummary test =
-          ConfigurartionSummary.fromJsonGreeting(responseData);
+      ConfigurationSummary test =
+          ConfigurationSummary.fromJsonGreeting(responseData);
       debugPrint(test.toString());
       greetingConfigurationSummary = test;
       //  if (_pickedBureauGreeting == null) {
@@ -235,7 +235,7 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   Future<void> setGreetingConfiguration(
-      token, ConfigurartionSummary _greetingConfiguration) async {
+      String token, ConfigurationSummary _greetingConfiguration) async {
     var url = Uri.parse('${activeHost}/setGreetingConfiguration');
 
     final openingJson =
@@ -257,7 +257,7 @@ class AdminCallsProvider with ChangeNotifier {
 
   final Map<String, dynamic> _greetingData = {};
 
-  get getGreetingData {
+  Map<String, dynamic> get getGreetingData {
     return _greetingData;
   }
 }
