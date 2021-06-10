@@ -442,6 +442,9 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     if (_greetingData[id + "_Begrüssung"] != null) {
       temp?.salutation = _greetingData[id + "_Begrüssung"];
     }
+    if (_greetingData[id + "_specificWords"] != null) {
+      temp?.specificWords = _greetingData[id + "_specificWords"];
+    }
 
     // Save temp on the right place!
     if (tabType == "Kommune") {

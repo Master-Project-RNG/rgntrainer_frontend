@@ -57,9 +57,11 @@ class GeneralGreetingConfigurationWidget extends StatelessWidget {
             _greetingData),
         SingleRowConfig(
             id, "Begrüssung", greetingConfig?.salutation, _greetingData),
-        //singleRowCallConfig(id, "Bureau", greetingConfig.organizationName),
-        SingleRowSpecWordsConfig(
-            id, "specificWords", greetingConfig!.specificWords, tabType),
+        SizedBox(
+          height: 20,
+        ),
+        SingleRowSpecWordsConfig(id, "specificWords",
+            greetingConfig!.specificWords, tabType, _greetingData),
       ],
     );
   }
