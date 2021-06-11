@@ -14,7 +14,7 @@ import 'dart:html' as html;
 class UserHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return UserCard();
+    return const UserCard();
   }
 }
 
@@ -30,7 +30,7 @@ class UserCard extends StatefulWidget {
 class _UserCardState extends State<UserCard> {
   //TODO: Show loading icon in case of loading
   var _isLoading = false;
-  List<UserResults> _fetchedUserResults = [];
+  final List<UserResults> _fetchedUserResults = [];
   late User _currentUser = User.init();
 
   @override
@@ -66,10 +66,10 @@ class _UserCardState extends State<UserCard> {
       final _myUserResultsProvider = context.watch<UserResultsProvider>();
       return Scaffold(
         appBar: AppBar(
-          title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
+          title: const Text("Begrüssungs- und Erreichbarkeitstrainer"),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.logout),
+              icon: const Icon(Icons.logout),
               onPressed: () {
                 AuthProvider().logout(_currentUser.token);
                 context.vxNav.replace(
@@ -81,43 +81,41 @@ class _UserCardState extends State<UserCard> {
           automaticallyImplyLeading: false,
         ),
         body: Container(
-          padding: EdgeInsets.all(100.0),
-          child: Container(
-            child: ListView(
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "User Ansicht",
-                    style: TextStyle(fontSize: 42),
-                  ),
+          padding: const EdgeInsets.all(100.0),
+          child: ListView(
+            children: [
+              const Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "User Ansicht",
+                  style: TextStyle(fontSize: 42),
                 ),
-                SizedBox(
-                  height: 50,
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Resultate für User: ${_currentUser.username}",
+                  style: const TextStyle(fontSize: 34),
                 ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Resultate für User: ${_currentUser.username}",
-                    style: TextStyle(fontSize: 34),
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  height: 2,
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: userResultsData(_myUserResultsProvider),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Container(
+                height: 2,
+                color: Colors.grey,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: userResultsData(_myUserResultsProvider),
+              ),
+            ],
           ),
         ),
       );
@@ -181,31 +179,31 @@ class _UserCardState extends State<UserCard> {
                   DataCell(Text(data.number.toString())),
                   DataCell(Text(data.department.toString())),
                   DataCell(Text(data.date.toString())),
-                  DataCell(getCheck(data.reached)),
-                  DataCell(getCheck(data.saidOrganization)),
-                  DataCell(getCheck(data.saidDepartment)),
-                  DataCell(getCheck(data.saidBureau)),
-                  DataCell(getCheck(data.saidFirstname)),
-                  DataCell(getCheck(data.saidName)),
-                  DataCell(getCheck(data.saidGreeting)),
-                  DataCell(getCheck(data.saidSpecificWords)),
-                  DataCell(getCheck(data.responderStarted)),
-                  DataCell(getCheck(data.responderCorrect)),
-                  DataCell(getCheck(data.callbackDone)),
-                  DataCell(getCheck(data.callbackInTime)),
-                  DataCell(getCheck(data.callCompleted)),
+                  DataCell(getCheck(checked: data.reached)),
+                  DataCell(getCheck(checked: data.saidOrganization)),
+                  DataCell(getCheck(checked: data.saidDepartment)),
+                  DataCell(getCheck(checked: data.saidBureau)),
+                  DataCell(getCheck(checked: data.saidFirstname)),
+                  DataCell(getCheck(checked: data.saidName)),
+                  DataCell(getCheck(checked: data.saidGreeting)),
+                  DataCell(getCheck(checked: data.saidSpecificWords)),
+                  DataCell(getCheck(checked: data.responderStarted)),
+                  DataCell(getCheck(checked: data.responderCorrect)),
+                  DataCell(getCheck(checked: data.callbackDone)),
+                  DataCell(getCheck(checked: data.callbackInTime)),
+                  DataCell(getCheck(checked: data.callCompleted)),
                 ]))
             .toList());
   }
 }
 
-getCheck(bool? checked) {
+Icon getCheck({bool? checked}) {
   if (checked == null) {
-    return Icon(Icons.minimize, color: Colors.grey, size: 24);
+    return const Icon(Icons.minimize, color: Colors.grey, size: 24);
   }
   if (checked == true) {
-    return Icon(Icons.check, color: Colors.green, size: 24);
+    return const Icon(Icons.check, color: Colors.green, size: 24);
   } else {
-    return Icon(Icons.clear, color: Colors.red, size: 24);
+    return const Icon(Icons.clear, color: Colors.red, size: 24);
   }
 }

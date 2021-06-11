@@ -2,11 +2,19 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:rgntrainer_frontend/models/opening_hours_model.dart';
+import 'package:rgntrainer_frontend/models/configuration_model.dart';
+import 'package:rgntrainer_frontend/models/user_model.dart';
 import '../host.dart';
 
-class AdminCalls with ChangeNotifier {
+class AdminCallsProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
+
+  ConfigurationSummary greetingConfigurationSummary =
+      ConfigurationSummary.init();
+
+  ConfigurationSummary get getGreetingConfigurationSummary {
+    return greetingConfigurationSummary;
+  }
 
   //get trainer status ()
   //--- currently unused ---
@@ -129,7 +137,7 @@ class AdminCalls with ChangeNotifier {
     }
   }
 
-  Future<OpeningHoursSummary> getOpeningHours(token) async {
+  Future<ConfigurationSummary> getOpeningHours(token) async {
     var url = Uri.parse('${activeHost}/getOpeningHours');
     final response = await http.post(
       url,
@@ -142,7 +150,8 @@ class AdminCalls with ChangeNotifier {
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
-      OpeningHoursSummary test = OpeningHoursSummary.fromJson(responseData);
+      ConfigurationSummary test =
+          ConfigurationSummary.fromJsonOpeningHours(responseData);
       debugPrint(test.toString());
       return test;
     } else {
@@ -150,10 +159,11 @@ class AdminCalls with ChangeNotifier {
     }
   }
 
-  Future<void> setOpeningHours(token, OpeningHoursSummary _openingHours) async {
+  Future<void> setOpeningHours(
+      token, ConfigurationSummary _openingHours) async {
     var url = Uri.parse('${activeHost}/setOpeningHours');
 
-    final openingJson = jsonEncode(_openingHours.toJson(token));
+    final openingJson = jsonEncode(_openingHours.toJsonOpeningHours(token));
 
     final response = await http.post(
       url,
@@ -167,5 +177,87 @@ class AdminCalls with ChangeNotifier {
     } else {
       throw Exception('Unable to set OpeningHours!');
     }
+  }
+
+  bool _isLoadingGetGreeting = false;
+  bool get isLoadingGetGreeting {
+    return _isLoadingGetGreeting;
+  }
+
+  Bureaus _pickedBureauGreeting = Bureaus.init();
+  Bureaus get getPickerBureauGreeting {
+    return _pickedBureauGreeting;
+  }
+
+  Bureaus setPickerBureauGreeting(Bureaus b) {
+    return _pickedBureauGreeting = b;
+  }
+
+  User _pickedUserGreeting = User.init();
+  User get getPickerUserGreeting {
+    return _pickedUserGreeting;
+  }
+
+  User setPickedUserGreeting(User u) {
+    return _pickedUserGreeting = u;
+  }
+
+  Future<void> getGreetingConfiguration(token) async {
+    _isLoadingGetGreeting = true;
+
+    var url = Uri.parse('${activeHost}/getGreetingConfiguration');
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      ConfigurationSummary test =
+          ConfigurationSummary.fromJsonGreeting(responseData);
+      debugPrint(test.toString());
+      greetingConfigurationSummary = test;
+      //  if (_pickedBureauGreeting == null) {
+      _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
+      //}
+      //if (_pickedUserGreeting == null) {
+      _pickedUserGreeting = greetingConfigurationSummary.users[0];
+      // }
+      _isLoadingGetGreeting = false;
+      notifyListeners();
+    } else {
+      throw Exception('Unable to get GreetingConfiguration!');
+    }
+  }
+
+  Future<void> setGreetingConfiguration(
+      String token, ConfigurationSummary _greetingConfiguration) async {
+    var url = Uri.parse('${activeHost}/setGreetingConfiguration');
+
+    final openingJson =
+        jsonEncode(_greetingConfiguration.toJsonGreeting(token));
+
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: openingJson,
+    );
+    if (response.statusCode == 200) {
+      debugPrint(response.toString());
+    } else {
+      throw Exception('Unable to set GreetingConfiguration!');
+    }
+  }
+
+  final Map<String, dynamic> _greetingData = {};
+
+  Map<String, dynamic> get getGreetingData {
+    return _greetingData;
   }
 }
