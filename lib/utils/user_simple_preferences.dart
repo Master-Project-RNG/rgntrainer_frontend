@@ -19,8 +19,9 @@ class UserSimplePreferences {
   static String? getUserToken() {
     if (_preferences.getString(_keyUserToken) == null) {
       return null;
-    } else
+    } else {
       return _preferences.getString(_keyUserToken);
+    }
   }
 
   static Future setUser(User user) async {

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:url_strategy/url_strategy.dart';
 //My files
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/screens/admin_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/user_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/login_screen.dart';
-
-import 'dart:io';
 
 /*
 Future<bool> addSelfSignedCertificate() async {
@@ -42,6 +40,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: UserResultsProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: AdminCallsProvider(),
         ),
       ],
       child: MaterialApp.router(

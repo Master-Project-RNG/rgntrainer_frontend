@@ -10,18 +10,18 @@ class SelfMadeErrorDialog {
 
   SelfMadeErrorDialog._internal();
 
-  void showErrorDialog(String message, var context) {
+  void showErrorDialog(String message, BuildContext context) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Fehler!'),
+        title: const Text('Fehler!'),
         content: Text(message),
         actions: <Widget>[
-          FlatButton(
-            child: Text('Okay!'),
+          ElevatedButton(
             onPressed: () {
               Navigator.of(ctx).pop();
             },
+            child: const Text('Okay!'),
           ),
         ],
       ),
