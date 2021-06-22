@@ -46,9 +46,9 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
     return DefaultTabController(
       length: 3,
       child: Container(
-        height: 520,
+        height: 550,
         constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
-        width: widget.deviceSize.width * 0.3,
+        width: 500,
         child: Card(
           borderOnForeground: true,
           shape: RoundedRectangleBorder(

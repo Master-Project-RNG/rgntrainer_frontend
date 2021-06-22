@@ -62,29 +62,49 @@ class _AdminCardState extends State<AdminCard> {
           ],
           automaticallyImplyLeading: false,
         ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.all(10.0),
-          child: Center(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  trainerStartenWidget(deviceSize),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CallTimeConfiguration(deviceSize, _currentUser),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      GreetingConfigurationWidget(deviceSize),
-                    ],
-                  ),
-                ],
+        body: Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: EdgeInsets.all(10.0),
+            child: Center(
+              child: SingleChildScrollView(
+                //scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: trainerStartenWidget(deviceSize),
+                        ),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Expanded(
+                          child: GreetingConfigurationWidget(deviceSize),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child:
+                              CallTimeConfiguration(deviceSize, _currentUser),
+                        ),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Expanded(
+                            child: GreetingConfigurationWidget(deviceSize)),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -115,8 +135,10 @@ class _AdminCardState extends State<AdminCard> {
 
   Widget trainerStartenWidget(deviceSize) {
     return Container(
+      alignment: Alignment.center,
       constraints: BoxConstraints(minHeight: 280, minWidth: 500),
-      width: deviceSize.width * 0.825,
+      width: 500,
+      height: 550,
       child: Card(
         borderOnForeground: true,
         shape: RoundedRectangleBorder(
@@ -140,103 +162,95 @@ class _AdminCardState extends State<AdminCard> {
                 automaticallyImplyLeading: false,
               ),
             ),
-            const SizedBox(height: 20),
-            Container(
-              margin: const EdgeInsets.only(left: 10),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Steuerung für den Trainer:',
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.green, onPrimary: Colors.white),
-                  onPressed: () {
-                    adminCalls.startTrainer(tempInterval, _currentUser.token);
-                    setState(() {
-                      getStatus(_currentUser.token!);
-                    });
-                    print('Short Press!');
-                  },
-                  child: const Text('Start'),
-                ),
-                getStatus(_currentUser.token!),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.red, onPrimary: Colors.white),
-                  onPressed: () {
-                    adminCalls.stopTrainer(_currentUser.token);
-                    setState(() {
-                      getStatus(_currentUser.token!);
-                    });
-                    // ignore: avoid_print
-                    print('Short Press!');
-                  },
-                  child: const Text('Stop'),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  'Pause zw. den Anrufen in Sekunden:',
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400),
-                ),
-                Container(
-                  height: 50,
-                  width: 200,
-                  child: SpinBox(
-                    min: 0,
-                    max: 600,
-                    value: 0,
-                    onChanged: (value) {
-                      tempInterval = value.toInt();
-                    },
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              alignment: Alignment.centerLeft,
-              child: Row(
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Resultate:',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.green, onPrimary: Colors.white),
+                        onPressed: () {
+                          adminCalls.startTrainer(
+                              tempInterval, _currentUser.token);
+                          setState(() {
+                            getStatus(_currentUser.token!);
+                          });
+                          print('Short Press!');
+                        },
+                        child: const Text('Start'),
+                      ),
+                      getStatus(_currentUser.token!),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.red, onPrimary: Colors.white),
+                        onPressed: () {
+                          adminCalls.stopTrainer(_currentUser.token);
+                          setState(() {
+                            getStatus(_currentUser.token!);
+                          });
+                          // ignore: avoid_print
+                          print('Short Press!');
+                        },
+                        child: const Text('Stop'),
+                      )
+                    ],
                   ),
                   SizedBox(
-                    width: 20,
+                    height: 20,
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.blue, onPrimary: Colors.white),
-                    child: Text('Download'),
-                    onPressed: () {
-                      print('Short Press!');
-                      adminCalls.getResults(_currentUser.token);
-                    },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        'Pause zw. den Anrufen in Sekunden:',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 200,
+                        child: SpinBox(
+                          min: 0,
+                          max: 600,
+                          value: 0,
+                          onChanged: (value) {
+                            tempInterval = value.toInt();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        'Resultate:',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.blue, onPrimary: Colors.white),
+                        child: Text('Download'),
+                        onPressed: () {
+                          print('Short Press!');
+                          adminCalls.getResults(_currentUser.token);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

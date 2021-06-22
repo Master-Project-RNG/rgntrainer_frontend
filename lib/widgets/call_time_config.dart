@@ -85,7 +85,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     return DefaultTabController(
       length: 3,
       child: Container(
-        height: 520,
+        height: 550,
         constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
         width: widget.deviceSize.width * 0.5,
         child: Card(
