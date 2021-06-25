@@ -4,7 +4,9 @@ import 'package:rgntrainer_frontend/widgets/greeting/greeting_tab_widget.dart';
 
 class GreetingConfigurationWidget extends StatefulWidget {
   final Size deviceSize;
-  const GreetingConfigurationWidget(this.deviceSize);
+  //int = 1 ist Begrüssung konfigurieren, int = 2 ist Anrufbeantworter konfigurieren
+  final int type;
+  const GreetingConfigurationWidget(this.deviceSize, this.type);
 
   @override
   _GreetingConfigurationState createState() => _GreetingConfigurationState();
@@ -66,7 +68,9 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                       topRight: Radius.circular(10.0),
                     ),
                   ),
-                  title: const Text("Begrüssung konfigurieren"),
+                  title: widget.type == 1
+                      ? const Text("Begrüssung konfigurieren")
+                      : const Text("Anrufbeantworter konfigurieren"),
                   centerTitle: true,
                   elevation: 8.0,
                   automaticallyImplyLeading: false,
@@ -129,13 +133,16 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                   children: [
                     GreetingTabWidget("Kommune",
                         showAbteilungList: _showAbteilungList,
-                        showNumberList: _showNumberList),
+                        showNumberList: _showNumberList,
+                        type: widget.type),
                     GreetingTabWidget("Abteilung",
                         showAbteilungList: _showAbteilungList,
-                        showNumberList: _showNumberList),
+                        showNumberList: _showNumberList,
+                        type: widget.type),
                     GreetingTabWidget("Nummer",
                         showAbteilungList: _showAbteilungList,
-                        showNumberList: _showNumberList),
+                        showNumberList: _showNumberList,
+                        type: widget.type),
                   ],
                 ),
               ),

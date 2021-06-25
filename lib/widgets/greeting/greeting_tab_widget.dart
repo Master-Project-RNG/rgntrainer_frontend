@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
+import 'package:rgntrainer_frontend/provider/answering_machine_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 
 import 'general_greeting.dart';
@@ -12,9 +13,12 @@ class GreetingTabWidget extends StatefulWidget {
   final String tabType;
   bool showAbteilungList;
   bool showNumberList;
+  final int type;
 
   GreetingTabWidget(this.tabType,
-      {required this.showNumberList, required this.showAbteilungList});
+      {required this.showNumberList,
+      required this.showAbteilungList,
+      required this.type});
 
   @override
   _GreetingTabWidgetState createState() => _GreetingTabWidgetState();
@@ -41,8 +45,13 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<AdminCallsProvider>(context, listen: false)
-        .getGreetingConfiguration(_currentUser.token);
+    if (widget.type == 1) {
+      await Provider.of<AdminCallsProvider>(context, listen: false)
+          .getGreetingConfiguration(_currentUser.token);
+    } else {
+      await Provider.of<AnsweringMachineProvider>(context, listen: false)
+          .getAnsweringMachineConfiguration(_currentUser.token);
+    }
     setState(() {
       _isLoading = false;
     });
@@ -50,8 +59,12 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final AdminCallsProvider myAdminCallProvider =
-        context.watch<AdminCallsProvider>();
+    final myAdminCallProvider;
+    if (widget.type == 1) {
+      myAdminCallProvider = context.watch<AdminCallsProvider>();
+    } else {
+      myAdminCallProvider = context.watch<AnsweringMachineProvider>();
+    }
     if (_isLoading == true) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -79,12 +92,13 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                 child: ElevatedButton(
                   onPressed: () => {
                     _submit(
-                      myAdminCallProvider.getGreetingConfigurationSummary.name,
-                      //_formKey,
-                      widget.tabType,
-                      myAdminCallProvider.getGreetingConfigurationSummary,
-                      myAdminCallProvider.getGreetingData,
-                    ),
+                        myAdminCallProvider
+                            .getGreetingConfigurationSummary.name,
+                        //_formKey,
+                        widget.tabType,
+                        myAdminCallProvider.getGreetingConfigurationSummary,
+                        myAdminCallProvider.getGreetingData,
+                        widget.type),
                   },
                   child: const Text('Speichern'),
                 ),
@@ -127,9 +141,10 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                     onPressed: () => {
                       _submit(
                           myAdminCallProvider.getPickerBureauGreeting.name,
-                          /*_formKeyBureau,*/ widget.tabType,
+                          widget.tabType,
                           myAdminCallProvider.getGreetingConfigurationSummary,
-                          myAdminCallProvider.getGreetingData),
+                          myAdminCallProvider.getGreetingData,
+                          widget.type),
                     },
                     child: const Text(
                       'Speichern',
@@ -191,7 +206,8 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                                   value,
                                   widget.tabType,
                                   myAdminCallProvider
-                                      .getGreetingConfigurationSummary);
+                                      .getGreetingConfigurationSummary,
+                                  widget.type);
                             },
                             value: myAdminCallProvider
                                 .getGreetingConfigurationSummary
@@ -272,12 +288,12 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                 child: ElevatedButton(
                   onPressed: () => {
                     _submit(
-                      myAdminCallProvider.getPickerUserGreeting.username,
-                      /*_formKeyNumber,*/
-                      widget.tabType,
-                      myAdminCallProvider.getGreetingConfigurationSummary,
-                      myAdminCallProvider.getGreetingData,
-                    )
+                        myAdminCallProvider.getPickerUserGreeting.username,
+                        /*_formKeyNumber,*/
+                        widget.tabType,
+                        myAdminCallProvider.getGreetingConfigurationSummary,
+                        myAdminCallProvider.getGreetingData,
+                        widget.type)
                   },
                   child: const Text(
                     'Speichern',
@@ -341,7 +357,8 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                                 value,
                                 widget.tabType,
                                 myAdminCallProvider
-                                    .getGreetingConfigurationSummary);
+                                    .getGreetingConfigurationSummary,
+                                widget.type);
                           },
                           value: myAdminCallProvider
                               .getGreetingConfigurationSummary
@@ -393,13 +410,8 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     }
   }
 
-  Future<void> _submit(id, /*formKeySubmit,*/ tabType,
-      ConfigurationSummary _greetingConfiguration, _greetingData) async {
-    /*if (!formKeySubmit.currentState!.validate()) {
-      // Invali
-      return;
-    } */
-    // formKeySubmit.currentState!.save();
+  Future<void> _submit(id, tabType, ConfigurationSummary _greetingConfiguration,
+      _greetingData, int type) async {
     setState(() {
       _isLoading = true;
     });
@@ -468,16 +480,27 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     } else {
       throw Exception("Unbekannter TabType");
     }
-    await AdminCallsProvider()
-        .setGreetingConfiguration(_currentUser.token!, _greetingConfiguration);
-    await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
+    if (type == 1) {
+      await AdminCallsProvider().setGreetingConfiguration(
+          _currentUser.token!, _greetingConfiguration);
+      await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
+    } else if (type == 2) {
+      await AnsweringMachineProvider().setAnsweringMachineConfiguration(
+          _currentUser.token!, _greetingConfiguration);
+      await AnsweringMachineProvider()
+          .getAnsweringMachineConfiguration(_currentUser.token);
+    }
     setState(() {
       _isLoading = false;
     });
   }
 
-  Future<void> _submitActiveGreeting(String? id, bool activeGreeting,
-      String tabType, ConfigurationSummary _greetingConfiguration) async {
+  Future<void> _submitActiveGreeting(
+      String? id,
+      bool activeGreeting,
+      String tabType,
+      ConfigurationSummary _greetingConfiguration,
+      int type) async {
     setState(() {
       _isLoading = true;
     });
@@ -494,9 +517,16 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
         }
       });
     }
-    await AdminCallsProvider()
-        .setGreetingConfiguration(_currentUser.token!, _greetingConfiguration);
-    await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
+    if (type == 1) {
+      await AdminCallsProvider().setGreetingConfiguration(
+          _currentUser.token!, _greetingConfiguration);
+      await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
+    } else if (type == 2) {
+      await AnsweringMachineProvider().setAnsweringMachineConfiguration(
+          _currentUser.token!, _greetingConfiguration);
+      await AnsweringMachineProvider()
+          .getAnsweringMachineConfiguration(_currentUser.token);
+    }
     setState(() {
       _isLoading = false;
     });
