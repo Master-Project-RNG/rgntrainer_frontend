@@ -156,7 +156,7 @@ class _SingleRowSpecWordsConfigState extends State<SingleRowSpecWordsConfig> {
                         textAlignVertical: TextAlignVertical.center,
                         cursorHeight: 20,
                         onSaved: (value) {
-                          if (value != null) {
+                          if (value != null && value != "") {
                             // _greetingData[id + '_specificWords'].add(value);
                             setState(() {
                               addSpecificWords(

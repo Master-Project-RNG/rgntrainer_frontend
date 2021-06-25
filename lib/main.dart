@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
+import 'package:rgntrainer_frontend/provider/answering_machine_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: AdminCallsProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: AnsweringMachineProvider(),
         ),
       ],
       child: MaterialApp.router(
