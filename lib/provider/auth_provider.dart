@@ -45,7 +45,6 @@ class AuthProvider with ChangeNotifier {
   Future<void> login(String? username, String? password, var ctx) async {
     UserSimplePreferences.resetUser();
     return _authenticate(username!, password!, ctx);
-
   }
 
   Future<void> logout(token) async {
@@ -62,6 +61,31 @@ class AuthProvider with ChangeNotifier {
         }),
       );
       //Logout successful!
+      debugPrint(response.toString());
+    } catch (error) {
+      debugPrint(error.toString());
+    }
+  }
+
+//TODO:To be tested!
+  Future<void> changePassword(token, oldPassword, newPassword) async {
+    // UserSimplePreferences.resetUser(); //Login required after password change or just
+    final url = '${activeHost}/changePassword';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "content-type": "application/json",
+        },
+        body: json.encode(
+          {
+            'token': token,
+            'oldPassword': oldPassword,
+            'newPassword': newPassword,
+          },
+        ),
+      );
+      //Password successfully changed!
       debugPrint(response.toString());
     } catch (error) {
       debugPrint(error.toString());
