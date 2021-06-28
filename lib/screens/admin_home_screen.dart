@@ -51,14 +51,26 @@ class _AdminCardState extends State<AdminCard> {
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
           actions: <Widget>[
             IconButton(
+              icon: Icon(Icons.build_rounded),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.account_circle),
+              onPressed: () {
+                context.vxNav.push(
+                  Uri.parse(MyRoutes.adminProfilRoute),
+                );
+              },
+            ),
+            IconButton(
               icon: Icon(Icons.logout),
               onPressed: () {
                 AuthProvider().logout(_currentUser.token);
-                context.vxNav.replace(
+                context.vxNav.push(
                   Uri.parse(MyRoutes.loginRoute),
                 );
               },
-            )
+            ),
           ],
           automaticallyImplyLeading: false,
         ),
