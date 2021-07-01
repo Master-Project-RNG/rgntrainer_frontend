@@ -49,8 +49,7 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
       length: 3,
       child: Container(
         height: 550,
-        constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
-        width: 500,
+        // constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
         child: Card(
           borderOnForeground: true,
           shape: RoundedRectangleBorder(
