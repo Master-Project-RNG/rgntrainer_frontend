@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/models/callRange.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
@@ -16,11 +18,25 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
   var tempInterval = 0;
   var adminCalls = AdminCallsProvider();
   late User _currentUser = User.init();
+  late CallRange _callRange = CallRange.init();
+  var _isLoading = false;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
+    asyncLoadingData();
+  }
+
+  Future asyncLoadingData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    _callRange = await Provider.of<AdminCallsProvider>(context, listen: false)
+        .getCallRange(_currentUser.token);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -104,14 +120,20 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       Container(
                         height: 50,
                         width: 200,
-                        child: SpinBox(
-                          min: 0,
-                          max: 600,
-                          value: 0,
-                          onChanged: (value) {
-                            tempInterval = value.toInt();
-                          },
-                        ),
+                        child: _isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SpinBox(
+                                min: 0,
+                                max: 600,
+                                value:
+                                    _callRange.secondsBetweenCalls.toDouble(),
+                                onChanged: (value) {
+                                  _callRange.secondsBetweenCalls =
+                                      value.toInt();
+                                },
+                              ),
                       ),
                     ],
                   ),

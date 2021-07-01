@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rgntrainer_frontend/models/callRange.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import '../host.dart';
@@ -39,10 +40,9 @@ class AdminCallsProvider with ChangeNotifier {
     }
   }
 
-  //getIntervalSeconds
-  //--- currently unused ---
-  Future<int> getIntervalSeconds(token) async {
-    var url = Uri.parse('${activeHost}/getIntervalSeconds');
+  //getCallRange
+  Future<CallRange> getCallRange(token) async {
+    var url = Uri.parse('${activeHost}/getCallRange');
     final response = await http.post(
       url,
       headers: {
@@ -53,11 +53,10 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      int responseIntervalSeconds = int.parse(response.body);
-      print("getTrainerStatus:" + responseIntervalSeconds.toString());
-      return responseIntervalSeconds;
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      return CallRange.fromJson(responseData);
     } else {
-      throw Exception('Unable to get IntervalSeconds!');
+      throw Exception('Unable to getCallRange!');
     }
   }
 
