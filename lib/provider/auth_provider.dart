@@ -67,8 +67,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-//TODO:To be tested!
-  Future<void> changePassword(token, oldPassword, newPassword) async {
+  Future<void> changePassword(ctx, token, oldPassword, newPassword) async {
     // UserSimplePreferences.resetUser(); //Login required after password change or just
     final url = '${activeHost}/changePassword';
     try {
@@ -85,7 +84,40 @@ class AuthProvider with ChangeNotifier {
           },
         ),
       );
-      //Password successfully changed!
+      if (response.statusCode == 200) {
+        showDialog(
+          context: ctx,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Erfolg!'),
+            content: Text("Passwort aktualisiert!"),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: const Text('Schliessen'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        showDialog(
+          context: ctx,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Fehler!'),
+            content: Text(
+                "Passwort konnte nicht aktualisiert werden! Wurde das alte Passwort korrekt eingegeben?"),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: const Text('Schliessen'),
+              ),
+            ],
+          ),
+        );
+      }
       debugPrint(response.toString());
     } catch (error) {
       debugPrint(error.toString());
