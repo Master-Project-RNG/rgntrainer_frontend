@@ -94,7 +94,8 @@ class _AdminCardState extends State<AdminCard> {
                           width: 50,
                         ),
                         Expanded(
-                          child: GreetingConfigurationWidget(deviceSize, 1),
+                          child:
+                              GreetingConfigurationWidget(deviceSize, type: 1),
                         ),
                       ],
                     ),
@@ -112,7 +113,9 @@ class _AdminCardState extends State<AdminCard> {
                           width: 50,
                         ),
                         Expanded(
-                            child: GreetingConfigurationWidget(deviceSize, 2)),
+                          child:
+                              GreetingConfigurationWidget(deviceSize, type: 2),
+                        ),
                       ],
                     ),
                   ],

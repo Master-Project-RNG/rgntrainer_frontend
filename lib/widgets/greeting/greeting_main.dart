@@ -6,7 +6,7 @@ class GreetingConfigurationWidget extends StatefulWidget {
   final Size deviceSize;
   //int = 1 ist Begrüssung konfigurieren, int = 2 ist Anrufbeantworter konfigurieren
   final int type;
-  const GreetingConfigurationWidget(this.deviceSize, this.type);
+  const GreetingConfigurationWidget(this.deviceSize, {required this.type});
 
   @override
   _GreetingConfigurationState createState() => _GreetingConfigurationState();
