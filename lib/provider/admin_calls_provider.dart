@@ -60,6 +60,25 @@ class AdminCallsProvider with ChangeNotifier {
     }
   }
 
+  //getCallRange
+  Future<void> setCallRange(token, CallRange callRange) async {
+    var url = Uri.parse('${activeHost}/setCallRange');
+
+    final callRangeJson = jsonEncode(callRange.toJson(token));
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: callRangeJson,
+    );
+    if (response.statusCode == 200) {
+      debugPrint(response.toString());
+    } else {
+      throw Exception('Unable to getCallRange!');
+    }
+  }
+
   //start the trainer
   Future<void> startTrainer(intervalSeconds, token) async {
     final url = '${activeHost}/start?intervalSeconds=${intervalSeconds}';

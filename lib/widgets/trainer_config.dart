@@ -73,49 +73,158 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.green, onPrimary: Colors.white),
-                        onPressed: () {
-                          adminCalls.startTrainer(
-                              tempInterval, _currentUser.token);
-                          setState(() {
-                            getStatus(_currentUser.token!);
-                          });
-                          print('Short Press!');
-                        },
-                        child: const Text('Start'),
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          'Min Calls:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
                       ),
-                      getStatus(_currentUser.token!),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.red, onPrimary: Colors.white),
-                        onPressed: () {
-                          adminCalls.stopTrainer(_currentUser.token);
-                          setState(() {
-                            getStatus(_currentUser.token!);
-                          });
-                          // ignore: avoid_print
-                          print('Short Press!');
-                        },
-                        child: const Text('Stop'),
-                      )
+                      Container(
+                        height: 50,
+                        width: 200,
+                        child: _isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SpinBox(
+                                min: 0,
+                                max: 99,
+                                value: _callRange.minCalls.toDouble(),
+                                onChanged: (value) {
+                                  _callRange.minCalls = value.toInt();
+                                },
+                              ),
+                      ),
                     ],
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Pause zw. den Anrufen in Sekunden:',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          'Max Calls:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 200,
+                        child: _isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SpinBox(
+                                min: 0,
+                                max: 99,
+                                value: _callRange.maxCalls.toDouble(),
+                                onChanged: (value) {
+                                  _callRange.maxCalls = value.toInt();
+                                },
+                              ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          'minDaysBetweenCallsSingleNumber:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 200,
+                        child: _isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SpinBox(
+                                min: 0,
+                                max: 99,
+                                value: _callRange
+                                    .minDaysBetweenCallsSingleNumber
+                                    .toDouble(),
+                                onChanged: (value) {
+                                  _callRange.minDaysBetweenCallsSingleNumber =
+                                      value.toInt();
+                                },
+                              ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          'maxHoursForCallBack:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 200,
+                        child: _isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SpinBox(
+                                min: 0,
+                                max: 99,
+                                value:
+                                    _callRange.maxHoursForCallback.toDouble(),
+                                onChanged: (value) {
+                                  _callRange.maxHoursForCallback =
+                                      value.toInt();
+                                },
+                              ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          'Pause zw. den Anrufen in Sekunden:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
                       ),
                       Container(
                         height: 50,
@@ -140,27 +249,81 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                   SizedBox(
                     height: 20,
                   ),
+                  ElevatedButton(
+                    onPressed: () => {
+                      _submit(_currentUser.token!, _callRange),
+                    },
+                    child: const Text('Speichern'),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Divider(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Resultate:',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
+                      SizedBox(
+                        width: 100,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.green, onPrimary: Colors.white),
+                          onPressed: () {
+                            adminCalls.startTrainer(
+                                tempInterval, _currentUser.token);
+                            setState(() {
+                              getStatus(_currentUser.token!);
+                            });
+                            print('Short Press!');
+                          },
+                          child: const Text('Start'),
+                        ),
+                      ),
+                      getStatus(_currentUser.token!),
+                      SizedBox(
+                        width: 100,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.red, onPrimary: Colors.white),
+                          onPressed: () {
+                            adminCalls.stopTrainer(_currentUser.token);
+                            setState(() {
+                              getStatus(_currentUser.token!);
+                            });
+                            // ignore: avoid_print
+                            print('Short Press!');
+                          },
+                          child: const Text('Stop'),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          'Resultate:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
                       ),
                       SizedBox(
-                        width: 20,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, onPrimary: Colors.white),
-                        child: Text('Download'),
-                        onPressed: () {
-                          print('Short Press!');
-                          adminCalls.getResults(_currentUser.token);
-                        },
+                        width: 200,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.blue, onPrimary: Colors.white),
+                          child: Text('Download'),
+                          onPressed: () {
+                            print('Short Press!');
+                            adminCalls.getResults(_currentUser.token);
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -173,6 +336,17 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
     );
   }
 
+  _submit(token, CallRange callRange) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await AdminCallsProvider().setCallRange(token, callRange);
+    await AdminCallsProvider().getCallRange(token);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   // _status has to be connected to the class attribute _status in order that setState() works, can't be handed in as a function parameter ;)
   Widget getStatus(String token) {
     return FutureBuilder<bool>(
@@ -182,10 +356,22 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
             //TODO: TESTEN
             if (snapshot.data == true) {
               var statusText = 'Status: Eingeschaltet';
-              return Text(statusText);
+              return SizedBox(
+                width: 200,
+                child: Text(
+                  statusText,
+                  textAlign: TextAlign.center,
+                ),
+              );
             } else {
               var statusText = 'Status: Ausgeschaltet';
-              return Text(statusText);
+              return SizedBox(
+                width: 200,
+                child: Text(
+                  statusText,
+                  textAlign: TextAlign.center,
+                ),
+              );
             }
           } else {
             return const CircularProgressIndicator();

@@ -32,7 +32,8 @@ class CallRange {
         secondsBetweenCalls: json["secondsBetweenCalls"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson(token) => {
+        "token": token,
         "minCalls": minCalls,
         "maxCalls": maxCalls,
         "minDaysBetweenCallsSingleNumber": minDaysBetweenCallsSingleNumber,
