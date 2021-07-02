@@ -80,8 +80,8 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   //start the trainer
-  Future<void> startTrainer(intervalSeconds, token) async {
-    final url = '${activeHost}/start?intervalSeconds=${intervalSeconds}';
+  Future<void> startTrainer(token) async {
+    final url = '${activeHost}/start';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -90,7 +90,6 @@ class AdminCallsProvider with ChangeNotifier {
         },
         body: json.encode(
           {
-            'intervalSeconds': intervalSeconds,
             'token': token,
           },
         ),

@@ -78,7 +78,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       SizedBox(
                         width: 200,
                         child: Text(
-                          'Min Calls:',
+                          'Minimale Anzahl Anrufe:',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 14,
@@ -112,7 +112,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       SizedBox(
                         width: 200,
                         child: Text(
-                          'Max Calls:',
+                          'Maximale Anzahl Anrufe:',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 14,
@@ -146,7 +146,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       SizedBox(
                         width: 200,
                         child: Text(
-                          'minDaysBetweenCallsSingleNumber:',
+                          'Minimale Anzahl Tage zwischen Anrufen einer einzelnen Nummer:',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 14,
@@ -183,7 +183,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       SizedBox(
                         width: 200,
                         child: Text(
-                          'maxHoursForCallBack:',
+                          'Anzahl Stunden bis ein Rückruf als zu spät gilt:',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 14,
@@ -199,7 +199,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                               )
                             : SpinBox(
                                 min: 0,
-                                max: 99,
+                                max: 999,
                                 value:
                                     _callRange.maxHoursForCallback.toDouble(),
                                 onChanged: (value) {
@@ -219,7 +219,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       SizedBox(
                         width: 200,
                         child: Text(
-                          'Pause zw. den Anrufen in Sekunden:',
+                          'Pause zwischen den Anrufen (generell) in Sekunden:',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 14,
@@ -268,8 +268,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                           style: ElevatedButton.styleFrom(
                               primary: Colors.green, onPrimary: Colors.white),
                           onPressed: () {
-                            adminCalls.startTrainer(
-                                tempInterval, _currentUser.token);
+                            adminCalls.startTrainer(_currentUser.token);
                             setState(() {
                               getStatus(_currentUser.token!);
                             });
