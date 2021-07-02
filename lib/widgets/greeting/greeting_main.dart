@@ -6,7 +6,7 @@ class GreetingConfigurationWidget extends StatefulWidget {
   final Size deviceSize;
   //int = 1 ist Begrüssung konfigurieren, int = 2 ist Anrufbeantworter konfigurieren
   final int type;
-  const GreetingConfigurationWidget(this.deviceSize, this.type);
+  const GreetingConfigurationWidget(this.deviceSize, {required this.type});
 
   @override
   _GreetingConfigurationState createState() => _GreetingConfigurationState();
@@ -49,8 +49,7 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
       length: 3,
       child: Container(
         height: 550,
-        constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
-        width: 500,
+        // constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
         child: Card(
           borderOnForeground: true,
           shape: RoundedRectangleBorder(

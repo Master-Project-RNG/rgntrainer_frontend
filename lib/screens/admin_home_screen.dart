@@ -2,13 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
-import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/call_time_config.dart';
 import 'package:rgntrainer_frontend/widgets/greeting/greeting_main.dart';
+import 'package:rgntrainer_frontend/widgets/trainer_config.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -28,9 +27,7 @@ class AdminCard extends StatefulWidget {
 }
 
 class _AdminCardState extends State<AdminCard> {
-  var adminCalls = AdminCallsProvider();
   var statusText = "init";
-  var tempInterval = 0;
   late User _currentUser = User.init();
 
   @override
@@ -51,211 +48,111 @@ class _AdminCardState extends State<AdminCard> {
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
           actions: <Widget>[
             IconButton(
+              icon: Icon(Icons.build_rounded),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.account_circle),
+              onPressed: () {
+                context.vxNav.push(
+                  Uri.parse(MyRoutes.adminProfilRoute),
+                );
+              },
+            ),
+            IconButton(
               icon: Icon(Icons.logout),
               onPressed: () {
                 AuthProvider().logout(_currentUser.token);
-                context.vxNav.replace(
+                context.vxNav.push(
                   Uri.parse(MyRoutes.loginRoute),
                 );
               },
-            )
+            ),
           ],
           automaticallyImplyLeading: false,
         ),
         body: Center(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(10.0),
-            child: Center(
-              child: SingleChildScrollView(
-                //scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: trainerStartenWidget(deviceSize),
-                        ),
-                        SizedBox(
-                          width: 50,
-                        ),
-                        Expanded(
-                          child: GreetingConfigurationWidget(deviceSize, 1),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child:
-                              CallTimeConfiguration(deviceSize, _currentUser),
-                        ),
-                        SizedBox(
-                          width: 50,
-                        ),
-                        Expanded(
-                            child: GreetingConfigurationWidget(deviceSize, 2)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          child: (MediaQuery.of(context).size.width > 1500)
+              ? normalWidth(deviceSize)
+              : smallWidth(deviceSize),
         ),
       );
     }
   }
 
-  // _status has to be connected to the class attribute _status in order that setState() works, can't be handed in as a function parameter ;)
-  Widget getStatus(String token) {
-    return FutureBuilder<bool>(
-        future: adminCalls.getTrainerStatus(token),
-        builder: (context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.hasData) {
-            //TODO: TESTEN
-            if (snapshot.data == true) {
-              var statusText = 'Status: Eingeschaltet';
-              return Text(statusText);
-            } else {
-              var statusText = 'Status: Ausgeschaltet';
-              return Text(statusText);
-            }
-          } else {
-            return const CircularProgressIndicator();
-          }
-        });
-  }
-
-  Widget trainerStartenWidget(deviceSize) {
+  Widget normalWidth(deviceSize) {
     return Container(
-      alignment: Alignment.center,
-      constraints: BoxConstraints(minHeight: 280, minWidth: 500),
-      width: 500,
-      height: 550,
-      child: Card(
-        borderOnForeground: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        elevation: 8.0,
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 50,
-              child: AppBar(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10.0),
-                    topRight: Radius.circular(10.0),
-                  ),
-                ),
-                title: Text("Trainer starten"),
-                centerTitle: true,
-                elevation: 8.0,
-                automaticallyImplyLeading: false,
-              ),
-            ),
-            Expanded(
-              child: Column(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width * 0.8,
+      padding: EdgeInsets.all(10.0),
+      child: Center(
+        child: SingleChildScrollView(
+          //scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.green, onPrimary: Colors.white),
-                        onPressed: () {
-                          adminCalls.startTrainer(
-                              tempInterval, _currentUser.token);
-                          setState(() {
-                            getStatus(_currentUser.token!);
-                          });
-                          print('Short Press!');
-                        },
-                        child: const Text('Start'),
-                      ),
-                      getStatus(_currentUser.token!),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.red, onPrimary: Colors.white),
-                        onPressed: () {
-                          adminCalls.stopTrainer(_currentUser.token);
-                          setState(() {
-                            getStatus(_currentUser.token!);
-                          });
-                          // ignore: avoid_print
-                          print('Short Press!');
-                        },
-                        child: const Text('Stop'),
-                      )
-                    ],
+                  Expanded(
+                    child: TrainerConfiguration(deviceSize),
                   ),
                   SizedBox(
-                    height: 20,
+                    width: 50,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        'Pause zw. den Anrufen in Sekunden:',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
-                      ),
-                      Container(
-                        height: 50,
-                        width: 200,
-                        child: SpinBox(
-                          min: 0,
-                          max: 600,
-                          value: 0,
-                          onChanged: (value) {
-                            tempInterval = value.toInt();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        'Resultate:',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, onPrimary: Colors.white),
-                        child: Text('Download'),
-                        onPressed: () {
-                          print('Short Press!');
-                          adminCalls.getResults(_currentUser.token);
-                        },
-                      ),
-                    ],
+                  Expanded(
+                    child: GreetingConfigurationWidget(deviceSize, type: 1),
                   ),
                 ],
               ),
-            ),
-          ],
+              SizedBox(
+                height: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: CallTimeConfiguration(deviceSize, _currentUser),
+                  ),
+                  SizedBox(
+                    width: 50,
+                  ),
+                  Expanded(
+                    child: GreetingConfigurationWidget(deviceSize, type: 2),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget smallWidth(deviceSize) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width * 0.8,
+      padding: EdgeInsets.all(10.0),
+      child: Center(
+        child: SingleChildScrollView(
+          //scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              TrainerConfiguration(deviceSize),
+              SizedBox(
+                height: 50,
+              ),
+              GreetingConfigurationWidget(deviceSize, type: 1),
+              SizedBox(
+                height: 50,
+              ),
+              CallTimeConfiguration(deviceSize, _currentUser),
+              SizedBox(
+                height: 50,
+              ),
+              GreetingConfigurationWidget(deviceSize, type: 2),
+            ],
+          ),
         ),
       ),
     );

@@ -87,7 +87,6 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
       child: Container(
         height: 550,
         constraints: const BoxConstraints(minHeight: 520, minWidth: 500),
-        width: widget.deviceSize.width * 0.5,
         child: Card(
           borderOnForeground: true,
           shape: RoundedRectangleBorder(

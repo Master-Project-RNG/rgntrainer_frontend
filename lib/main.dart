@@ -12,6 +12,8 @@ import 'package:rgntrainer_frontend/screens/admin_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/user_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/login_screen.dart';
 
+import 'screens/admin_profile_screen.dart';
+
 /*
 Future<bool> addSelfSignedCertificate() async {
   ByteData data = await rootBundle.load('assets/keystore.crt.pem');
@@ -60,6 +62,9 @@ class MyApp extends StatelessWidget {
               ),
           MyRoutes.userRoute: (_, __) => MaterialPage(
                 child: UserHomeScreen(),
+              ),
+          MyRoutes.adminProfilRoute: (_, __) => MaterialPage(
+                child: AdminProfileScreen(),
               ),
         }),
         title: 'Begrüssungs- und Erreichbarkeitstrainer',
