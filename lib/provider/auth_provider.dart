@@ -45,7 +45,6 @@ class AuthProvider with ChangeNotifier {
   Future<void> login(String? username, String? password, var ctx) async {
     UserSimplePreferences.resetUser();
     return _authenticate(username!, password!, ctx);
-
   }
 
   Future<void> logout(token) async {
@@ -62,6 +61,63 @@ class AuthProvider with ChangeNotifier {
         }),
       );
       //Logout successful!
+      debugPrint(response.toString());
+    } catch (error) {
+      debugPrint(error.toString());
+    }
+  }
+
+  Future<void> changePassword(ctx, token, oldPassword, newPassword) async {
+    // UserSimplePreferences.resetUser(); //Login required after password change or just
+    final url = '${activeHost}/changePassword';
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "content-type": "application/json",
+        },
+        body: json.encode(
+          {
+            'token': token,
+            'oldPassword': oldPassword,
+            'newPassword': newPassword,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        showDialog(
+          context: ctx,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Erfolg!'),
+            content: Text("Passwort aktualisiert!"),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: const Text('Schliessen'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        showDialog(
+          context: ctx,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Fehler!'),
+            content: Text(
+                "Passwort konnte nicht aktualisiert werden! Wurde das alte Passwort korrekt eingegeben?"),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: const Text('Schliessen'),
+              ),
+            ],
+          ),
+        );
+      }
       debugPrint(response.toString());
     } catch (error) {
       debugPrint(error.toString());
