@@ -1,51 +1,51 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
-import 'package:rgntrainer_frontend/models/user_results_model.dart';
+import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
-import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import 'dart:html' as html;
-
-class UserHomeScreen extends StatelessWidget {
+class AdminResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const UserCard();
+    return AdminResultsCard();
   }
 }
 
-class UserCard extends StatefulWidget {
-  const UserCard({
+class AdminResultsCard extends StatefulWidget {
+  const AdminResultsCard({
     Key? key,
   }) : super(key: key);
 
   @override
-  _UserCardState createState() => _UserCardState();
+  _AdminCardState createState() => _AdminCardState();
 }
 
-class _UserCardState extends State<UserCard> {
-  //TODO: Show loading icon in case of loading
-  var _isLoading = false;
+class _AdminCardState extends State<AdminResultsCard> {
   late User _currentUser = User.init();
+
+  var _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
-    _fetchUserResults();
+    _fetchTotalUserResults();
+    print(_currentUser.token);
   }
 
   //Fetch all Listings
-  Future _fetchUserResults() async {
+  Future _fetchTotalUserResults() async {
     setState(() {
       _isLoading = true;
     });
     await Provider.of<UserResultsProvider>(context, listen: false)
-        .getUserResults(_currentUser.token);
+        .getTotalUserResults(_currentUser.token);
     setState(() {
       _isLoading = false;
     });
@@ -53,25 +53,45 @@ class _UserCardState extends State<UserCard> {
 
   @override
   Widget build(BuildContext context) {
-    html.window.onBeforeUnload.listen((event) async {
-      // do something
-      _currentUser = UserSimplePreferences.getUser();
-    });
+    final deviceSize = MediaQuery.of(context).size;
 
-    if (_currentUser.token == null || _currentUser.usertype != "user") {
-      AuthProvider().logout(_currentUser.token);
+    if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
+    } else if (_isLoading == true) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
     } else {
       final _myUserResultsProvider = context.watch<UserResultsProvider>();
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Begrüssungs- und Erreichbarkeitstrainer"),
+          title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: Icon(Icons.list_alt),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.build_rounded),
+              onPressed: () {
+                context.vxNav.push(
+                  Uri.parse(MyRoutes.adminRoute),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.account_circle),
+              onPressed: () {
+                context.vxNav.push(
+                  Uri.parse(MyRoutes.adminProfilRoute),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.logout),
               onPressed: () {
                 AuthProvider().logout(_currentUser.token);
-                context.vxNav.replace(
+                context.vxNav.push(
                   Uri.parse(MyRoutes.loginRoute),
                 );
               },

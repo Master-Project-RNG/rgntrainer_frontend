@@ -48,6 +48,14 @@ class _AdminCardState extends State<AdminCard> {
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
           actions: <Widget>[
             IconButton(
+              icon: Icon(Icons.list_alt),
+              onPressed: () {
+                context.vxNav.push(
+                  Uri.parse(MyRoutes.adminResultsRoute),
+                );
+              },
+            ),
+            IconButton(
               icon: Icon(Icons.build_rounded),
               onPressed: () {},
             ),

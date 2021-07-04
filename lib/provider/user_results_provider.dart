@@ -42,4 +42,33 @@ class UserResultsProvider with ChangeNotifier {
       throw Exception('Failed to load user results');
     }
   }
+
+  Future getTotalUserResults(token) async {
+    _isLoading = true;
+    var url = Uri.parse('${activeHost}/getTotalResults');
+    final response = await post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+      }),
+    );
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      debugPrint(jsonResponse.toString());
+      List<UserResults> _result = [];
+      final List<dynamic> _temp = jsonResponse;
+      _temp.forEach((test) {
+        final Map<String, dynamic> _temp2 = test;
+        final UserResults userResults = UserResults.fromJson(_temp2);
+        _result.add(userResults);
+      });
+      _userResults = _result;
+      _isLoading = false;
+    } else {
+      throw Exception('Failed to load user results');
+    }
+  }
 }

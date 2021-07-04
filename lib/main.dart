@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/answering_machine_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
+import 'package:rgntrainer_frontend/screens/admin_results_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 //My files
@@ -65,6 +66,9 @@ class MyApp extends StatelessWidget {
               ),
           MyRoutes.adminProfilRoute: (_, __) => MaterialPage(
                 child: AdminProfileScreen(),
+              ),
+          MyRoutes.adminResultsRoute: (_, __) => MaterialPage(
+                child: AdminResultsScreen(),
               ),
         }),
         title: 'Begrüssungs- und Erreichbarkeitstrainer',
