@@ -2,21 +2,21 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:rgntrainer_frontend/host.dart';
-import 'package:rgntrainer_frontend/models/user_results_model.dart';
+import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 
-class UserResultsProvider with ChangeNotifier {
+class BureauResultsProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
 
-  List<UserResults> _userResults = [];
+  List<BureauResults> _bureauResults = [];
   bool _isLoading = false;
 
-  List<UserResults> get userResults {
-    return _userResults;
+  List<BureauResults> get bureauResults {
+    return _bureauResults;
   }
 
-  Future getUserResults(token) async {
+  Future getBureauResults(token) async {
     _isLoading = true;
-    var url = Uri.parse('${activeHost}/getUserResults');
+    var url = Uri.parse('${activeHost}/getTotalResults');
     final response = await post(
       url,
       headers: {
@@ -29,14 +29,14 @@ class UserResultsProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       debugPrint(jsonResponse.toString());
-      List<UserResults> _result = [];
+      List<BureauResults> _result = [];
       final List<dynamic> _temp = jsonResponse;
       _temp.forEach((test) {
         final Map<String, dynamic> _temp2 = test;
-        final UserResults userResults = UserResults.fromJson(_temp2);
+        final BureauResults userResults = BureauResults.fromJson(_temp2);
         _result.add(userResults);
       });
-      _userResults = _result;
+      _bureauResults = _result;
       _isLoading = false;
     } else {
       throw Exception('Failed to load user results');

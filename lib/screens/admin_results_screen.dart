@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
-import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
+import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -44,8 +43,8 @@ class _AdminCardState extends State<AdminResultsCard> {
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<UserResultsProvider>(context, listen: false)
-        .getTotalUserResults(_currentUser.token);
+    await Provider.of<BureauResultsProvider>(context, listen: false)
+        .getBureauResults(_currentUser.token);
     setState(() {
       _isLoading = false;
     });
@@ -62,7 +61,7 @@ class _AdminCardState extends State<AdminResultsCard> {
         child: CircularProgressIndicator(),
       );
     } else {
-      final _myUserResultsProvider = context.watch<UserResultsProvider>();
+      final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
       return Scaffold(
         appBar: AppBar(
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
@@ -132,7 +131,7 @@ class _AdminCardState extends State<AdminResultsCard> {
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: userResultsData(_myUserResultsProvider),
+                child: bureauResultsData(_myBureauResultsProvider),
               ),
             ],
           ),
@@ -141,29 +140,26 @@ class _AdminCardState extends State<AdminResultsCard> {
     }
   }
 
-  Widget userResultsData(UserResultsProvider _myUserResultsProvider) {
+  Widget bureauResultsData(BureauResultsProvider _myUserResultsProvider) {
     return DataTable(
         columns: const <DataColumn>[
           DataColumn(
-            label: Text("Nummer"),
+            label: Text("Büro"),
           ),
           DataColumn(
-            label: Text("Abteilung"),
+            label: Text("Totale Anrufe"),
           ),
           DataColumn(
-            label: Text("Datum"),
-          ),
-          DataColumn(
-            label: Text("erreicht"),
+            label: Text("Anrufe beantwortet"),
           ),
           DataColumn(
             label: Text("Organisation gesagt"),
           ),
           DataColumn(
-            label: Text("Abteilung gesagt"),
+            label: Text("Büro gesagt"),
           ),
           DataColumn(
-            label: Text("Büro gesagt"),
+            label: Text("Abteilung gesagt"),
           ),
           DataColumn(
             label: Text("Vorname gesagt"),
@@ -178,51 +174,47 @@ class _AdminCardState extends State<AdminResultsCard> {
             label: Text("Spezifische Wörter gesagt"),
           ),
           DataColumn(
-            label: Text("Anrufbeantworter gestartet"),
+            label: Text("Erreicht"),
           ),
           DataColumn(
-            label: Text("Anrufbeantworter korrekt"),
+            label: Text("Anruf komplett"),
           ),
           DataColumn(
-            label: Text("Zurückgerufen (Falls AB)"),
+            label: Text("AB aufgeschaltet (falls nicht erreicht)"),
           ),
           DataColumn(
-            label: Text("Rückruf rechtzeitig (Falls AB)"),
+            label: Text("AB Nachricht korrekt"),
           ),
           DataColumn(
-            label: Text("Anruf abgeschlossen"),
+            label: Text("Rückruf nach AB"),
+          ),
+          DataColumn(
+            label: Text("Rückruf nach AB innerhalb der Zeit"),
+          ),
+          DataColumn(
+            label: Text("Durchschnittliche Klingelzeit"),
           ),
         ],
-        rows: _myUserResultsProvider.userResults
+        rows: _myUserResultsProvider.bureauResults
             .map((data) => DataRow(cells: [
-                  DataCell(Text(data.number.toString())),
-                  DataCell(Text(data.department.toString())),
-                  DataCell(Text(data.date.toString())),
-                  DataCell(getCheck(checked: data.reached)),
-                  DataCell(getCheck(checked: data.saidOrganization)),
-                  DataCell(getCheck(checked: data.saidDepartment)),
-                  DataCell(getCheck(checked: data.saidBureau)),
-                  DataCell(getCheck(checked: data.saidFirstname)),
-                  DataCell(getCheck(checked: data.saidName)),
-                  DataCell(getCheck(checked: data.saidGreeting)),
-                  DataCell(getCheck(checked: data.saidSpecificWords)),
-                  DataCell(getCheck(checked: data.responderStarted)),
-                  DataCell(getCheck(checked: data.responderCorrect)),
-                  DataCell(getCheck(checked: data.callbackDone)),
-                  DataCell(getCheck(checked: data.callbackInTime)),
-                  DataCell(getCheck(checked: data.callCompleted)),
+                  DataCell(Text(data.bureau.toString())),
+                  DataCell(Text(data.totalCalls.toString())),
+                  DataCell(Text(data.totalCallsReached.toString())),
+                  DataCell(Text(data.rateSaidOrganization + "%")),
+                  DataCell(Text(data.rateSaidBureau + "%")),
+                  DataCell(Text(data.rateSaidDepartment + "%")),
+                  DataCell(Text(data.rateSaidFirstname + "%")),
+                  DataCell(Text(data.rateSaidName + "%")),
+                  DataCell(Text(data.rateSaidGreeting + "%")),
+                  DataCell(Text(data.rateSaidSpecificWords + "%")),
+                  DataCell(Text(data.rateReached + "%")),
+                  DataCell(Text(data.rateCallCompleted + "%")),
+                  DataCell(Text(data.rateResponderStartedIfNotReached + "%")),
+                  DataCell(Text(data.rateResponderCorrect + "%")),
+                  DataCell(Text(data.rateCallbackDone + "%")),
+                  DataCell(Text(data.rateCallbackInTime + "%")),
+                  DataCell(Text(data.meanRingingTime + "Sekunden")),
                 ]))
             .toList());
-  }
-}
-
-Icon getCheck({bool? checked}) {
-  if (checked == null) {
-    return const Icon(Icons.minimize, color: Colors.grey, size: 24);
-  }
-  if (checked == true) {
-    return const Icon(Icons.check, color: Colors.green, size: 24);
-  } else {
-    return const Icon(Icons.clear, color: Colors.red, size: 24);
   }
 }
