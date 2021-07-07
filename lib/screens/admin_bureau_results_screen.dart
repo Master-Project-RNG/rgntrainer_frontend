@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
@@ -163,34 +164,44 @@ class _AdminCardState extends State<AdminResultsCard> {
 
   Widget bureauResultsData(BureauResultsProvider _myBureauResultsProvider) {
     return DataTable(
-        columns: getColumns(columns),
-        rows: _myBureauResultsProvider.bureauResults
-            .map((data) => DataRow(cells: [
-                  DataCell(Text(data.bureau.toString())),
-                  DataCell(Text(data.totalCalls.toString())),
-                  DataCell(Text(data.totalCallsReached.toString())),
-                  DataCell(Text(data.rateSaidOrganization + "%")),
-                  DataCell(Text(data.rateSaidBureau + "%")),
-                  DataCell(Text(data.rateSaidDepartment + "%")),
-                  DataCell(Text(data.rateSaidFirstname + "%")),
-                  DataCell(Text(data.rateSaidName + "%")),
-                  DataCell(Text(data.rateSaidGreeting + "%")),
-                  DataCell(Text(data.rateSaidSpecificWords + "%")),
-                  DataCell(Text(data.rateReached + "%")),
-                  DataCell(Text(data.rateCallCompleted + "%")),
-                  DataCell(Text(data.rateResponderStartedIfNotReached + "%")),
-                  DataCell(Text(data.rateResponderCorrect + "%")),
-                  DataCell(Text(data.rateCallbackDone + "%")),
-                  DataCell(Text(data.rateCallbackInTime + "%")),
-                  DataCell(Text(data.meanRingingTime + "Sekunden")),
-                ]))
-            .toList());
+      columns: getColumns(columns),
+      rows: getRows(_myBureauResultsProvider.bureauResults),
+    );
   }
 
   List<DataColumn> getColumns(List<String> columns) => columns
-      .map((String column) => DataColumn(
-            label: Text(column),
-            // onSort: onSort,
-          ))
+      .map(
+        (String column) => DataColumn(
+          label: Text(column),
+          // onSort: onSort,
+        ),
+      )
       .toList();
+
+  List<DataRow> getRows(List<BureauResults> bureauResults) =>
+      bureauResults.map((BureauResults data) {
+        final cells = [
+          data.bureau.toString(),
+          data.totalCalls.toString(),
+          data.totalCallsReached.toString(),
+          data.rateSaidOrganization + "%",
+          data.rateSaidBureau + "%",
+          data.rateSaidDepartment + "%",
+          data.rateSaidFirstname + "%",
+          data.rateSaidName + "%",
+          data.rateSaidGreeting + "%",
+          data.rateSaidSpecificWords + "%",
+          data.rateReached + "%",
+          data.rateCallCompleted + "%",
+          data.rateResponderStartedIfNotReached + "%",
+          data.rateResponderCorrect + "%",
+          data.rateCallbackDone + "%",
+          data.rateCallbackInTime + "%",
+          data.meanRingingTime + "Sekunden",
+        ];
+        return DataRow(cells: getCells(cells));
+      }).toList();
+
+  List<DataCell> getCells(List<dynamic> cells) =>
+      cells.map((data) => DataCell(Text('$data'))).toList();
 }
