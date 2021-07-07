@@ -98,14 +98,15 @@ class _AdminCardState extends State<AdminResultsCard> {
           ],
           automaticallyImplyLeading: false,
         ),
-        body: Container(
+        body:
+            /* DataTableDemo() */ Container(
           padding: const EdgeInsets.all(100.0),
           child: ListView(
             children: [
               const Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  "User Ansicht",
+                  "Admin Ansicht",
                   style: TextStyle(fontSize: 42),
                 ),
               ),
@@ -115,7 +116,7 @@ class _AdminCardState extends State<AdminResultsCard> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  "Resultate für User: ${_currentUser.username}",
+                  "Resultate der Büros für ${_currentUser.organization}",
                   style: const TextStyle(fontSize: 34),
                 ),
               ),
@@ -140,62 +141,30 @@ class _AdminCardState extends State<AdminResultsCard> {
     }
   }
 
-  Widget bureauResultsData(BureauResultsProvider _myUserResultsProvider) {
+  final columns = [
+    'Büro',
+    'Totale Anrufe',
+    'Anrufe beantwortet',
+    'Organisation gesagt',
+    "Büro gesagt",
+    "Abteilung gesagt",
+    "Vorname gesagt",
+    "Nachname gesagt",
+    "Begrüssung gesagt",
+    "Spezifische Wörter gesagt",
+    "Erreicht",
+    "Anruf komplett",
+    "AB aufgeschaltet (falls nicht erreicht)",
+    "AB Nachricht korrekt",
+    "Rückruf nach AB",
+    "Rückruf nach AB innerhalb der Zeit",
+    "Durchschnittliche Klingelzeit",
+  ];
+
+  Widget bureauResultsData(BureauResultsProvider _myBureauResultsProvider) {
     return DataTable(
-        columns: const <DataColumn>[
-          DataColumn(
-            label: Text("Büro"),
-          ),
-          DataColumn(
-            label: Text("Totale Anrufe"),
-          ),
-          DataColumn(
-            label: Text("Anrufe beantwortet"),
-          ),
-          DataColumn(
-            label: Text("Organisation gesagt"),
-          ),
-          DataColumn(
-            label: Text("Büro gesagt"),
-          ),
-          DataColumn(
-            label: Text("Abteilung gesagt"),
-          ),
-          DataColumn(
-            label: Text("Vorname gesagt"),
-          ),
-          DataColumn(
-            label: Text("Nachname gesagt"),
-          ),
-          DataColumn(
-            label: Text("Begrüssung gesagt"),
-          ),
-          DataColumn(
-            label: Text("Spezifische Wörter gesagt"),
-          ),
-          DataColumn(
-            label: Text("Erreicht"),
-          ),
-          DataColumn(
-            label: Text("Anruf komplett"),
-          ),
-          DataColumn(
-            label: Text("AB aufgeschaltet (falls nicht erreicht)"),
-          ),
-          DataColumn(
-            label: Text("AB Nachricht korrekt"),
-          ),
-          DataColumn(
-            label: Text("Rückruf nach AB"),
-          ),
-          DataColumn(
-            label: Text("Rückruf nach AB innerhalb der Zeit"),
-          ),
-          DataColumn(
-            label: Text("Durchschnittliche Klingelzeit"),
-          ),
-        ],
-        rows: _myUserResultsProvider.bureauResults
+        columns: getColumns(columns),
+        rows: _myBureauResultsProvider.bureauResults
             .map((data) => DataRow(cells: [
                   DataCell(Text(data.bureau.toString())),
                   DataCell(Text(data.totalCalls.toString())),
@@ -217,4 +186,11 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ]))
             .toList());
   }
+
+  List<DataColumn> getColumns(List<String> columns) => columns
+      .map((String column) => DataColumn(
+            label: Text(column),
+            // onSort: onSort,
+          ))
+      .toList();
 }
