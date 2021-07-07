@@ -28,8 +28,11 @@ class AdminResultsCard extends StatefulWidget {
 
 class _AdminCardState extends State<AdminResultsCard> {
   late User _currentUser = User.init();
-
   var _isLoading = false;
+  late List<BureauResults> bureauResults;
+
+  int? sortColumnIndex; //Reflects the column that is currently sorted!
+  bool isAscending = false;
 
   @override
   void initState() {
@@ -44,8 +47,9 @@ class _AdminCardState extends State<AdminResultsCard> {
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<BureauResultsProvider>(context, listen: false)
-        .getBureauResults(_currentUser.token);
+    bureauResults =
+        await Provider.of<BureauResultsProvider>(context, listen: false)
+            .getBureauResults(_currentUser.token);
     setState(() {
       _isLoading = false;
     });
@@ -57,10 +61,6 @@ class _AdminCardState extends State<AdminResultsCard> {
 
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
-    } else if (_isLoading == true) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
     } else {
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
       return Scaffold(
@@ -163,17 +163,24 @@ class _AdminCardState extends State<AdminResultsCard> {
   ];
 
   Widget bureauResultsData(BureauResultsProvider _myBureauResultsProvider) {
-    return DataTable(
-      columns: getColumns(columns),
-      rows: getRows(_myBureauResultsProvider.bureauResults),
-    );
+    if (_isLoading == true) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else
+      return DataTable(
+        sortAscending: isAscending,
+        sortColumnIndex: sortColumnIndex,
+        columns: getColumns(columns),
+        rows: getRows(_myBureauResultsProvider.bureauResults),
+      );
   }
 
   List<DataColumn> getColumns(List<String> columns) => columns
       .map(
         (String column) => DataColumn(
           label: Text(column),
-          // onSort: onSort,
+          onSort: onSort,
         ),
       )
       .toList();
@@ -204,4 +211,169 @@ class _AdminCardState extends State<AdminResultsCard> {
 
   List<DataCell> getCells(List<dynamic> cells) =>
       cells.map((data) => DataCell(Text('$data'))).toList();
+
+  void onSort(int columnIndex, bool ascending) {
+    if (columnIndex == 0) {
+      bureauResults.sort((user1, user2) =>
+          compareString(ascending, user1.bureau, user2.bureau));
+    } else if (columnIndex == 1) {
+      bureauResults.sort((user1, user2) => compareInteger(
+            ascending,
+            int.parse(user1.totalCalls),
+            int.parse(user2.totalCalls),
+          ));
+    } else if (columnIndex == 2) {
+      bureauResults.sort((user1, user2) => compareInteger(
+            ascending,
+            int.parse(user1.totalCallsReached),
+            int.parse(user2.totalCallsReached),
+          ));
+    } else if (columnIndex == 3) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateSaidOrganization != "-"
+                ? double.parse(user1.rateSaidOrganization)
+                : -1.0,
+            user2.rateSaidOrganization != "-"
+                ? double.parse(user2.rateSaidOrganization)
+                : -1.0,
+          ));
+    } else if (columnIndex == 4) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateSaidBureau != "-"
+                ? double.parse(user1.rateSaidBureau)
+                : -1.0,
+            user2.rateSaidBureau != "-"
+                ? double.parse(user2.rateSaidBureau)
+                : -1.0,
+          ));
+    } else if (columnIndex == 5) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateSaidDepartment != "-"
+                ? double.parse(user1.rateSaidDepartment)
+                : -1.0,
+            user2.rateSaidDepartment != "-"
+                ? double.parse(user2.rateSaidDepartment)
+                : -1.0,
+          ));
+    } else if (columnIndex == 6) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateSaidFirstname != "-"
+                ? double.parse(user1.rateSaidFirstname)
+                : -1.0,
+            user2.rateSaidFirstname != "-"
+                ? double.parse(user2.rateSaidFirstname)
+                : -1.0,
+          ));
+    } else if (columnIndex == 7) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateSaidName != "-" ? double.parse(user1.rateSaidName) : -1.0,
+            user2.rateSaidName != "-" ? double.parse(user2.rateSaidName) : -1.0,
+          ));
+    } else if (columnIndex == 8) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateSaidGreeting != "-"
+                ? double.parse(user1.rateSaidGreeting)
+                : -1.0,
+            user2.rateSaidGreeting != "-"
+                ? double.parse(user2.rateSaidGreeting)
+                : -1.0,
+          ));
+    } else if (columnIndex == 9) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateSaidSpecificWords != "-"
+                ? double.parse(user1.rateSaidSpecificWords)
+                : -1.0,
+            user2.rateSaidSpecificWords != "-"
+                ? double.parse(user2.rateSaidSpecificWords)
+                : -1.0,
+          ));
+    } else if (columnIndex == 10) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateReached != "-" ? double.parse(user1.rateReached) : -1.0,
+            user2.rateReached != "-" ? double.parse(user2.rateReached) : -1.0,
+          ));
+    } else if (columnIndex == 11) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateCallCompleted != "-"
+                ? double.parse(user1.rateCallCompleted)
+                : -1.0,
+            user2.rateCallCompleted != "-"
+                ? double.parse(user2.rateCallCompleted)
+                : -1.0,
+          ));
+    } else if (columnIndex == 12) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateResponderStartedIfNotReached != "-"
+                ? double.parse(user1.rateResponderStartedIfNotReached)
+                : -1.0,
+            user2.rateResponderStartedIfNotReached != "-"
+                ? double.parse(user2.rateResponderStartedIfNotReached)
+                : -1.0,
+          ));
+    } else if (columnIndex == 13) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateResponderCorrect != "-"
+                ? double.parse(user1.rateResponderCorrect)
+                : -1.0,
+            user2.rateResponderCorrect != "-"
+                ? double.parse(user2.rateResponderCorrect)
+                : -1.0,
+          ));
+    } else if (columnIndex == 14) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateCallbackDone != "-"
+                ? double.parse(user1.rateCallbackDone)
+                : -1.0,
+            user2.rateCallbackDone != "-"
+                ? double.parse(user2.rateCallbackDone)
+                : -1.0,
+          ));
+    } else if (columnIndex == 15) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateCallbackInTime != "-"
+                ? double.parse(user1.rateCallbackInTime)
+                : -1.0,
+            user2.rateCallbackInTime != "-"
+                ? double.parse(user2.rateCallbackInTime)
+                : -1.0,
+          ));
+    } else if (columnIndex == 16) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.meanRingingTime != "-"
+                ? double.parse(user1.meanRingingTime)
+                : -1.0,
+            user2.meanRingingTime != "-"
+                ? double.parse(user2.meanRingingTime)
+                : -1.0,
+          ));
+    }
+    setState(() {
+      this.sortColumnIndex = columnIndex;
+      this.isAscending = ascending;
+    });
+  }
+
+  int compareString(bool ascending, String value1, String value2) =>
+      ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+
+  int compareInteger(bool ascending, int value1, int value2) =>
+      ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+
+  int compareDouble(bool ascending, double value1, double value2) {
+    return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+  }
 }

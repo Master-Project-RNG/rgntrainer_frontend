@@ -8,14 +8,12 @@ class BureauResultsProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
 
   List<BureauResults> _bureauResults = [];
-  bool _isLoading = false;
 
   List<BureauResults> get bureauResults {
     return _bureauResults;
   }
 
-  Future getBureauResults(token) async {
-    _isLoading = true;
+  Future<List<BureauResults>> getBureauResults(token) async {
     var url = Uri.parse('${activeHost}/getTotalResults');
     final response = await post(
       url,
@@ -37,7 +35,7 @@ class BureauResultsProvider with ChangeNotifier {
         _result.add(userResults);
       });
       _bureauResults = _result;
-      _isLoading = false;
+      return _bureauResults;
     } else {
       throw Exception('Failed to load user results');
     }
