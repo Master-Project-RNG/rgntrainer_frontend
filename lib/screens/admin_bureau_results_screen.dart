@@ -9,6 +9,7 @@ import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:intl/intl.dart';
 
 class AdminResultsScreen extends StatelessWidget {
   @override
@@ -377,3 +378,61 @@ class _AdminCardState extends State<AdminResultsCard> {
     return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
   }
 }
+
+/*
+class BureauResultDataSource extends DataTableSource {
+  List<BureauResults> _bureauResults;
+  int _selectedCount = 0;
+
+  BureauResultDataSource(List<BureauResults> this._bureauResults);
+
+  @override
+  DataRow? getRow(int index) {
+    final format = NumberFormat.decimalPercentPattern(
+      decimalDigits: 0,
+    );
+    assert(index >= 0);
+    if (index >= _bureauResults.length) return null!;
+    final bureauResult = _bureauResults[index];
+    return DataRow.byIndex(
+      index: index,
+      cells: getRows(bureauResult),
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => _bureauResults.length;
+
+  @override
+  int get selectedRowCount => _selectedCount;
+
+  List<DataCell> getRows(BureauResults data) {
+    var cells = [
+      data.bureau.toString(),
+      data.totalCalls.toString(),
+      data.totalCallsReached.toString(),
+      data.rateSaidOrganization + "%",
+      data.rateSaidBureau + "%",
+      data.rateSaidDepartment + "%",
+      data.rateSaidFirstname + "%",
+      data.rateSaidName + "%",
+      data.rateSaidGreeting + "%",
+      data.rateSaidSpecificWords + "%",
+      data.rateReached + "%",
+      data.rateCallCompleted + "%",
+      data.rateResponderStartedIfNotReached + "%",
+      data.rateResponderCorrect + "%",
+      data.rateCallbackDone + "%",
+      data.rateCallbackInTime + "%",
+      data.meanRingingTime + "Sekunden",
+    ];
+    return getCells(cells);
+  }
+
+  List<DataCell> getCells(List<dynamic> cells) =>
+      cells.map((data) => DataCell(Text('$data'))).toList();
+}
+*/

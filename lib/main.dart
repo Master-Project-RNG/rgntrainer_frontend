@@ -10,7 +10,7 @@ import 'package:velocity_x/velocity_x.dart';
 //My files
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:rgntrainer_frontend/screens/admin_home_screen.dart';
+import 'package:rgntrainer_frontend/screens/admin_configuration_screen.dart';
 import 'package:rgntrainer_frontend/screens/user_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/login_screen.dart';
 
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
                 child: LoginScreen(),
               ),
           MyRoutes.adminRoute: (_, __) => MaterialPage(
-                child: AdminHomeScreen(),
+                child: AdminConfigurationScreen(),
               ),
           MyRoutes.userRoute: (_, __) => MaterialPage(
                 child: UserHomeScreen(),
