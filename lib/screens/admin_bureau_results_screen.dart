@@ -161,9 +161,9 @@ class _AdminCardState extends State<AdminResultsCard> {
     "Anruf komplett",
     "AB aufgeschaltet (falls nicht erreicht)",
     "AB Nachricht korrekt",
-    "rateCallbackDoneNoAnswer",
-    "rateCallbackDoneResponder",
-    "Rückruf nach AB innerhalb der Zeit",
+    "Kein AB geschaltet - Rückrufrate",
+    "AB geschaltet - Rückrufrate",
+    "Rückruf innerhalb der Zeit",
     "Durchschnittliche Klingelzeit",
   ];
 
