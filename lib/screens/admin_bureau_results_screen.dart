@@ -34,6 +34,22 @@ class _AdminCardState extends State<AdminResultsCard> {
   int? sortColumnIndex; //Reflects the column that is currently sorted!
   bool isAscending = false;
 
+  bool showColumn1 = true;
+  bool showColumn2 = true;
+  bool showColumn3 = true;
+  bool showColumn4 = true;
+  bool showColumn5 = true;
+  bool showColumn6 = true;
+  bool showColumn7 = true;
+  bool showColumn8 = true;
+  bool showColumn9 = true;
+  bool showColumn10 = true;
+  bool showColumn11 = true;
+  bool showColumn12 = true;
+  bool showColumn13 = true;
+  bool showColumn14 = true;
+  bool showColumn15 = true;
+
   @override
   void initState() {
     super.initState();
