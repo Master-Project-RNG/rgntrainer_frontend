@@ -9,7 +9,6 @@ import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:intl/intl.dart';
 
 class AdminResultsScreen extends StatelessWidget {
   @override
@@ -158,7 +157,8 @@ class _AdminCardState extends State<AdminResultsCard> {
     "Anruf komplett",
     "AB aufgeschaltet (falls nicht erreicht)",
     "AB Nachricht korrekt",
-    "Rückruf nach AB",
+    "rateCallbackDoneNoAnswer",
+    "rateCallbackDoneResponder",
     "Rückruf nach AB innerhalb der Zeit",
     "Durchschnittliche Klingelzeit",
   ];
@@ -203,9 +203,10 @@ class _AdminCardState extends State<AdminResultsCard> {
           data.rateCallCompleted + "%",
           data.rateResponderStartedIfNotReached + "%",
           data.rateResponderCorrect + "%",
-          data.rateCallbackDone + "%",
+          data.rateCallbackDoneNoAnswer + "%",
+          data.rateCallbackDoneResponder + "%",
           data.rateCallbackInTime + "%",
-          data.meanRingingTime + "Sekunden",
+          data.meanRingingTime + " Sekunden",
         ];
         return DataRow(cells: getCells(cells));
       }).toList();
@@ -334,11 +335,21 @@ class _AdminCardState extends State<AdminResultsCard> {
     } else if (columnIndex == 14) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateCallbackDone != "-"
-                ? double.parse(user1.rateCallbackDone)
+            user1.rateCallbackDoneNoAnswer != "-"
+                ? double.parse(user1.rateCallbackDoneNoAnswer)
                 : -1.0,
-            user2.rateCallbackDone != "-"
-                ? double.parse(user2.rateCallbackDone)
+            user2.rateCallbackDoneNoAnswer != "-"
+                ? double.parse(user2.rateCallbackDoneNoAnswer)
+                : -1.0,
+          ));
+    } else if (columnIndex == 14) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.rateCallbackDoneResponder != "-"
+                ? double.parse(user1.rateCallbackDoneResponder)
+                : -1.0,
+            user2.rateCallbackDoneResponder != "-"
+                ? double.parse(user2.rateCallbackDoneResponder)
                 : -1.0,
           ));
     } else if (columnIndex == 15) {

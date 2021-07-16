@@ -27,7 +27,8 @@ class BureauResults {
     required this.rateCallCompleted,
     required this.rateResponderStartedIfNotReached,
     required this.rateResponderCorrect,
-    required this.rateCallbackDone,
+    required this.rateCallbackDoneNoAnswer,
+    required this.rateCallbackDoneResponder,
     required this.rateCallbackInTime,
     required this.meanRingingTime,
   });
@@ -46,7 +47,8 @@ class BureauResults {
   String rateCallCompleted;
   String rateResponderStartedIfNotReached;
   String rateResponderCorrect;
-  String rateCallbackDone;
+  String rateCallbackDoneNoAnswer;
+  String rateCallbackDoneResponder;
   String rateCallbackInTime;
   String meanRingingTime;
 
@@ -66,7 +68,8 @@ class BureauResults {
         rateResponderStartedIfNotReached:
             json["rateResponderStartedIfNotReached"].toString(),
         rateResponderCorrect: json["rateResponderCorrect"].toString(),
-        rateCallbackDone: json["rateCallbackDone"].toString(),
+        rateCallbackDoneNoAnswer: json["rateCallbackDoneNoAnswer"].toString(),
+        rateCallbackDoneResponder: json["rateCallbackDoneResponder"].toString(),
         rateCallbackInTime: json["rateCallbackInTime"].toString(),
         meanRingingTime: json["meanRingingTime"].toString(),
       );
@@ -86,7 +89,8 @@ class BureauResults {
         "rateCallCompleted": rateCallCompleted,
         "rateResponderStartedIfNotReached": rateResponderStartedIfNotReached,
         "rateResponderCorrect": rateResponderCorrect,
-        "rateCallbackDone": rateCallbackDone,
+        "rateCallbackDoneNoAnswer": rateCallbackDoneNoAnswer,
+        "rateCallbackDoneResponder": rateCallbackDoneResponder,
         "rateCallbackInTime": rateCallbackInTime,
         "meanRingingTime": meanRingingTime,
       };
