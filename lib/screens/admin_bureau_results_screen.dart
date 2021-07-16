@@ -117,7 +117,7 @@ class _AdminCardState extends State<AdminResultsCard> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  "Resultate der Büros für ${_currentUser.organization}",
+                  "Resultate der Büros für ${_currentUser.username}",
                   style: const TextStyle(fontSize: 34),
                 ),
               ),
@@ -206,7 +206,10 @@ class _AdminCardState extends State<AdminResultsCard> {
           data.rateCallbackDoneNoAnswer + "%",
           data.rateCallbackDoneResponder + "%",
           data.rateCallbackInTime + "%",
-          data.meanRingingTime + " Sekunden",
+          data.meanRingingTime != "-"
+              ? double.parse(data.meanRingingTime).toStringAsFixed(2) +
+                  " Sekunden"
+              : "-",
         ];
         return DataRow(cells: getCells(cells));
       }).toList();
