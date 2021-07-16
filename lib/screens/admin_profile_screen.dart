@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
-import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
@@ -26,9 +25,6 @@ class AdminProfileCard extends StatefulWidget {
 }
 
 class _AdminCardState extends State<AdminProfileCard> {
-  var adminCalls = AdminCallsProvider();
-  var statusText = "init";
-  var tempInterval = 0;
   late User _currentUser = User.init();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -42,6 +38,7 @@ class _AdminCardState extends State<AdminProfileCard> {
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
+    print(_currentUser.token);
   }
 
   Future<void> _submit() async {
@@ -93,6 +90,14 @@ class _AdminCardState extends State<AdminProfileCard> {
         appBar: AppBar(
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
           actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.list_alt),
+              onPressed: () {
+                context.vxNav.push(
+                  Uri.parse(MyRoutes.adminResultsRoute),
+                );
+              },
+            ),
             IconButton(
               icon: Icon(Icons.build_rounded),
               onPressed: () {

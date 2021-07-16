@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/answering_machine_provider.dart';
+import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
+import 'package:rgntrainer_frontend/screens/admin_bureau_results_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 //My files
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:rgntrainer_frontend/screens/admin_home_screen.dart';
+import 'package:rgntrainer_frontend/screens/admin_configuration_screen.dart';
 import 'package:rgntrainer_frontend/screens/user_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/login_screen.dart';
 
@@ -45,6 +47,9 @@ class MyApp extends StatelessWidget {
           value: UserResultsProvider(),
         ),
         ChangeNotifierProvider.value(
+          value: BureauResultsProvider(),
+        ),
+        ChangeNotifierProvider.value(
           value: AdminCallsProvider(),
         ),
         ChangeNotifierProvider.value(
@@ -58,13 +63,16 @@ class MyApp extends StatelessWidget {
                 child: LoginScreen(),
               ),
           MyRoutes.adminRoute: (_, __) => MaterialPage(
-                child: AdminHomeScreen(),
+                child: AdminConfigurationScreen(),
               ),
           MyRoutes.userRoute: (_, __) => MaterialPage(
                 child: UserHomeScreen(),
               ),
           MyRoutes.adminProfilRoute: (_, __) => MaterialPage(
                 child: AdminProfileScreen(),
+              ),
+          MyRoutes.adminResultsRoute: (_, __) => MaterialPage(
+                child: AdminResultsScreen(),
               ),
         }),
         title: 'Begrüssungs- und Erreichbarkeitstrainer',

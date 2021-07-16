@@ -10,7 +10,7 @@ import 'package:rgntrainer_frontend/widgets/greeting/greeting_main.dart';
 import 'package:rgntrainer_frontend/widgets/trainer_config.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class AdminHomeScreen extends StatelessWidget {
+class AdminConfigurationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminCard();
@@ -39,7 +39,6 @@ class _AdminCardState extends State<AdminCard> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
@@ -47,6 +46,14 @@ class _AdminCardState extends State<AdminCard> {
         appBar: AppBar(
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
           actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.list_alt),
+              onPressed: () {
+                context.vxNav.push(
+                  Uri.parse(MyRoutes.adminResultsRoute),
+                );
+              },
+            ),
             IconButton(
               icon: Icon(Icons.build_rounded),
               onPressed: () {},
