@@ -104,22 +104,26 @@ class _AdminCardState extends State<AdminResultsCard> {
           padding: const EdgeInsets.all(100.0),
           child: ListView(
             children: [
-              const Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Admin Ansicht",
-                  style: TextStyle(fontSize: 42),
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Resultate der Büros für ${_currentUser.username}",
-                  style: const TextStyle(fontSize: 34),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Resultate der Büros für ${_currentUser.username}",
+                    style: const TextStyle(fontSize: 34),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.blue, onPrimary: Colors.white),
+                      child: Text('Download'),
+                      onPressed: () {
+                        print('Short Press!');
+                        _myBureauResultsProvider.getResults(_currentUser.token);
+                      },
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 5,
@@ -165,9 +169,7 @@ class _AdminCardState extends State<AdminResultsCard> {
 
   Widget bureauResultsData(BureauResultsProvider _myBureauResultsProvider) {
     if (_isLoading == true) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+      return CircularProgressIndicator();
     } else
       return DataTable(
         sortAscending: isAscending,

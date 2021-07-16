@@ -299,33 +299,6 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 200,
-                        child: Text(
-                          'Resultate:',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 200,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.blue, onPrimary: Colors.white),
-                          child: Text('Download'),
-                          onPressed: () {
-                            print('Short Press!');
-                            adminCalls.getResults(_currentUser.token);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

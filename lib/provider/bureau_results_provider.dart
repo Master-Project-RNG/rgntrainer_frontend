@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
+import 'dart:html';
 
 class BureauResultsProvider with ChangeNotifier {
   var activeHost = Host().getActiveHost();
@@ -38,6 +39,37 @@ class BureauResultsProvider with ChangeNotifier {
       return _bureauResults;
     } else {
       throw Exception('Failed to load user results');
+    }
+  }
+
+  //download
+  getResults(token) async {
+    var url = Uri.parse('${activeHost}/downloadResults');
+    final response = await post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode(
+        {
+          'token': token,
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      final blob = Blob([response.bodyBytes],
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      final url = Url.createObjectUrlFromBlob(blob);
+
+      final anchor = AnchorElement(href: url)..target = 'blank';
+      // add the name
+      anchor.download = 'resultate.xlsx';
+      // trigger download
+      document.body!.append(anchor);
+      anchor.click();
+      anchor.remove();
+    } else {
+      throw Exception('Unable to download results!');
     }
   }
 }
