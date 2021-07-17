@@ -34,21 +34,26 @@ class _AdminCardState extends State<AdminResultsCard> {
   int? sortColumnIndex; //Reflects the column that is currently sorted!
   bool isAscending = false;
 
-  bool showColumn1 = true;
-  bool showColumn2 = true;
-  bool showColumn3 = true;
-  bool showColumn4 = true;
-  bool showColumn5 = true;
-  bool showColumn6 = true;
-  bool showColumn7 = true;
-  bool showColumn8 = true;
-  bool showColumn9 = true;
-  bool showColumn10 = true;
-  bool showColumn11 = true;
-  bool showColumn12 = true;
-  bool showColumn13 = true;
-  bool showColumn14 = true;
-  bool showColumn15 = true;
+  List<bool> showColumns = [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+  ];
 
   @override
   void initState() {
@@ -190,47 +195,65 @@ class _AdminCardState extends State<AdminResultsCard> {
       return DataTable(
         sortAscending: isAscending,
         sortColumnIndex: sortColumnIndex,
-        columns: getColumns(columns),
-        rows: getRows(_myBureauResultsProvider.bureauResults),
+        columns: getColumns(columns, showColumns),
+        rows: getRows(_myBureauResultsProvider.bureauResults, showColumns),
       );
   }
 
-  List<DataColumn> getColumns(List<String> columns) => columns
-      .map(
-        (String column) => DataColumn(
-          label: Text(column),
-          onSort: onSort,
-        ),
-      )
-      .toList();
+  List<DataColumn> getColumns(List<String> columns, List<bool> showColums) {
+    List<DataColumn> dataColumnResult = [];
+    for (int i = 0; i < columns.length; i++) {
+      if (showColumns[i] == true) {
+        dataColumnResult.add(
+          DataColumn(
+            label: Text(columns[i]),
+            onSort: onSort,
+          ),
+        );
+      }
+    }
+    return dataColumnResult;
+  }
 
-  List<DataRow> getRows(List<BureauResults> bureauResults) =>
-      bureauResults.map((BureauResults data) {
-        final cells = [
-          data.bureau.toString(),
-          data.totalCalls.toString(),
-          data.totalCallsReached.toString(),
-          data.rateSaidOrganization + "%",
-          data.rateSaidBureau + "%",
-          data.rateSaidDepartment + "%",
-          data.rateSaidFirstname + "%",
-          data.rateSaidName + "%",
-          data.rateSaidGreeting + "%",
-          data.rateSaidSpecificWords + "%",
-          data.rateReached + "%",
-          data.rateCallCompleted + "%",
-          data.rateResponderStartedIfNotReached + "%",
-          data.rateResponderCorrect + "%",
-          data.rateCallbackDoneNoAnswer + "%",
-          data.rateCallbackDoneResponder + "%",
-          data.rateCallbackInTime + "%",
-          data.meanRingingTime != "-"
-              ? double.parse(data.meanRingingTime).toStringAsFixed(2) +
-                  " Sekunden"
-              : "-",
-        ];
-        return DataRow(cells: getCells(cells));
-      }).toList();
+  List<DataRow> getRows(
+      List<BureauResults> bureauResults, List<bool> showColums) {
+    List<DataRow> dataRowResult = [];
+    for (int i = 0; i < bureauResults.length; i++) {
+      final cells = [];
+      if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
+      if (showColumns[1]) cells.add(bureauResults[i].totalCalls.toString());
+      if (showColumns[2])
+        cells.add(bureauResults[i].totalCallsReached.toString());
+      if (showColumns[3])
+        cells.add(bureauResults[i].rateSaidOrganization + "%");
+      if (showColumns[4]) cells.add(bureauResults[i].rateSaidBureau + "%");
+      if (showColumns[5]) cells.add(bureauResults[i].rateSaidDepartment + "%");
+      if (showColumns[6]) cells.add(bureauResults[i].rateSaidFirstname + "%");
+      if (showColumns[7]) cells.add(bureauResults[i].rateSaidName + "%");
+      if (showColumns[8]) cells.add(bureauResults[i].rateSaidGreeting + "%");
+      if (showColumns[9])
+        cells.add(bureauResults[i].rateSaidSpecificWords + "%");
+      if (showColumns[10]) cells.add(bureauResults[i].rateReached + "%");
+      if (showColumns[11]) cells.add(bureauResults[i].rateCallCompleted + "%");
+      if (showColumns[12])
+        cells.add(bureauResults[i].rateResponderStartedIfNotReached + "%");
+      if (showColumns[13])
+        cells.add(bureauResults[i].rateResponderCorrect + "%");
+      if (showColumns[14])
+        cells.add(bureauResults[i].rateCallbackDoneNoAnswer + "%");
+      if (showColumns[15])
+        cells.add(bureauResults[i].rateCallbackDoneResponder + "%");
+      if (showColumns[16]) cells.add(bureauResults[i].rateCallbackInTime + "%");
+      if (showColumns[17])
+        cells.add(bureauResults[i].meanRingingTime != "-"
+            ? double.parse(bureauResults[i].meanRingingTime)
+                    .toStringAsFixed(2) +
+                " Sekunden"
+            : "-");
+      dataRowResult.add(DataRow(cells: getCells(cells)));
+    }
+    return dataRowResult;
+  }
 
   List<DataCell> getCells(List<dynamic> cells) =>
       cells.map((data) => DataCell(Text('$data'))).toList();
