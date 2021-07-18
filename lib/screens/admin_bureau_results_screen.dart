@@ -79,7 +79,6 @@ class _AdminCardState extends State<AdminResultsCard> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
@@ -131,6 +130,58 @@ class _AdminCardState extends State<AdminResultsCard> {
                   Text(
                     "Resultate der Büros für ${_currentUser.username}",
                     style: const TextStyle(fontSize: 34),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: PopupMenuButton(
+                        itemBuilder: (context) {
+                          return List.generate(
+                            columns.length,
+                            (index) {
+                              return PopupMenuItem(
+                                child: StatefulBuilder(
+                                  builder: (BuildContext context,
+                                      StateSetter setState2) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        (isVisible(index, showColumns))
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  setState2(() {
+                                                    changeVisibilty(
+                                                        index, showColumns);
+                                                  });
+                                                  setState(() {
+                                                    _isLoading = false;
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                  Icons.remove_circle,
+                                                  color: Colors.red,
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                        Text(columns.elementAt(index)),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(
+                              Icons.remove_red_eye,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            const Text(' Spalten ein-/ausblenden')
+                          ],
+                        )),
                   ),
                   SizedBox(
                     width: 200,
@@ -200,7 +251,17 @@ class _AdminCardState extends State<AdminResultsCard> {
       );
   }
 
-  List<DataColumn> getColumns(List<String> columns, List<bool> showColums) {
+  void changeVisibilty(int index, List<bool> list) {
+    list[index] = list.elementAt(index).toggle();
+  }
+
+  bool isVisible(int index, List<bool> list) {
+    bool result;
+    list.elementAt(index) == true ? result = true : result = false;
+    return result;
+  }
+
+  List<DataColumn> getColumns(List<String> columns, List<bool> showColumns) {
     List<DataColumn> dataColumnResult = [];
     for (int i = 0; i < columns.length; i++) {
       if (showColumns[i] == true) {
