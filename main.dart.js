@@ -9465,7 +9465,7 @@ _.a=0
 _.c=_.b=null},
 Cs:function(){var s=null
 $.m4()
-return new A.tN("http://188.155.65.59:8081",Y.agk(),new Y.ep("None",s,s,s,s),B.hE(),P.y(t.N,t.z),new P.aC(t.V))},
+return new A.tN("http://rngtrainer-backend.herokuapp.com",Y.agk(),new Y.ep("None",s,s,s,s),B.hE(),P.y(t.N,t.z),new P.aC(t.V))},
 tN:function tN(a,b,c,d,e,f){var _=this
 _.a=a
 _.b=b
@@ -12996,7 +12996,7 @@ YI:function YI(a){this.a=a},
 YH:function YH(){},
 fq:function(){var s=null
 $.m4()
-return new R.tv("http://188.155.65.59:8081",Y.agk(),new Y.ep("None",s,s,s,s),B.hE(),P.y(t.N,t.z),new P.aC(t.V))},
+return new R.tv("http://rngtrainer-backend.herokuapp.com",Y.agk(),new Y.ep("None",s,s,s,s),B.hE(),P.y(t.N,t.z),new P.aC(t.V))},
 tv:function tv(a,b,c,d,e,f){var _=this
 _.a=a
 _.b=b
@@ -64329,7 +64329,7 @@ return"Error: Could not find the correct Provider<"+s.i(0)+"> above this "+r.i(0
 $icu:1}
 M.Xm.prototype={}
 F.FY.prototype={
-G:function(a,b){var s,r,q=null,p="http://188.155.65.59:8081"
+G:function(a,b){var s,r,q=null,p="http://rngtrainer-backend.herokuapp.com"
 $.m4()
 s=t.V
 r=H.a([T.D7(new U.hQ(p,new P.aC(s)),t.W0),T.D7(new R.yw(p,H.a([],t.ZM),new P.aC(s)),t.Fo),T.D7(new L.u0(p,H.a([],t.LC),new P.aC(s)),t.T2),T.D7(R.fq(),t.ur),T.D7(A.Cs(),t.fu)],t.Ds)
@@ -64957,7 +64957,7 @@ $R:0,
 $S:0}
 A.a61.prototype={
 $0:function(){$.m4()
-new U.hQ("http://188.155.65.59:8081",new P.aC(t.V)).kc(this.a.gkM().b)
+new U.hQ("http://rngtrainer-backend.herokuapp.com",new P.aC(t.V)).kc(this.a.gkM().b)
 var s=this.b.S(t.Y).z.a
 s.toString
 s.e.gdr().f9(P.bs("/"),null)},
@@ -65172,7 +65172,7 @@ $R:0,
 $S:0}
 L.a60.prototype={
 $0:function(){$.m4()
-new U.hQ("http://188.155.65.59:8081",new P.aC(t.V)).kc(this.a.goM().b)
+new U.hQ("http://rngtrainer-backend.herokuapp.com",new P.aC(t.V)).kc(this.a.goM().b)
 var s=this.b.S(t.Y).z.a
 s.toString
 s.e.gdr().f9(P.bs("/"),null)},
@@ -65271,7 +65271,7 @@ $R:0,
 $S:0}
 A.a66.prototype={
 $0:function(){$.m4()
-new U.hQ("http://188.155.65.59:8081",new P.aC(t.V)).kc(this.a.goN().b)
+new U.hQ("http://rngtrainer-backend.herokuapp.com",new P.aC(t.V)).kc(this.a.goN().b)
 var s=this.b.S(t.Y).z.a
 s.toString
 s.e.gdr().f9(P.bs("/"),null)},
@@ -65407,7 +65407,7 @@ return P.P($async$tS,r)},
 G:function(a,b){var s,r,q=this,p=null
 C.x7.a8A(window).a9T(new Q.adD(q))
 if(q.gmN().b==null||q.gmN().c!=="user"){$.m4()
-new U.hQ("http://188.155.65.59:8081",new P.aC(t.V)).kc(q.gmN().b)
+new U.hQ("http://rngtrainer-backend.herokuapp.com",new P.aC(t.V)).kc(q.gmN().b)
 return new K.na(p)}else{s=Y.hm(b,!0,t.Fo)
 r=t.p
 return M.qf(E.kg(H.a([B.d1(p,!0,C.zK,24,new Q.adE(q,b),C.a9,p)],r),!1,p,p,p,p,C.Gx),M.ao(p,B.pw(H.a([C.vy,C.CP,new T.dI(C.cO,p,p,L.aG("Resultate f\xfcr User: "+H.c(q.gmN().a),p,p,p,p,C.v2,p,p),p),C.lZ,M.ao(p,p,C.oe,p,p,2,p,p,p),C.lZ,E.lj(q.acl(s),p,C.a2,p,p,C.n)],r),p),p,p,p,p,p,C.rf,p))}},
@@ -65429,7 +65429,7 @@ return P.P($async$$1,r)},
 $S:408}
 Q.adE.prototype={
 $0:function(){$.m4()
-new U.hQ("http://188.155.65.59:8081",new P.aC(t.V)).kc(this.a.gmN().b)
+new U.hQ("http://rngtrainer-backend.herokuapp.com",new P.aC(t.V)).kc(this.a.gmN().b)
 var s=this.b.S(t.Y).z.a
 s.toString
 s.e.gdr().wI(0,P.bs("/"))},
