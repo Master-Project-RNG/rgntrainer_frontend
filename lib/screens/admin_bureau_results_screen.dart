@@ -134,54 +134,66 @@ class _AdminCardState extends State<AdminResultsCard> {
                   Container(
                     alignment: Alignment.centerLeft,
                     child: PopupMenuButton(
-                        itemBuilder: (context) {
-                          return List.generate(
-                            columns.length,
-                            (index) {
-                              return PopupMenuItem(
-                                child: StatefulBuilder(
-                                  builder: (BuildContext context,
-                                      StateSetter setState2) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        (isVisible(index, showColumns))
-                                            ? IconButton(
-                                                onPressed: () {
-                                                  setState2(() {
-                                                    changeVisibilty(
-                                                        index, showColumns);
-                                                  });
-                                                  setState(() {
-                                                    _isLoading = false;
-                                                  });
-                                                },
-                                                icon: const Icon(
-                                                  Icons.remove_circle,
-                                                  color: Colors.red,
-                                                ),
-                                              )
-                                            : SizedBox(),
-                                        Text(columns.elementAt(index)),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(
-                              Icons.remove_red_eye,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            const Text(' Spalten ein-/ausblenden')
-                          ],
-                        )),
+                      itemBuilder: (context) {
+                        return List.generate(
+                          columns.length,
+                          (index) {
+                            return PopupMenuItem(
+                              child: StatefulBuilder(
+                                builder: (BuildContext context,
+                                    StateSetter setState2) {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      (isVisible(index, showColumns))
+                                          ? IconButton(
+                                              onPressed: () {
+                                                setState2(() {
+                                                  changeVisibilty(
+                                                      index, showColumns);
+                                                });
+                                                setState(() {
+                                                  _isLoading = false;
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.remove_circle,
+                                                color: Colors.red,
+                                              ),
+                                            )
+                                          : SizedBox(),
+                                      Text(columns.elementAt(index)),
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: SizedBox(
+                        width: 200,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2))),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Spalten ein-/ausblenden',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        /*  Row(
+                        children: [
+                          Icon(
+                            Icons.remove_red_eye,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          const Text(' Spalten ein-/ausblenden')
+                        ],*/
+                      ),
+                    ),
                   ),
                   SizedBox(
                     width: 200,
