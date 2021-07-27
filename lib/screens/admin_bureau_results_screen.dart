@@ -161,7 +161,21 @@ class _AdminCardState extends State<AdminResultsCard> {
                                                 color: Colors.red,
                                               ),
                                             )
-                                          : SizedBox(),
+                                          : IconButton(
+                                              onPressed: () {
+                                                setState2(() {
+                                                  changeVisibilty(
+                                                      index, showColumns);
+                                                });
+                                                setState(() {
+                                                  _isLoading = false;
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.add_circle,
+                                                color: Colors.green,
+                                              ),
+                                            ),
                                       Text(columns.elementAt(index)),
                                     ],
                                   );
@@ -173,25 +187,18 @@ class _AdminCardState extends State<AdminResultsCard> {
                       },
                       child: SizedBox(
                         width: 200,
+                        height: 30,
                         child: Container(
                           decoration: BoxDecoration(
                               color: Colors.blue,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(2))),
+                                  BorderRadius.all(Radius.circular(3))),
                           alignment: Alignment.center,
                           child: Text(
                             'Spalten ein-/ausblenden',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
-                        /*  Row(
-                        children: [
-                          Icon(
-                            Icons.remove_red_eye,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          const Text(' Spalten ein-/ausblenden')
-                        ],*/
                       ),
                     ),
                   ),
