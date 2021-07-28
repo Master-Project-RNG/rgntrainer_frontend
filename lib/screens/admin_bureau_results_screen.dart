@@ -6,6 +6,7 @@ import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
+import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -83,6 +84,8 @@ class _AdminCardState extends State<AdminResultsCard> {
       return NoTokenScreen();
     } else {
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
+      final _myDownloadResultsProvider =
+          context.watch<DownloadResultsProvider>();
       return Scaffold(
         appBar: AppBar(
           title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
@@ -205,12 +208,32 @@ class _AdminCardState extends State<AdminResultsCard> {
                     padding: EdgeInsets.only(right: 50),
                     child: PopupMenuButton(
                       onSelected: (result) {
-                        if (result == 0) {
-                          _myBureauResultsProvider
-                              .getResults(_currentUser.token);
-                        } else if (result == 1) {
-                          _myBureauResultsProvider
-                              .getJsonResults(_currentUser.token);
+                        if (_isLoading == true) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Geduld bitte'),
+                              content:
+                                  Text("Die Einträge werden noch geladen."),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: const Text('Schliessen!'),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          if (result == 0) {
+                            _myDownloadResultsProvider
+                                .getExcelResults(_currentUser.token);
+                          } else if (result == 1) {
+                            _myDownloadResultsProvider.getJsonResults(
+                                _currentUser.token,
+                                _myBureauResultsProvider.bureauResults);
+                          }
                         }
                       },
                       itemBuilder: (context) {
