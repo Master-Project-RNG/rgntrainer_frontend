@@ -1,4 +1,5 @@
 import 'dart:convert';
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 
 import 'package:flutter/material.dart';
@@ -7,11 +8,11 @@ import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 
 class DownloadResultsProvider with ChangeNotifier {
-  var activeHost = Host().getActiveHost();
+  String activeHost = Host().getActiveHost();
 
   //download
-  Future<void> getExcelResults(token) async {
-    var url = Uri.parse('${activeHost}/downloadResults');
+  Future<void> getExcelResults(String? token) async {
+    final url = Uri.parse('$activeHost/downloadResults');
     final response = await post(
       url,
       headers: {
@@ -40,9 +41,10 @@ class DownloadResultsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getJsonResults(token, bureauResults) async {
-    String test = bureauResultsToJson(bureauResults);
-    var blob = new Blob([test], "application/json");
+  Future<void> getJsonResults(
+      String? token, List<BureauResults> bureauResults) async {
+    final String jsonString = bureauResultsToJson(bureauResults);
+    final blob = Blob([jsonString], "application/json");
     final url = Url.createObjectUrlFromBlob(blob);
 
     final anchor = AnchorElement(href: url)..target = 'blank';
