@@ -119,9 +119,8 @@ class _AdminCardState extends State<AdminResultsCard> {
           ],
           automaticallyImplyLeading: false,
         ),
-        body:
-            /* DataTableDemo() */ Container(
-          padding: const EdgeInsets.all(100.0),
+        body: Container(
+          padding: const EdgeInsets.only(top: 100.0, left: 100.0),
           child: ListView(
             children: [
               Row(
@@ -202,16 +201,48 @@ class _AdminCardState extends State<AdminResultsCard> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.blue, onPrimary: Colors.white),
-                      child: Text('Download'),
-                      onPressed: () {
-                        print('Short Press!');
-                        _myBureauResultsProvider.getResults(_currentUser.token);
+                  Container(
+                    padding: EdgeInsets.only(right: 50),
+                    child: PopupMenuButton(
+                      onSelected: (result) {
+                        if (result == 0) {
+                          _myBureauResultsProvider
+                              .getResults(_currentUser.token);
+                        } else if (result == 1) {
+                          _myBureauResultsProvider
+                              .getJsonResults(_currentUser.token);
+                        }
                       },
+                      itemBuilder: (context) {
+                        return List.generate(
+                          2,
+                          (index) {
+                            return PopupMenuItem(
+                              value: index,
+                              child: Row(
+                                children: [
+                                  index == 0 ? Text("Excel") : Text("Json"),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: SizedBox(
+                        width: 200,
+                        height: 30,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(3))),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Exportieren',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

@@ -43,7 +43,7 @@ class BureauResultsProvider with ChangeNotifier {
   }
 
   //download
-  getResults(token) async {
+  Future<void> getExcelResults(token) async {
     var url = Uri.parse('${activeHost}/downloadResults');
     final response = await post(
       url,
@@ -72,4 +72,21 @@ class BureauResultsProvider with ChangeNotifier {
       throw Exception('Unable to download results!');
     }
   }
+
+  Future<void> getJsonResults(token) async {
+    String test = bureauResultsToJson(_bureauResults);
+    var blob = new Blob([test], "application/json");
+    final url = Url.createObjectUrlFromBlob(blob);
+
+    final anchor = AnchorElement(href: url)..target = 'blank';
+    // add the name
+    anchor.download = 'resultate.json';
+    // trigger download
+    document.body!.append(anchor);
+    anchor.click();
+    anchor.remove();
+  }
+
+  String bureauResultsToJson(List<BureauResults> data) => json
+      .encode(List<dynamic>.from(data.map((x) => x.bureauResultstoJson2())));
 }
