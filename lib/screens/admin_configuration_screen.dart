@@ -10,6 +10,7 @@ import 'package:rgntrainer_frontend/widgets/greeting/greeting_main.dart';
 import 'package:rgntrainer_frontend/widgets/trainer_config.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -87,7 +88,8 @@ class _AdminCardState extends State<AdminCard> {
               ),
               body: ListView(
                 children: [
-                  Container(
+                  TitleWidget("Konfiguration"),
+                  /*Container(
                     padding: EdgeInsets.only(left: 20),
                     alignment: Alignment.centerLeft,
                     height: 60,
@@ -110,7 +112,7 @@ class _AdminCardState extends State<AdminCard> {
                   ),
                   SizedBox(
                     height: 15,
-                  ),
+                  ), */
                   Container(
                     color: Colors.grey[100],
                     alignment: Alignment.center,

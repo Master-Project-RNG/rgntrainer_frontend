@@ -11,6 +11,7 @@ import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -129,30 +130,7 @@ class _AdminCardState extends State<AdminResultsCard> {
               ),
               body: Column(
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 20),
-                    alignment: Alignment.centerLeft,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 15.0,
-                            offset: Offset(0.0, 0.75))
-                      ],
-                    ),
-                    child: Text(
-                      "Abfragen",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
+                  TitleWidget("Abfragen"),
                   Container(
                     padding: EdgeInsets.only(left: 50, top: 50),
                     child: Row(
