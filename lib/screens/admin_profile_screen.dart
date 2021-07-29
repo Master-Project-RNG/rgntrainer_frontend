@@ -6,7 +6,9 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AdminProfileScreen extends StatelessWidget {
   @override
@@ -39,6 +41,7 @@ class _AdminCardState extends State<AdminProfileCard> {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
     print(_currentUser.token);
+    initializeDateFormatting(); //set CalendarWidget language to German
   }
 
   Future<void> _submit() async {
@@ -88,7 +91,8 @@ class _AdminCardState extends State<AdminProfileCard> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
+          titleSpacing: 0, //So that the title start right away at the left side
+          title: CalendarWidget(),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.list_alt),

@@ -9,7 +9,9 @@ import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AdminResultsScreen extends StatelessWidget {
   @override
@@ -62,6 +64,7 @@ class _AdminCardState extends State<AdminResultsCard> {
     _currentUser = UserSimplePreferences.getUser();
     _fetchTotalUserResults();
     print(_currentUser.token);
+    initializeDateFormatting(); //set CalendarWidget language to German
   }
 
   //Fetch all Listings
@@ -88,7 +91,8 @@ class _AdminCardState extends State<AdminResultsCard> {
           context.watch<DownloadResultsProvider>();
       return Scaffold(
         appBar: AppBar(
-          title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
+          titleSpacing: 0, //So that the title start right away at the left side
+          title: CalendarWidget(),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.list_alt),
@@ -567,6 +571,8 @@ class _AdminCardState extends State<AdminResultsCard> {
     return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
   }
 }
+
+
 
 /*
 class BureauResultDataSource extends DataTableSource {
