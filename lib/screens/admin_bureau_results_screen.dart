@@ -127,11 +127,35 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ],
                 automaticallyImplyLeading: false,
               ),
-              body: Container(
-                padding: const EdgeInsets.only(top: 100.0, left: 100.0),
-                child: ListView(
-                  children: [
-                    Row(
+              body: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 15.0,
+                            offset: Offset(0.0, 0.75))
+                      ],
+                    ),
+                    child: Text(
+                      "Abfragen",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 50, top: 50),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -198,7 +222,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                               height: 30,
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.blue,
+                                    color: Theme.of(context).primaryColor,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(3))),
                                 alignment: Alignment.center,
@@ -264,7 +288,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                               height: 30,
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.blue,
+                                    color: Theme.of(context).primaryColor,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(3))),
                                 alignment: Alignment.center,
@@ -278,22 +302,31 @@ class _AdminCardState extends State<AdminResultsCard> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 5,
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 50.0),
+                      child: ListView(
+                        children: [
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            height: 1,
+                            color: Colors.grey[300],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: bureauResultsData(_myBureauResultsProvider),
+                          ),
+                        ],
+                      ),
                     ),
-                    Container(
-                      height: 2,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: bureauResultsData(_myBureauResultsProvider),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -328,6 +361,7 @@ class _AdminCardState extends State<AdminResultsCard> {
       return CircularProgressIndicator();
     } else
       return DataTable(
+        dataRowHeight: 25,
         sortAscending: isAscending,
         sortColumnIndex: sortColumnIndex,
         columns: getColumns(columns, showColumns),

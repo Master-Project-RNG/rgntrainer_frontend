@@ -91,7 +91,15 @@ class _AdminCardState extends State<AdminCard> {
                     padding: EdgeInsets.only(left: 20),
                     alignment: Alignment.centerLeft,
                     height: 60,
-                    color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 15.0,
+                            offset: Offset(0.0, 0.75))
+                      ],
+                    ),
                     child: Text(
                       "Konfiguration",
                       style: TextStyle(
@@ -99,6 +107,9 @@ class _AdminCardState extends State<AdminCard> {
                         fontWeight: FontWeight.w300,
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 15,
                   ),
                   Container(
                     color: Colors.grey[100],
