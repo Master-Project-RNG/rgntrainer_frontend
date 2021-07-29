@@ -85,10 +85,29 @@ class _AdminCardState extends State<AdminCard> {
                 ],
                 automaticallyImplyLeading: false,
               ),
-              body: Center(
-                child: (MediaQuery.of(context).size.width > 1500)
-                    ? normalWidth(deviceSize)
-                    : smallWidth(deviceSize),
+              body: ListView(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    height: 60,
+                    color: Colors.white,
+                    child: Text(
+                      "Konfiguration",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.grey[100],
+                    alignment: Alignment.center,
+                    child: (MediaQuery.of(context).size.width > 1500)
+                        ? normalWidth(deviceSize)
+                        : smallWidth(deviceSize),
+                  ),
+                ],
               ),
             ),
           )
@@ -99,47 +118,42 @@ class _AdminCardState extends State<AdminCard> {
 
   Widget normalWidth(deviceSize) {
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(50.0),
       child: Center(
-        child: SingleChildScrollView(
-          //scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TrainerConfiguration(deviceSize),
-                  ),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Expanded(
-                    child: GreetingConfigurationWidget(deviceSize, type: 1),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: CallTimeConfiguration(deviceSize, _currentUser),
-                  ),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Expanded(
-                    child: GreetingConfigurationWidget(deviceSize, type: 2),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: TrainerConfiguration(deviceSize),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                Expanded(
+                  child: GreetingConfigurationWidget(deviceSize, type: 1),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: CallTimeConfiguration(deviceSize, _currentUser),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                Expanded(
+                  child: GreetingConfigurationWidget(deviceSize, type: 2),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -147,29 +161,24 @@ class _AdminCardState extends State<AdminCard> {
 
   Widget smallWidth(deviceSize) {
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(50.0),
       child: Center(
-        child: SingleChildScrollView(
-          //scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              TrainerConfiguration(deviceSize),
-              SizedBox(
-                height: 50,
-              ),
-              GreetingConfigurationWidget(deviceSize, type: 1),
-              SizedBox(
-                height: 50,
-              ),
-              CallTimeConfiguration(deviceSize, _currentUser),
-              SizedBox(
-                height: 50,
-              ),
-              GreetingConfigurationWidget(deviceSize, type: 2),
-            ],
-          ),
+        child: Column(
+          children: [
+            TrainerConfiguration(deviceSize),
+            SizedBox(
+              height: 50,
+            ),
+            GreetingConfigurationWidget(deviceSize, type: 1),
+            SizedBox(
+              height: 50,
+            ),
+            CallTimeConfiguration(deviceSize, _currentUser),
+            SizedBox(
+              height: 50,
+            ),
+            GreetingConfigurationWidget(deviceSize, type: 2),
+          ],
         ),
       ),
     );
