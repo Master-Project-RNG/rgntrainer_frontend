@@ -10,6 +10,7 @@ import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -89,208 +90,214 @@ class _AdminCardState extends State<AdminResultsCard> {
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
       final _myDownloadResultsProvider =
           context.watch<DownloadResultsProvider>();
-      return Scaffold(
-        appBar: AppBar(
-          titleSpacing: 0, //So that the title start right away at the left side
-          title: CalendarWidget(),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.list_alt),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.build_rounded),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminRoute),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminProfilRoute),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                AuthProvider().logout(_currentUser.token);
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.loginRoute),
-                );
-              },
-            )
-          ],
-          automaticallyImplyLeading: false,
-        ),
-        body: Container(
-          padding: const EdgeInsets.only(top: 100.0, left: 100.0),
-          child: ListView(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Resultate der Büros für ${_currentUser.username}",
-                    style: const TextStyle(fontSize: 34),
+      return Row(
+        children: [
+          NavBarWidget(_currentUser),
+          Expanded(
+            child: Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 65,
+                titleSpacing:
+                    0, //So that the title start right away at the left side
+                title: CalendarWidget(),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.account_circle,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.adminProfilRoute),
+                      );
+                    },
                   ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: PopupMenuButton(
-                      itemBuilder: (context) {
-                        return List.generate(
-                          columns.length,
-                          (index) {
-                            return PopupMenuItem(
-                              child: StatefulBuilder(
-                                builder: (BuildContext context,
-                                    StateSetter setState2) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      (isVisible(index, showColumns))
-                                          ? IconButton(
-                                              onPressed: () {
-                                                setState2(() {
-                                                  changeVisibilty(
-                                                      index, showColumns);
-                                                });
-                                                setState(() {
-                                                  _isLoading = false;
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.remove_circle,
-                                                color: Colors.red,
-                                              ),
-                                            )
-                                          : IconButton(
-                                              onPressed: () {
-                                                setState2(() {
-                                                  changeVisibilty(
-                                                      index, showColumns);
-                                                });
-                                                setState(() {
-                                                  _isLoading = false;
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.add_circle,
-                                                color: Colors.green,
-                                              ),
-                                            ),
-                                      Text(columns.elementAt(index)),
-                                    ],
+                  IconButton(
+                    icon: Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      AuthProvider().logout(_currentUser.token);
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.loginRoute),
+                      );
+                    },
+                  )
+                ],
+                automaticallyImplyLeading: false,
+              ),
+              body: Container(
+                padding: const EdgeInsets.only(top: 100.0, left: 100.0),
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Resultate der Büros für ${_currentUser.username}",
+                          style: const TextStyle(fontSize: 34),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: PopupMenuButton(
+                            itemBuilder: (context) {
+                              return List.generate(
+                                columns.length,
+                                (index) {
+                                  return PopupMenuItem(
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context,
+                                          StateSetter setState2) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            (isVisible(index, showColumns))
+                                                ? IconButton(
+                                                    onPressed: () {
+                                                      setState2(() {
+                                                        changeVisibilty(
+                                                            index, showColumns);
+                                                      });
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.remove_circle,
+                                                      color: Colors.red,
+                                                    ),
+                                                  )
+                                                : IconButton(
+                                                    onPressed: () {
+                                                      setState2(() {
+                                                        changeVisibilty(
+                                                            index, showColumns);
+                                                      });
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.add_circle,
+                                                      color: Colors.green,
+                                                    ),
+                                                  ),
+                                            Text(columns.elementAt(index)),
+                                          ],
+                                        );
+                                      },
+                                    ),
                                   );
                                 },
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: SizedBox(
-                        width: 200,
-                        height: 30,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(3))),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Spalten ein-/ausblenden',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(right: 50),
-                    child: PopupMenuButton(
-                      onSelected: (result) {
-                        if (_isLoading == true) {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Geduld bitte'),
-                              content:
-                                  Text("Die Einträge werden noch geladen."),
-                              actions: <Widget>[
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(ctx).pop();
-                                  },
-                                  child: const Text('Schliessen!'),
+                              );
+                            },
+                            child: SizedBox(
+                              width: 200,
+                              height: 30,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(3))),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Spalten ein-/ausblenden',
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          if (result == 0) {
-                            _myDownloadResultsProvider
-                                .getExcelResults(_currentUser.token);
-                          } else if (result == 1) {
-                            _myDownloadResultsProvider.getJsonResults(
-                                _currentUser.token,
-                                _myBureauResultsProvider.bureauResults);
-                          }
-                        }
-                      },
-                      itemBuilder: (context) {
-                        return List.generate(
-                          2,
-                          (index) {
-                            return PopupMenuItem(
-                              value: index,
-                              child: Row(
-                                children: [
-                                  index == 0 ? Text("Excel") : Text("Json"),
-                                ],
                               ),
-                            );
-                          },
-                        );
-                      },
-                      child: SizedBox(
-                        width: 200,
-                        height: 30,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(3))),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Exportieren',
-                            style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
-                      ),
+                        Container(
+                          padding: EdgeInsets.only(right: 50),
+                          child: PopupMenuButton(
+                            onSelected: (result) {
+                              if (_isLoading == true) {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Geduld bitte'),
+                                    content: Text(
+                                        "Die Einträge werden noch geladen."),
+                                    actions: <Widget>[
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: const Text('Schliessen!'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                if (result == 0) {
+                                  _myDownloadResultsProvider
+                                      .getExcelResults(_currentUser.token);
+                                } else if (result == 1) {
+                                  _myDownloadResultsProvider.getJsonResults(
+                                      _currentUser.token,
+                                      _myBureauResultsProvider.bureauResults);
+                                }
+                              }
+                            },
+                            itemBuilder: (context) {
+                              return List.generate(
+                                2,
+                                (index) {
+                                  return PopupMenuItem(
+                                    value: index,
+                                    child: Row(
+                                      children: [
+                                        index == 0
+                                            ? Text("Excel")
+                                            : Text("Json"),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: SizedBox(
+                              width: 200,
+                              height: 30,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(3))),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Exportieren',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      height: 2,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: bureauResultsData(_myBureauResultsProvider),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
-              Container(
-                height: 2,
-                color: Colors.grey,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: bureauResultsData(_myBureauResultsProvider),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
   }

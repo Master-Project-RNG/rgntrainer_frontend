@@ -39,15 +39,15 @@ class CalendarWidget extends StatelessWidget {
                       children: [
                         Text(
                           DateFormat('EEEE', "de_CH").format(DateTime.now()),
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12, color: Colors.white),
                         ),
                         Text(
                           DateFormat('MMMM', "de_CH").format(DateTime.now()),
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12, color: Colors.white),
                         ),
                         Text(
                           "KW " + DateTime.now().weekOfYear.toString(),
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12, color: Colors.white),
                         ),
                       ],
                     ),
@@ -61,7 +61,7 @@ class CalendarWidget extends StatelessWidget {
                     child: Center(
                       child: Text(
                         DateFormat('HH:mm').format(DateTime.now()),
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ),

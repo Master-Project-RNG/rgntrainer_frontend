@@ -9,6 +9,7 @@ import 'package:rgntrainer_frontend/widgets/call_time_config.dart';
 import 'package:rgntrainer_frontend/widgets/greeting/greeting_main.dart';
 import 'package:rgntrainer_frontend/widgets/trainer_config.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -45,48 +46,53 @@ class _AdminCardState extends State<AdminCard> {
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          titleSpacing: 0, //So that the title start right away at the left side
-          title: CalendarWidget(),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.list_alt),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminResultsRoute),
-                );
-              },
+      return Row(
+        children: [
+          NavBarWidget(_currentUser),
+          Expanded(
+            child: Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 65,
+                titleSpacing:
+                    0, //So that the title start right away at the left side
+                title: CalendarWidget(),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.account_circle,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.adminProfilRoute),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      AuthProvider().logout(
+                        _currentUser.token,
+                      );
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.loginRoute),
+                      );
+                    },
+                  ),
+                ],
+                automaticallyImplyLeading: false,
+              ),
+              body: Center(
+                child: (MediaQuery.of(context).size.width > 1500)
+                    ? normalWidth(deviceSize)
+                    : smallWidth(deviceSize),
+              ),
             ),
-            IconButton(
-              icon: Icon(Icons.build_rounded),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminProfilRoute),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                AuthProvider().logout(_currentUser.token);
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.loginRoute),
-                );
-              },
-            ),
-          ],
-          automaticallyImplyLeading: false,
-        ),
-        body: Center(
-          child: (MediaQuery.of(context).size.width > 1500)
-              ? normalWidth(deviceSize)
-              : smallWidth(deviceSize),
-        ),
+          )
+        ],
       );
     }
   }
