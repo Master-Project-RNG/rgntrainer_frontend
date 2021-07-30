@@ -83,9 +83,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                         child: Text(
                           'Minimale Anzahl Anrufe:',
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
+                              fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
                       Container(
@@ -117,9 +115,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                         child: Text(
                           'Maximale Anzahl Anrufe:',
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
+                              fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
                       Container(
@@ -151,9 +147,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                         child: Text(
                           'Minimale Anzahl Tage zwischen Anrufen einer einzelnen Nummer:',
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
+                              fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
                       Container(
@@ -188,9 +182,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                         child: Text(
                           'Anzahl Stunden bis ein Rückruf als zu spät gilt:',
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
+                              fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
                       Container(
@@ -224,9 +216,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                         child: Text(
                           'Pause zwischen den Anrufen (generell) in Sekunden:',
                           style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400),
+                              fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
                       Container(
