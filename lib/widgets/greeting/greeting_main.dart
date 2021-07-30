@@ -68,8 +68,12 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                     ),
                   ),
                   title: widget.type == 1
-                      ? const Text("Begrüssung konfigurieren")
-                      : const Text("Anrufbeantworter konfigurieren"),
+                      ? const Text(
+                          "Begrüssung konfigurieren",
+                          style: TextStyle(color: Colors.white),
+                        )
+                      : const Text("Anrufbeantworter konfigurieren",
+                          style: TextStyle(color: Colors.white)),
                   centerTitle: true,
                   elevation: 8.0,
                   automaticallyImplyLeading: false,
@@ -111,6 +115,7 @@ class _GreetingConfigurationState extends State<GreetingConfigurationWidget>
                     }()),
                   ],
                   bottom: TabBar(
+                    labelColor: Colors.white,
                     controller: _tabController,
                     tabs: const [
                       Tab(

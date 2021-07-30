@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/answering_machine_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
+import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/admin_bureau_results_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
@@ -50,6 +51,9 @@ class MyApp extends StatelessWidget {
           value: BureauResultsProvider(),
         ),
         ChangeNotifierProvider.value(
+          value: DownloadResultsProvider(),
+        ),
+        ChangeNotifierProvider.value(
           value: AdminCallsProvider(),
         ),
         ChangeNotifierProvider.value(
@@ -77,7 +81,20 @@ class MyApp extends StatelessWidget {
         }),
         title: 'Begrüssungs- und Erreichbarkeitstrainer',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primaryColor: Color.fromRGBO(25, 177, 237, 1), //cyan
+          accentColor: Color.fromRGBO(237, 85, 25, 1), //orange
+          buttonColor: Color.fromRGBO(25, 177, 237, 1), //cyan
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                Color.fromRGBO(25, 177, 237, 1), //cyan
+              ),
+            ),
+          ),
+          textTheme: TextTheme(
+            bodyText1: TextStyle(color: Colors.white),
+            headline1: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );

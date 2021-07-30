@@ -8,7 +8,11 @@ import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/call_time_config.dart';
 import 'package:rgntrainer_frontend/widgets/greeting/greeting_main.dart';
 import 'package:rgntrainer_frontend/widgets/trainer_config.dart';
+import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AdminConfigurationScreen extends StatelessWidget {
   @override
@@ -34,6 +38,7 @@ class _AdminCardState extends State<AdminCard> {
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
+    initializeDateFormatting(); //set CalendarWidget language to German
   }
 
   @override
@@ -42,94 +47,100 @@ class _AdminCardState extends State<AdminCard> {
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.list_alt),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminResultsRoute),
-                );
-              },
+      return Row(
+        children: [
+          NavBarWidget(_currentUser),
+          Expanded(
+            child: Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 65,
+                titleSpacing:
+                    0, //So that the title start right away at the left side
+                title: CalendarWidget(),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.account_circle,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.adminProfilRoute),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      AuthProvider().logout(_currentUser.token);
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.loginRoute),
+                      );
+                    },
+                  ),
+                ],
+                automaticallyImplyLeading: false,
+              ),
+              body: ListView(
+                children: [
+                  TitleWidget("Konfiguration"),
+                  Container(
+                    color: Colors.grey[100],
+                    alignment: Alignment.center,
+                    child: (MediaQuery.of(context).size.width > 1500)
+                        ? normalWidth(deviceSize)
+                        : smallWidth(deviceSize),
+                  ),
+                ],
+              ),
             ),
-            IconButton(
-              icon: Icon(Icons.build_rounded),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminProfilRoute),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                AuthProvider().logout(_currentUser.token);
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.loginRoute),
-                );
-              },
-            ),
-          ],
-          automaticallyImplyLeading: false,
-        ),
-        body: Center(
-          child: (MediaQuery.of(context).size.width > 1500)
-              ? normalWidth(deviceSize)
-              : smallWidth(deviceSize),
-        ),
+          )
+        ],
       );
     }
   }
 
   Widget normalWidth(deviceSize) {
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(50.0),
       child: Center(
-        child: SingleChildScrollView(
-          //scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TrainerConfiguration(deviceSize),
-                  ),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Expanded(
-                    child: GreetingConfigurationWidget(deviceSize, type: 1),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: CallTimeConfiguration(deviceSize, _currentUser),
-                  ),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Expanded(
-                    child: GreetingConfigurationWidget(deviceSize, type: 2),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: TrainerConfiguration(deviceSize),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                Expanded(
+                  child: GreetingConfigurationWidget(deviceSize, type: 1),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: CallTimeConfiguration(deviceSize, _currentUser),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
+                Expanded(
+                  child: GreetingConfigurationWidget(deviceSize, type: 2),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -137,29 +148,24 @@ class _AdminCardState extends State<AdminCard> {
 
   Widget smallWidth(deviceSize) {
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(50.0),
       child: Center(
-        child: SingleChildScrollView(
-          //scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              TrainerConfiguration(deviceSize),
-              SizedBox(
-                height: 50,
-              ),
-              GreetingConfigurationWidget(deviceSize, type: 1),
-              SizedBox(
-                height: 50,
-              ),
-              CallTimeConfiguration(deviceSize, _currentUser),
-              SizedBox(
-                height: 50,
-              ),
-              GreetingConfigurationWidget(deviceSize, type: 2),
-            ],
-          ),
+        child: Column(
+          children: [
+            TrainerConfiguration(deviceSize),
+            SizedBox(
+              height: 50,
+            ),
+            GreetingConfigurationWidget(deviceSize, type: 1),
+            SizedBox(
+              height: 50,
+            ),
+            CallTimeConfiguration(deviceSize, _currentUser),
+            SizedBox(
+              height: 50,
+            ),
+            GreetingConfigurationWidget(deviceSize, type: 2),
+          ],
         ),
       ),
     );

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
-import 'dart:html';
 
 class BureauResultsProvider with ChangeNotifier {
-  var activeHost = Host().getActiveHost();
+  String activeHost = Host().getActiveHost();
 
   List<BureauResults> _bureauResults = [];
 
@@ -14,8 +13,8 @@ class BureauResultsProvider with ChangeNotifier {
     return _bureauResults;
   }
 
-  Future<List<BureauResults>> getBureauResults(token) async {
-    var url = Uri.parse('${activeHost}/getTotalResults');
+  Future<List<BureauResults>> getBureauResults(String? token) async {
+    final url = Uri.parse('$activeHost/getTotalResults');
     final response = await post(
       url,
       headers: {
@@ -26,50 +25,19 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      debugPrint(jsonResponse.toString());
-      List<BureauResults> _result = [];
-      final List<dynamic> _temp = jsonResponse;
-      _temp.forEach((test) {
-        final Map<String, dynamic> _temp2 = test;
-        final BureauResults userResults = BureauResults.fromJson(_temp2);
+      final dynamic jsonResponse = jsonDecode(response.body);
+      final List<BureauResults> _result = [];
+      final List<dynamic> _temp = jsonResponse as List<dynamic>;
+      // ignore: avoid_function_literals_in_foreach_calls
+      _temp.forEach((element) {
+        final BureauResults userResults =
+            BureauResults.fromJson(element as Map<String, dynamic>);
         _result.add(userResults);
       });
       _bureauResults = _result;
-      return _bureauResults;
+      return _result;
     } else {
       throw Exception('Failed to load user results');
-    }
-  }
-
-  //download
-  getResults(token) async {
-    var url = Uri.parse('${activeHost}/downloadResults');
-    final response = await post(
-      url,
-      headers: {
-        "content-type": "application/json",
-      },
-      body: json.encode(
-        {
-          'token': token,
-        },
-      ),
-    );
-    if (response.statusCode == 200) {
-      final blob = Blob([response.bodyBytes],
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      final url = Url.createObjectUrlFromBlob(blob);
-
-      final anchor = AnchorElement(href: url)..target = 'blank';
-      // add the name
-      anchor.download = 'resultate.xlsx';
-      // trigger download
-      document.body!.append(anchor);
-      anchor.click();
-      anchor.remove();
-    } else {
-      throw Exception('Unable to download results!');
     }
   }
 }
