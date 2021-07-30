@@ -75,9 +75,7 @@ class _AdminCardState extends State<AdminCard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      AuthProvider().logout(
-                        _currentUser.token,
-                      );
+                      AuthProvider().logout(_currentUser.token);
                       context.vxNav.push(
                         Uri.parse(MyRoutes.loginRoute),
                       );
@@ -89,30 +87,6 @@ class _AdminCardState extends State<AdminCard> {
               body: ListView(
                 children: [
                   TitleWidget("Konfiguration"),
-                  /*Container(
-                    padding: EdgeInsets.only(left: 20),
-                    alignment: Alignment.centerLeft,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 15.0,
-                            offset: Offset(0.0, 0.75))
-                      ],
-                    ),
-                    child: Text(
-                      "Konfiguration",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ), */
                   Container(
                     color: Colors.grey[100],
                     alignment: Alignment.center,
