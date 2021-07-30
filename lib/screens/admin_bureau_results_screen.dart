@@ -6,9 +6,14 @@ import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
+import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AdminResultsScreen extends StatelessWidget {
   @override
@@ -34,12 +39,34 @@ class _AdminCardState extends State<AdminResultsCard> {
   int? sortColumnIndex; //Reflects the column that is currently sorted!
   bool isAscending = false;
 
+  List<bool> showColumns = [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+  ];
+
   @override
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
     _fetchTotalUserResults();
     print(_currentUser.token);
+    initializeDateFormatting(); //set CalendarWidget language to German
   }
 
   //Fetch all Listings
@@ -58,90 +85,230 @@ class _AdminCardState extends State<AdminResultsCard> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.list_alt),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.build_rounded),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminRoute),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () {
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.adminProfilRoute),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                AuthProvider().logout(_currentUser.token);
-                context.vxNav.push(
-                  Uri.parse(MyRoutes.loginRoute),
-                );
-              },
-            )
-          ],
-          automaticallyImplyLeading: false,
-        ),
-        body:
-            /* DataTableDemo() */ Container(
-          padding: const EdgeInsets.all(100.0),
-          child: ListView(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Resultate der Büros für ${_currentUser.username}",
-                    style: const TextStyle(fontSize: 34),
+      final _myDownloadResultsProvider =
+          context.watch<DownloadResultsProvider>();
+      return Row(
+        children: [
+          NavBarWidget(_currentUser),
+          Expanded(
+            child: Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 65,
+                titleSpacing:
+                    0, //So that the title start right away at the left side
+                title: CalendarWidget(),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.account_circle,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.adminProfilRoute),
+                      );
+                    },
                   ),
-                  SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.blue, onPrimary: Colors.white),
-                      child: Text('Download'),
-                      onPressed: () {
-                        print('Short Press!');
-                        _myBureauResultsProvider.getResults(_currentUser.token);
-                      },
+                  IconButton(
+                    icon: Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      AuthProvider().logout(_currentUser.token);
+                      context.vxNav.push(
+                        Uri.parse(MyRoutes.loginRoute),
+                      );
+                    },
+                  )
+                ],
+                automaticallyImplyLeading: false,
+              ),
+              body: Column(
+                children: [
+                  TitleWidget("Abfragen"),
+                  Container(
+                    padding: EdgeInsets.only(left: 50, top: 50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Resultate der Büros für ${_currentUser.username}",
+                          style: const TextStyle(fontSize: 34),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: PopupMenuButton(
+                            itemBuilder: (context) {
+                              return List.generate(
+                                columns.length,
+                                (index) {
+                                  return PopupMenuItem(
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context,
+                                          StateSetter setState2) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            (isVisible(index, showColumns))
+                                                ? IconButton(
+                                                    onPressed: () {
+                                                      setState2(() {
+                                                        changeVisibilty(
+                                                            index, showColumns);
+                                                      });
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.remove_circle,
+                                                      color: Colors.red,
+                                                    ),
+                                                  )
+                                                : IconButton(
+                                                    onPressed: () {
+                                                      setState2(() {
+                                                        changeVisibilty(
+                                                            index, showColumns);
+                                                      });
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.add_circle,
+                                                      color: Colors.green,
+                                                    ),
+                                                  ),
+                                            Text(columns.elementAt(index)),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: SizedBox(
+                              width: 200,
+                              height: 30,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(3))),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Spalten ein-/ausblenden',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(right: 50),
+                          child: PopupMenuButton(
+                            onSelected: (result) {
+                              if (_isLoading == true) {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Geduld bitte'),
+                                    content: Text(
+                                        "Die Einträge werden noch geladen."),
+                                    actions: <Widget>[
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: const Text('Schliessen!'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                if (result == 0) {
+                                  _myDownloadResultsProvider
+                                      .getExcelResults(_currentUser.token);
+                                } else if (result == 1) {
+                                  _myDownloadResultsProvider.getJsonResults(
+                                      _currentUser.token,
+                                      _myBureauResultsProvider.bureauResults);
+                                }
+                              }
+                            },
+                            itemBuilder: (context) {
+                              return List.generate(
+                                2,
+                                (index) {
+                                  return PopupMenuItem(
+                                    value: index,
+                                    child: Row(
+                                      children: [
+                                        index == 0
+                                            ? Text("Excel")
+                                            : Text("Json"),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: SizedBox(
+                              width: 200,
+                              height: 30,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(3))),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Exportieren',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 50.0),
+                      child: ListView(
+                        children: [
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            height: 1,
+                            color: Colors.grey[300],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: bureauResultsData(_myBureauResultsProvider),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 5,
-              ),
-              Container(
-                height: 2,
-                color: Colors.grey,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: bureauResultsData(_myBureauResultsProvider),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
   }
@@ -172,49 +339,78 @@ class _AdminCardState extends State<AdminResultsCard> {
       return CircularProgressIndicator();
     } else
       return DataTable(
+        dataRowHeight: 25,
         sortAscending: isAscending,
         sortColumnIndex: sortColumnIndex,
-        columns: getColumns(columns),
-        rows: getRows(_myBureauResultsProvider.bureauResults),
+        columns: getColumns(columns, showColumns),
+        rows: getRows(_myBureauResultsProvider.bureauResults, showColumns),
       );
   }
 
-  List<DataColumn> getColumns(List<String> columns) => columns
-      .map(
-        (String column) => DataColumn(
-          label: Text(column),
-          onSort: onSort,
-        ),
-      )
-      .toList();
+  void changeVisibilty(int index, List<bool> list) {
+    list[index] = list.elementAt(index).toggle();
+  }
 
-  List<DataRow> getRows(List<BureauResults> bureauResults) =>
-      bureauResults.map((BureauResults data) {
-        final cells = [
-          data.bureau.toString(),
-          data.totalCalls.toString(),
-          data.totalCallsReached.toString(),
-          data.rateSaidOrganization + "%",
-          data.rateSaidBureau + "%",
-          data.rateSaidDepartment + "%",
-          data.rateSaidFirstname + "%",
-          data.rateSaidName + "%",
-          data.rateSaidGreeting + "%",
-          data.rateSaidSpecificWords + "%",
-          data.rateReached + "%",
-          data.rateCallCompleted + "%",
-          data.rateResponderStartedIfNotReached + "%",
-          data.rateResponderCorrect + "%",
-          data.rateCallbackDoneNoAnswer + "%",
-          data.rateCallbackDoneResponder + "%",
-          data.rateCallbackInTime + "%",
-          data.meanRingingTime != "-"
-              ? double.parse(data.meanRingingTime).toStringAsFixed(2) +
-                  " Sekunden"
-              : "-",
-        ];
-        return DataRow(cells: getCells(cells));
-      }).toList();
+  bool isVisible(int index, List<bool> list) {
+    bool result;
+    list.elementAt(index) == true ? result = true : result = false;
+    return result;
+  }
+
+  List<DataColumn> getColumns(List<String> columns, List<bool> showColumns) {
+    List<DataColumn> dataColumnResult = [];
+    for (int i = 0; i < columns.length; i++) {
+      if (showColumns[i] == true) {
+        dataColumnResult.add(
+          DataColumn(
+            label: Text(columns[i]),
+            onSort: onSort,
+          ),
+        );
+      }
+    }
+    return dataColumnResult;
+  }
+
+  List<DataRow> getRows(
+      List<BureauResults> bureauResults, List<bool> showColums) {
+    List<DataRow> dataRowResult = [];
+    for (int i = 0; i < bureauResults.length; i++) {
+      final cells = [];
+      if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
+      if (showColumns[1]) cells.add(bureauResults[i].totalCalls.toString());
+      if (showColumns[2])
+        cells.add(bureauResults[i].totalCallsReached.toString());
+      if (showColumns[3])
+        cells.add(bureauResults[i].rateSaidOrganization + "%");
+      if (showColumns[4]) cells.add(bureauResults[i].rateSaidBureau + "%");
+      if (showColumns[5]) cells.add(bureauResults[i].rateSaidDepartment + "%");
+      if (showColumns[6]) cells.add(bureauResults[i].rateSaidFirstname + "%");
+      if (showColumns[7]) cells.add(bureauResults[i].rateSaidName + "%");
+      if (showColumns[8]) cells.add(bureauResults[i].rateSaidGreeting + "%");
+      if (showColumns[9])
+        cells.add(bureauResults[i].rateSaidSpecificWords + "%");
+      if (showColumns[10]) cells.add(bureauResults[i].rateReached + "%");
+      if (showColumns[11]) cells.add(bureauResults[i].rateCallCompleted + "%");
+      if (showColumns[12])
+        cells.add(bureauResults[i].rateResponderStartedIfNotReached + "%");
+      if (showColumns[13])
+        cells.add(bureauResults[i].rateResponderCorrect + "%");
+      if (showColumns[14])
+        cells.add(bureauResults[i].rateCallbackDoneNoAnswer + "%");
+      if (showColumns[15])
+        cells.add(bureauResults[i].rateCallbackDoneResponder + "%");
+      if (showColumns[16]) cells.add(bureauResults[i].rateCallbackInTime + "%");
+      if (showColumns[17])
+        cells.add(bureauResults[i].meanRingingTime != "-"
+            ? double.parse(bureauResults[i].meanRingingTime)
+                    .toStringAsFixed(2) +
+                " Sekunden"
+            : "-");
+      dataRowResult.add(DataRow(cells: getCells(cells)));
+    }
+    return dataRowResult;
+  }
 
   List<DataCell> getCells(List<dynamic> cells) =>
       cells.map((data) => DataCell(Text('$data'))).toList();
@@ -394,6 +590,8 @@ class _AdminCardState extends State<AdminResultsCard> {
     return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
   }
 }
+
+
 
 /*
 class BureauResultDataSource extends DataTableSource {

@@ -9,7 +9,7 @@ List<BureauResults> bureauResultsFromJson(String str) =>
         json.decode(str).map((x) => BureauResults.fromJson(x)));
 
 String bureauResultsToJson(List<BureauResults> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.bureauResultstoJson())));
+    json.encode(List<dynamic>.from(data.map((x) => x.bureauResultstoJson2())));
 
 class BureauResults {
   BureauResults({
@@ -74,7 +74,7 @@ class BureauResults {
         meanRingingTime: json["meanRingingTime"].toString(),
       );
 
-  Map<String, dynamic> bureauResultstoJson() => {
+  Map<String, dynamic> bureauResultstoJson2() => {
         "bureau": bureau,
         "totalCalls": totalCalls,
         "totalCallsReached": totalCallsReached,
