@@ -66,7 +66,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
       _isLoading = true;
     });
     _openingHoursConfiguration =
-        await adminCalls.getOpeningHours(widget.currentUser.token);
+        await adminCalls.getOpeningHours(widget.currentUser.token!);
     _pickedBureau = _openingHoursConfiguration.bureaus![0];
     _pickedUser = _openingHoursConfiguration.users[0];
     setState(() {
@@ -646,8 +646,8 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
       });
     }
     await AdminCallsProvider()
-        .setOpeningHours(widget.currentUser.token, _openingHoursConfiguration);
-    await AdminCallsProvider().getOpeningHours(widget.currentUser.token);
+        .setOpeningHours(widget.currentUser.token!, _openingHoursConfiguration);
+    await AdminCallsProvider().getOpeningHours(widget.currentUser.token!);
     setState(() {
       _isLoading = false;
     });
@@ -786,8 +786,8 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
       throw Exception("Unbekannter TabType");
     }
     await AdminCallsProvider()
-        .setOpeningHours(widget.currentUser.token, _openingHoursConfiguration);
-    await AdminCallsProvider().getOpeningHours(widget.currentUser.token);
+        .setOpeningHours(widget.currentUser.token!, _openingHoursConfiguration);
+    await AdminCallsProvider().getOpeningHours(widget.currentUser.token!);
     setState(() {
       _isLoading = false;
     });
