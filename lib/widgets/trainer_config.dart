@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:provider/provider.dart';
-import 'package:rgntrainer_frontend/models/callRange.dart';
+import 'package:rgntrainer_frontend/models/call_range.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
@@ -33,7 +33,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
       _isLoading = true;
     });
     _callRange = await Provider.of<AdminCallsProvider>(context, listen: false)
-        .getCallRange(_currentUser.token);
+        .getCallRange(_currentUser.token!);
     setState(() {
       _isLoading = false;
     });
@@ -264,7 +264,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                           style: ElevatedButton.styleFrom(
                               primary: Colors.green, onPrimary: Colors.white),
                           onPressed: () {
-                            adminCalls.startTrainer(_currentUser.token);
+                            adminCalls.startTrainer(_currentUser.token!);
                             setState(() {
                               getStatus(_currentUser.token!);
                             });
@@ -280,7 +280,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                           style: ElevatedButton.styleFrom(
                               primary: Colors.red, onPrimary: Colors.white),
                           onPressed: () {
-                            adminCalls.stopTrainer(_currentUser.token);
+                            adminCalls.stopTrainer(_currentUser.token!);
                             setState(() {
                               getStatus(_currentUser.token!);
                             });
@@ -294,6 +294,33 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                   ),
                   SizedBox(
                     height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Text(
+                          'Resultate:',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.blue, onPrimary: Colors.white),
+                          child: Text('Download'),
+                          onPressed: () {
+                            print('Short Press!');
+                            adminCalls.getResults(_currentUser.token!);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

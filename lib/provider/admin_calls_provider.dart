@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:rgntrainer_frontend/models/callRange.dart';
+import 'package:rgntrainer_frontend/models/call_range.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import '../host.dart';
 
 class AdminCallsProvider with ChangeNotifier {
-  var activeHost = Host().getActiveHost();
+  final String activeHost = Host().getActiveHost();
 
   ConfigurationSummary greetingConfigurationSummary =
       ConfigurationSummary.init();
@@ -18,8 +18,8 @@ class AdminCallsProvider with ChangeNotifier {
 
   //get trainer status ()
   //--- currently unused ---
-  Future<bool> getTrainerStatus(token) async {
-    var url = Uri.parse('${activeHost}/status');
+  Future<bool> getTrainerStatus(String token) async {
+    var url = Uri.parse('$activeHost/status');
     final response = await http.post(
       url,
       headers: {
@@ -30,9 +30,9 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      String responseStatus = response.body;
-      bool status = responseStatus.toLowerCase() == 'true';
-      print("getTrainerStatus:" + status.toString());
+      final String responseStatus = response.body;
+      final bool status = responseStatus.toLowerCase() == 'true';
+      debugPrint("getTrainerStatus: $status");
       return status;
     } else {
       throw Exception('Unable to get Status!');
@@ -40,8 +40,8 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   //getCallRange
-  Future<CallRange> getCallRange(token) async {
-    var url = Uri.parse('${activeHost}/getCallRange');
+  Future<CallRange> getCallRange(String token) async {
+    var url = Uri.parse('$activeHost/getCallRange');
     final response = await http.post(
       url,
       headers: {
@@ -52,7 +52,8 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> responseData =
+          json.decode(response.body) as Map<String, dynamic>;
       return CallRange.fromJson(responseData);
     } else {
       throw Exception('Unable to getCallRange!');
@@ -60,8 +61,8 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   //getCallRange
-  Future<void> setCallRange(token, CallRange callRange) async {
-    var url = Uri.parse('${activeHost}/setCallRange');
+  Future<void> setCallRange(String token, CallRange callRange) async {
+    final url = Uri.parse('$activeHost/setCallRange');
 
     final callRangeJson = jsonEncode(callRange.toJson(token));
     final response = await http.post(
@@ -79,8 +80,8 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   //start the trainer
-  Future<void> startTrainer(token) async {
-    final url = '${activeHost}/start';
+  Future<void> startTrainer(String token) async {
+    final url = '$activeHost/start';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -93,7 +94,7 @@ class AdminCallsProvider with ChangeNotifier {
           },
         ),
       );
-      print("startTrainer:" + response.body);
+      debugPrint("startTrainer: ${response.body}");
       getTrainerStatus(token);
     } catch (error) {
       throw error;
@@ -101,8 +102,8 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   //stop the trainer
-  Future<void> stopTrainer(token) async {
-    final url = '${activeHost}/stop';
+  Future<void> stopTrainer(String token) async {
+    final url = '$activeHost/stop';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -115,15 +116,46 @@ class AdminCallsProvider with ChangeNotifier {
           },
         ),
       );
-      print("stopTrainer:" + response.body);
+      debugPrint("stopTrainer: ${response.body}");
       getTrainerStatus(token);
     } catch (error) {
       throw error;
     }
   }
 
-  Future<ConfigurationSummary> getOpeningHours(token) async {
-    var url = Uri.parse('${activeHost}/getOpeningHours');
+  //download
+  Future<void> getResults(String token) async {
+    var url = Uri.parse('$activeHost/downloadResults');
+    final response = await http.post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode(
+        {
+          'token': token,
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      final blob = Blob([response.bodyBytes],
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      final url = Url.createObjectUrlFromBlob(blob);
+
+      final anchor = AnchorElement(href: url)..target = 'blank';
+      // add the name
+      anchor.download = 'resultate.xlsx';
+      // trigger download
+      document.body!.append(anchor);
+      anchor.click();
+      anchor.remove();
+    } else {
+      throw Exception('Unable to download results!');
+    }
+  }
+
+  Future<ConfigurationSummary> getOpeningHours(String token) async {
+    final url = Uri.parse('$activeHost/getOpeningHours');
     final response = await http.post(
       url,
       headers: {
@@ -134,19 +166,20 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      ConfigurationSummary test =
+      final Map<String, dynamic> responseData =
+          json.decode(response.body) as Map<String, dynamic>;
+      final ConfigurationSummary result =
           ConfigurationSummary.fromJsonOpeningHours(responseData);
-      debugPrint(test.toString());
-      return test;
+      debugPrint(result.toString());
+      return result;
     } else {
       throw Exception('Unable to get OpeningHours!');
     }
   }
 
   Future<void> setOpeningHours(
-      token, ConfigurationSummary _openingHours) async {
-    var url = Uri.parse('${activeHost}/setOpeningHours');
+      String token, ConfigurationSummary _openingHours) async {
+    var url = Uri.parse('$activeHost/setOpeningHours');
 
     final openingJson = jsonEncode(_openingHours.toJsonOpeningHours(token));
 
@@ -190,7 +223,7 @@ class AdminCallsProvider with ChangeNotifier {
   Future<void> getGreetingConfiguration(token) async {
     _isLoadingGetGreeting = true;
 
-    var url = Uri.parse('${activeHost}/getGreetingConfiguration');
+    var url = Uri.parse('$activeHost/getGreetingConfiguration');
     final response = await http.post(
       url,
       headers: {
@@ -201,17 +234,14 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> responseData =
+          json.decode(response.body) as Map<String, dynamic>;
       ConfigurationSummary test =
           ConfigurationSummary.fromJsonGreeting(responseData);
       debugPrint(test.toString());
       greetingConfigurationSummary = test;
-      //  if (_pickedBureauGreeting == null) {
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
-      //}
-      //if (_pickedUserGreeting == null) {
       _pickedUserGreeting = greetingConfigurationSummary.users[0];
-      // }
       _isLoadingGetGreeting = false;
       notifyListeners();
     } else {
@@ -221,7 +251,7 @@ class AdminCallsProvider with ChangeNotifier {
 
   Future<void> setGreetingConfiguration(
       String token, ConfigurationSummary _greetingConfiguration) async {
-    var url = Uri.parse('${activeHost}/setGreetingConfiguration');
+    final url = Uri.parse('$activeHost/setGreetingConfiguration');
 
     final openingJson =
         jsonEncode(_greetingConfiguration.toJsonGreeting(token));
