@@ -72,7 +72,10 @@ class _AuthCardState extends State<AuthCard> {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Begrüssungs- und Erreichbarkeitstrainer"),
+        title: Text(
+          "Begrüssungs- und Erreichbarkeitstrainer",
+          style: TextStyle(color: Colors.white),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: Container(
@@ -135,19 +138,12 @@ class _AuthCardState extends State<AuthCard> {
                           if (_isLoading)
                             CircularProgressIndicator()
                           else
-                            RaisedButton(
-                              child: Text('Anmelden'),
-                              onPressed: _submit,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                            SizedBox(
+                              width: 150,
+                              child: ElevatedButton(
+                                child: Text('Anmelden'),
+                                onPressed: _submit,
                               ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 30.0, vertical: 8.0),
-                              color: Theme.of(context).primaryColor,
-                              textColor: Theme.of(context)
-                                  .primaryTextTheme
-                                  .button!
-                                  .color,
                             ),
                           SizedBox(
                             height: 20,

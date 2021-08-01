@@ -104,7 +104,10 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
                       topRight: Radius.circular(10.0),
                     ),
                   ),
-                  title: const Text("Anrufzeit konfigurieren"),
+                  title: const Text(
+                    "Anrufzeit konfigurieren",
+                    style: TextStyle(color: Colors.white),
+                  ),
                   centerTitle: true,
                   elevation: 8.0,
                   automaticallyImplyLeading: false,
@@ -146,6 +149,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
                     }()),
                   ],
                   bottom: TabBar(
+                    labelColor: Colors.white,
                     controller: _tabController,
                     tabs: const [
                       Tab(
@@ -194,15 +198,18 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-              onPressed: () => {
-                _submit(
-                  _openingHoursConfiguration.name,
-                  _formKeyOrganization,
-                  tabType,
-                ),
-              },
-              child: const Text('Speichern'),
+            SizedBox(
+              width: 150,
+              child: ElevatedButton(
+                onPressed: () => {
+                  _submit(
+                    _openingHoursConfiguration.name,
+                    _formKeyOrganization,
+                    tabType,
+                  ),
+                },
+                child: const Text('Speichern'),
+              ),
             ),
             const SizedBox(
               height: 20,
@@ -229,12 +236,17 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
               const SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
-                onPressed: () => {
-                  _submit(_pickedBureau.name, _formKeyBureau, tabType),
-                },
-                child: const Text(
-                  'Speichern',
+              Align(
+                child: SizedBox(
+                  width: 150,
+                  child: ElevatedButton(
+                    onPressed: () => {
+                      _submit(_pickedBureau.name, _formKeyBureau, tabType),
+                    },
+                    child: const Text(
+                      'Speichern',
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -321,38 +333,44 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     } else //Nummer
     if (_showNummerList == false) {
       return Container(
-          child: Form(
-        key: _formKeyNumber,
-        child: ListView(
-          controller: _scrollControllerNummer,
-          children: [
-            Container(
-              height: 50,
-              alignment: Alignment.center,
-              child: Text(
-                _pickedUser.username!,
-                style: const TextStyle(fontSize: 20),
+        child: Form(
+          key: _formKeyNumber,
+          child: ListView(
+            controller: _scrollControllerNummer,
+            children: [
+              Container(
+                height: 50,
+                alignment: Alignment.center,
+                child: Text(
+                  _pickedUser.username!,
+                  style: const TextStyle(fontSize: 20),
+                ),
               ),
-            ),
-            generalWeekOpeningHours(_pickedUser.username!, _pickedUser),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () => {
-                _submit(
-                  _pickedUser.username,
-                  _formKeyNumber,
-                  tabType,
-                )
-              },
-              child: const Text(
-                'Speichern',
+              generalWeekOpeningHours(_pickedUser.username!, _pickedUser),
+              const SizedBox(
+                height: 20,
               ),
-            ),
-          ],
+              Align(
+                child: SizedBox(
+                  width: 150,
+                  child: ElevatedButton(
+                    onPressed: () => {
+                      _submit(
+                        _pickedUser.username,
+                        _formKeyNumber,
+                        tabType,
+                      )
+                    },
+                    child: const Text(
+                      'Speichern',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ));
+      );
     } else {
       return Container(
         height: 400,

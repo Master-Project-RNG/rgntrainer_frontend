@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/answering_machine_provider.dart';
+import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
+import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
+import 'package:rgntrainer_frontend/screens/admin_bureau_results_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 //My files
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:rgntrainer_frontend/screens/admin_home_screen.dart';
+import 'package:rgntrainer_frontend/screens/admin_configuration_screen.dart';
 import 'package:rgntrainer_frontend/screens/user_home_screen.dart';
 import 'package:rgntrainer_frontend/screens/login_screen.dart';
 
@@ -45,6 +48,12 @@ class MyApp extends StatelessWidget {
           value: UserResultsProvider(),
         ),
         ChangeNotifierProvider.value(
+          value: BureauResultsProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: DownloadResultsProvider(),
+        ),
+        ChangeNotifierProvider.value(
           value: AdminCallsProvider(),
         ),
         ChangeNotifierProvider.value(
@@ -58,7 +67,7 @@ class MyApp extends StatelessWidget {
                 child: LoginScreen(),
               ),
           MyRoutes.adminRoute: (_, __) => MaterialPage(
-                child: AdminHomeScreen(),
+                child: AdminConfigurationScreen(),
               ),
           MyRoutes.userRoute: (_, __) => MaterialPage(
                 child: UserHomeScreen(),
@@ -66,10 +75,26 @@ class MyApp extends StatelessWidget {
           MyRoutes.adminProfilRoute: (_, __) => MaterialPage(
                 child: AdminProfileScreen(),
               ),
+          MyRoutes.adminResultsRoute: (_, __) => MaterialPage(
+                child: AdminResultsScreen(),
+              ),
         }),
         title: 'Begrüssungs- und Erreichbarkeitstrainer',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primaryColor: Color.fromRGBO(25, 177, 237, 1), //cyan
+          accentColor: Color.fromRGBO(237, 85, 25, 1), //orange
+          buttonColor: Color.fromRGBO(25, 177, 237, 1), //cyan
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                Color.fromRGBO(25, 177, 237, 1), //cyan
+              ),
+            ),
+          ),
+          textTheme: TextTheme(
+            bodyText1: TextStyle(color: Colors.white),
+            headline1: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
