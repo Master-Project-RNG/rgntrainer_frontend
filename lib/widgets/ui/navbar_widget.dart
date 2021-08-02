@@ -55,7 +55,11 @@ class NavBarWidget extends StatelessWidget {
                     Color.fromRGBO(25, 177, 237, 1), //cyan
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  context.vxNav.push(
+                    Uri.parse(MyRoutes.adminCockpitRoute),
+                  );
+                },
                 child: Row(
                   children: [
                     SizedBox(
