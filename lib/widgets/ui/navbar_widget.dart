@@ -123,7 +123,7 @@ class NavBarWidget extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.vxNav.push(
-                    Uri.parse(MyRoutes.adminRoute),
+                    Uri.parse(MyRoutes.adminConfigRoute),
                   );
                 },
                 child: Row(

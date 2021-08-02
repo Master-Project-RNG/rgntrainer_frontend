@@ -52,7 +52,7 @@ class _AuthCardState extends State<AuthCard> {
       _currentUser = UserSimplePreferences.getUser();
       if (_currentUser.usertype == 'admin') {
         context.vxNav.replace(
-          Uri.parse(MyRoutes.adminRoute),
+          Uri.parse(MyRoutes.adminCockpitRoute),
         );
       } else if (_currentUser.usertype == 'user') {
         context.vxNav.replace(

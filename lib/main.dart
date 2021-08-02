@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
           "/": (_, __) => MaterialPage(
                 child: LoginScreen(),
               ),
-          MyRoutes.adminRoute: (_, __) => MaterialPage(
+          MyRoutes.adminConfigRoute: (_, __) => MaterialPage(
                 child: AdminConfigurationScreen(),
               ),
           MyRoutes.userRoute: (_, __) => MaterialPage(
