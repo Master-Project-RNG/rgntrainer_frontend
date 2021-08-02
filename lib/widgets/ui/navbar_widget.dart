@@ -69,7 +69,7 @@ class NavBarWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Cockpit (inactive)",
+                      "Cockpit",
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ],

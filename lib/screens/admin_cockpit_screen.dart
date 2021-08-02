@@ -6,6 +6,7 @@ import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
+import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CockpitScreen extends StatefulWidget {
@@ -63,6 +64,12 @@ class _CockpitScreenState extends State<CockpitScreen> {
                   )
                 ],
                 automaticallyImplyLeading: false,
+              ),
+              body: Column(
+                children: [
+                  TitleWidget("Cockpit"),
+                  Container(),
+                ],
               ),
             ),
           ),
