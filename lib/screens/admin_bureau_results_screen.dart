@@ -367,13 +367,9 @@ class _AdminCardState extends State<AdminResultsCard> {
                             height: 5,
                           ),
                           SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: this.selectedQueryType == 0
-                                ? bureauResultsDataNormal(
-                                    _myBureauResultsProvider)
-                                : bureauResultsDataNormal(
-                                    _myBureauResultsProvider),
-                          ),
+                              scrollDirection: Axis.horizontal,
+                              child: bureauResultsData(_myBureauResultsProvider,
+                                  this.selectedQueryType)),
                         ],
                       ),
                     ),
@@ -414,16 +410,15 @@ class _AdminCardState extends State<AdminResultsCard> {
     "Spezifische Wörter gesagt",
     "AB aufgeschaltet (falls nicht erreicht)",
     "AB Nachricht korrekt",
-    "rateCallbackDoneNoAnswer",
     "Kein AB geschaltet - Rückrufrate",
     "AB geschaltet - Rückrufrate",
     "Unerwarteter Rückruf",
     "Rückrufrate gesamt",
-    "Rückruf innerhalb der Zeit", //16 Spalten (15 index)
+    "Rückruf innerhalb der Zeit", //15 Spalten (14 index)
   ];
 
-  Widget bureauResultsDataNormal(
-      BureauResultsProvider _myBureauResultsProvider) {
+  Widget bureauResultsData(
+      BureauResultsProvider _myBureauResultsProvider, tableType) {
     if (_isLoading == true) {
       return CircularProgressIndicator();
     } else
@@ -431,9 +426,13 @@ class _AdminCardState extends State<AdminResultsCard> {
         dataRowHeight: 25,
         sortAscending: isAscending,
         sortColumnIndex: sortColumnIndex,
-        columns: getColumns(columnsStandart, showColumns),
-        rows: getRowsStandart(
-            _myBureauResultsProvider.bureauResults, showColumns),
+        columns: tableType == 0
+            ? getColumns(columnsStandart, showColumns)
+            : getColumns(columnsAB, showColumns),
+        rows: tableType == 0
+            ? getRowsStandart(
+                _myBureauResultsProvider.bureauResults, showColumns)
+            : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
       );
   }
 
@@ -500,7 +499,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                     .toStringAsFixed(2) +
                 " Sekunden"
             : "-");
-      dataRowResult.add(DataRow(cells: getCellsStandart(cells)));
+      dataRowResult.add(DataRow(cells: getCells(cells)));
     }
     return dataRowResult;
   }
@@ -510,28 +509,62 @@ class _AdminCardState extends State<AdminResultsCard> {
     List<DataRow> dataRowResult = [];
     for (int i = 0; i < bureauResults.length; i++) {
       final cells = [];
-      if (showColumns[12])
+      if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
+      if (showColumns[1])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidOrganizationAB +
+                "%");
+      if (showColumns[2])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidBureauAB + "%");
+      if (showColumns[3])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidDepartmentAB +
+                "%");
+      if (showColumns[4])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidFirstnameAB + "%");
+      if (showColumns[5])
+        cells
+            .add(bureauResults[i].abAndCallbackStatistics.rateSaidNameAB + "%");
+      if (showColumns[6])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidGreetingAB + "%");
+      if (showColumns[7])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidSpecificWordsAB +
+                "%");
+      if (showColumns[8])
         cells.add(bureauResults[i]
                 .abAndCallbackStatistics
                 .rateResponderStartedIfNotReached +
             "%");
-      if (showColumns[13])
+      if (showColumns[9])
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateResponderCorrect +
                 "%");
-      if (showColumns[14])
+      if (showColumns[10])
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateCallbackDoneNoAnswer +
                 "%");
-      if (showColumns[15])
+      if (showColumns[11])
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateCallbackDoneResponder +
                 "%");
-      if (showColumns[16])
+      if (showColumns[12])
+        cells.add(bureauResults[i]
+                .abAndCallbackStatistics
+                .rateCallbackDoneUnexpected +
+            "%");
+      if (showColumns[13])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateCallbackDoneOverall +
+                "%");
+      if (showColumns[14])
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateCallbackInTime + "%");
+      dataRowResult.add(DataRow(cells: getCells(cells)));
     }
-
     return dataRowResult;
   }
 
@@ -545,7 +578,7 @@ class _AdminCardState extends State<AdminResultsCard> {
     return result;
   }
 
-  List<DataCell> getCellsStandart(List<dynamic> cells) =>
+  List<DataCell> getCells(List<dynamic> cells) =>
       cells.map((data) => DataCell(Text('$data'))).toList();
 
   void onSort(int columnIndex, bool ascending) {
