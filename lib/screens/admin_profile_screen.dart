@@ -115,7 +115,7 @@ class _AdminCardState extends State<AdminProfileCard> {
                     ),
                     onPressed: () {
                       AuthProvider().logout(_currentUser.token);
-                      context.vxNav.push(
+                      context.vxNav.clearAndPush(
                         Uri.parse(MyRoutes.loginRoute),
                       );
                     },
