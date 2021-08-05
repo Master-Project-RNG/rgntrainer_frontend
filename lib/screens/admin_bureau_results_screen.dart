@@ -142,7 +142,6 @@ class _AdminCardState extends State<AdminResultsCard> {
                           style: const TextStyle(fontSize: 34),
                         ),
                         Container(
-                          padding: EdgeInsets.only(right: 50),
                           child: PopupMenuButton(
                             onSelected: (result) {
                               if (_isLoading == true) {
@@ -193,16 +192,31 @@ class _AdminCardState extends State<AdminResultsCard> {
                             },
                             child: SizedBox(
                               width: 200,
-                              height: 30,
+                              height: 40,
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Colors.black,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(3))),
+                                        BorderRadius.all(Radius.circular(5))),
                                 alignment: Alignment.center,
-                                child: Text(
-                                  'Abfragetyp',
-                                  style: TextStyle(color: Colors.white),
+                                child: DropdownButton(
+                                  value: this.selectedQueryType,
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text(
+                                        "Standart",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      value: 0,
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text(
+                                        "Anrufbeantworter",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      value: 1,
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
@@ -267,12 +281,12 @@ class _AdminCardState extends State<AdminResultsCard> {
                             },
                             child: SizedBox(
                               width: 200,
-                              height: 30,
+                              height: 40,
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).primaryColor,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(3))),
+                                        BorderRadius.all(Radius.circular(5))),
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Spalten ein-/ausblenden',
@@ -333,12 +347,12 @@ class _AdminCardState extends State<AdminResultsCard> {
                             },
                             child: SizedBox(
                               width: 200,
-                              height: 30,
+                              height: 40,
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).primaryColor,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(3))),
+                                        BorderRadius.all(Radius.circular(5))),
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Exportieren',
@@ -985,75 +999,25 @@ class _AbfrageButtonState extends State<AbfrageButton> {
                 color: Colors.black,
                 borderRadius: BorderRadius.all(Radius.circular(3))),
             alignment: Alignment.center,
-            child: Text(
-              'Abfragetyp',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: DropdownButton(value: this.selectedQueryType, items: [
+              DropdownMenuItem(
+                child: Text(
+                  "Standart",
+                  style: TextStyle(color: Colors.white),
+                ),
+                value: 0,
+              ),
+              DropdownMenuItem(
+                child: Text(
+                  "Anrufbeantworter",
+                  style: TextStyle(color: Colors.white),
+                ),
+                value: 1,
+              )
+            ]),
           ),
         ),
       ),
     );
   }
 }
-
-
-
-
-
-/*
-class BureauResultDataSource extends DataTableSource {
-  List<BureauResults> _bureauResults;
-  int _selectedCount = 0;
-
-  BureauResultDataSource(List<BureauResults> this._bureauResults);
-
-  @override
-  DataRow? getRow(int index) {
-    final format = NumberFormat.decimalPercentPattern(
-      decimalDigits: 0,
-    );
-    assert(index >= 0);
-    if (index >= _bureauResults.length) return null!;
-    final bureauResult = _bureauResults[index];
-    return DataRow.byIndex(
-      index: index,
-      cells: getRows(bureauResult),
-    );
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => _bureauResults.length;
-
-  @override
-  int get selectedRowCount => _selectedCount;
-
-  List<DataCell> getRows(BureauResults data) {
-    var cells = [
-      data.bureau.toString(),
-      data.totalCalls.toString(),
-      data.totalCallsReached.toString(),
-      data.rateSaidOrganization + "%",
-      data.rateSaidBureau + "%",
-      data.rateSaidDepartment + "%",
-      data.rateSaidFirstname + "%",
-      data.rateSaidName + "%",
-      data.rateSaidGreeting + "%",
-      data.rateSaidSpecificWords + "%",
-      data.rateReached + "%",
-      data.rateCallCompleted + "%",
-      data.rateResponderStartedIfNotReached + "%",
-      data.rateResponderCorrect + "%",
-      data.rateCallbackDone + "%",
-      data.rateCallbackInTime + "%",
-      data.meanRingingTime + "Sekunden",
-    ];
-    return getCells(cells);
-  }
-
-  List<DataCell> getCells(List<dynamic> cells) =>
-      cells.map((data) => DataCell(Text('$data'))).toList();
-}
-*/
