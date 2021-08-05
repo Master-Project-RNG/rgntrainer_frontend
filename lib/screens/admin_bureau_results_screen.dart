@@ -427,8 +427,8 @@ class _AdminCardState extends State<AdminResultsCard> {
         sortAscending: isAscending,
         sortColumnIndex: sortColumnIndex,
         columns: tableType == 0
-            ? getColumns(columnsStandart, showColumns)
-            : getColumns(columnsAB, showColumns),
+            ? getColumns(columnsStandart, showColumns, tableType)
+            : getColumns(columnsAB, showColumns, tableType),
         rows: tableType == 0
             ? getRowsStandart(
                 _myBureauResultsProvider.bureauResults, showColumns)
@@ -447,14 +447,15 @@ class _AdminCardState extends State<AdminResultsCard> {
     return result;
   }
 
-  List<DataColumn> getColumns(List<String> columns, List<bool> showColumns) {
+  List<DataColumn> getColumns(
+      List<String> columns, List<bool> showColumns, int tableType) {
     List<DataColumn> dataColumnResult = [];
     for (int i = 0; i < columns.length; i++) {
       if (showColumns[i] == true) {
         dataColumnResult.add(
           DataColumn(
             label: Text(columns[i]),
-            onSort: onSort,
+            onSort: tableType == 0 ? onSort : onSortAB,
           ),
         );
       }
@@ -699,58 +700,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateCallCompleted)
                 : -1.0,
           ));
-    } /* else if (columnIndex == 12) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateResponderStartedIfNotReached != "-"
-                ? double.parse(user1.rateResponderStartedIfNotReached)
-                : -1.0,
-            user2.rateResponderStartedIfNotReached != "-"
-                ? double.parse(user2.rateResponderStartedIfNotReached)
-                : -1.0,
-          ));
-    } else if (columnIndex == 13) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateResponderCorrect != "-"
-                ? double.parse(user1.rateResponderCorrect)
-                : -1.0,
-            user2.rateResponderCorrect != "-"
-                ? double.parse(user2.rateResponderCorrect)
-                : -1.0,
-          ));
-    } else if (columnIndex == 14) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateCallbackDoneNoAnswer != "-"
-                ? double.parse(user1.rateCallbackDoneNoAnswer)
-                : -1.0,
-            user2.rateCallbackDoneNoAnswer != "-"
-                ? double.parse(user2.rateCallbackDoneNoAnswer)
-                : -1.0,
-          ));
-    } else if (columnIndex == 14) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateCallbackDoneResponder != "-"
-                ? double.parse(user1.rateCallbackDoneResponder)
-                : -1.0,
-            user2.rateCallbackDoneResponder != "-"
-                ? double.parse(user2.rateCallbackDoneResponder)
-                : -1.0,
-          ));
-    } else if (columnIndex == 15) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateCallbackInTime != "-"
-                ? double.parse(user1.rateCallbackInTime)
-                : -1.0,
-            user2.rateCallbackInTime != "-"
-                ? double.parse(user2.rateCallbackInTime)
-                : -1.0,
-          ));
-    } */
-    else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
         showColumns[12] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
@@ -759,6 +709,194 @@ class _AdminCardState extends State<AdminResultsCard> {
                 : -1.0,
             user2.bureauStatistics.meanRingingTime != "-"
                 ? double.parse(user2.bureauStatistics.meanRingingTime)
+                : -1.0,
+          ));
+    }
+    setState(() {
+      this.sortColumnIndex = columnIndex;
+      this.isAscending = ascending;
+    });
+  }
+
+  void onSortAB(int columnIndex, bool ascending) {
+    if (columnIndex == (0 - getHiddenCount(0, showColumns)) &&
+        showColumns[0] == true) {
+      bureauResults.sort((user1, user2) =>
+          compareString(ascending, user1.bureau, user2.bureau));
+    } else if (columnIndex == (1 - getHiddenCount(1, showColumns)) &&
+        showColumns[1] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidOrganizationAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidOrganizationAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidOrganizationAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidOrganizationAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (2 - getHiddenCount(2, showColumns)) &&
+        showColumns[2] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidBureauAB != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateSaidBureauAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidBureauAB != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateSaidBureauAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (3 - getHiddenCount(3, showColumns)) &&
+        showColumns[3] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidDepartmentAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidDepartmentAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidDepartmentAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidDepartmentAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (4 - getHiddenCount(4, showColumns)) &&
+        showColumns[4] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidFirstnameAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidFirstnameAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidFirstnameAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidFirstnameAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (5 - getHiddenCount(5, showColumns)) &&
+        showColumns[5] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidNameAB != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateSaidNameAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidNameAB != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateSaidNameAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (6 - getHiddenCount(6, showColumns)) &&
+        showColumns[6] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidGreetingAB != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateSaidGreetingAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidGreetingAB != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateSaidGreetingAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (7 - getHiddenCount(7, showColumns)) &&
+        showColumns[7] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidSpecificWordsAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidSpecificWordsAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidSpecificWordsAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidSpecificWordsAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (8 - getHiddenCount(8, showColumns)) &&
+        showColumns[8] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateResponderStartedIfNotReached !=
+                    "-"
+                ? double.parse(user1
+                    .abAndCallbackStatistics.rateResponderStartedIfNotReached)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateResponderStartedIfNotReached !=
+                    "-"
+                ? double.parse(user2
+                    .abAndCallbackStatistics.rateResponderStartedIfNotReached)
+                : -1.0,
+          ));
+    } else if (columnIndex == (9 - getHiddenCount(9, showColumns)) &&
+        showColumns[9] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateResponderCorrect != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateResponderCorrect)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateResponderCorrect != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateResponderCorrect)
+                : -1.0,
+          ));
+    } else if (columnIndex == (10 - getHiddenCount(10, showColumns)) &&
+        showColumns[10] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneNoAnswer != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneNoAnswer)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneNoAnswer != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneNoAnswer)
+                : -1.0,
+          ));
+    } else if (columnIndex == (11 - getHiddenCount(11, showColumns)) &&
+        showColumns[11] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneResponder != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneResponder)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneResponder != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneResponder)
+                : -1.0,
+          ));
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[12] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneUnexpected != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneUnexpected)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneUnexpected != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneUnexpected)
+                : -1.0,
+          ));
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[13] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneOverall != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneOverall)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneOverall != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneOverall)
+                : -1.0,
+          ));
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[14] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackInTime != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateCallbackInTime)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackInTime != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateCallbackInTime)
                 : -1.0,
           ));
     }
