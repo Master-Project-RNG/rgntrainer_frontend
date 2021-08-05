@@ -62,6 +62,40 @@ class _AdminCardState extends State<AdminResultsCard> {
     true,
   ];
 
+  final columnsStandart = [
+    'Büro',
+    'Totale Anrufe',
+    'Anrufe beantwortet',
+    'Organisation gesagt',
+    "Büro gesagt",
+    "Abteilung gesagt",
+    "Vorname gesagt",
+    "Nachname gesagt",
+    "Begrüssung gesagt",
+    "Spezifische Wörter gesagt",
+    "Erreicht",
+    "Anruf komplett",
+    "Durchschnittliche Klingelzeit", //13 Spalten (12 index)
+  ];
+
+  final columnsAB = [
+    'Büro',
+    "Organisation gesagt",
+    "Büro gesagt",
+    "Abteilung gesagt",
+    "Vorname gesagt",
+    "Nachname gesagt",
+    "Begrüssung gesagt",
+    "Spezifische Wörter gesagt",
+    "AB aufgeschaltet (falls nicht erreicht)",
+    "AB Nachricht korrekt",
+    "Kein AB geschaltet - Rückrufrate",
+    "AB geschaltet - Rückrufrate",
+    "Unerwarteter Rückruf",
+    "Rückrufrate gesamt",
+    "Rückruf innerhalb der Zeit", //15 Spalten (14 index)
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +120,109 @@ class _AdminCardState extends State<AdminResultsCard> {
 
   @override
   Widget build(BuildContext context) {
+    List<PopupMenuEntry<String>> popupMenuEntry_StandartList = List.generate(
+      columnsStandart.length,
+      (index) {
+        return PopupMenuItem(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState2) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  (isVisible(index, showColumns))
+                      ? IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.green,
+                          ),
+                        ),
+                  Text(columnsStandart.elementAt(index)),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+
+    List<PopupMenuEntry<String>> popupMenuEntry_ABList = List.generate(
+      columnsAB.length,
+      (index) {
+        return PopupMenuItem(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState2) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  (isVisible(index, showColumns))
+                      ? IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.green,
+                          ),
+                        ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: 208,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        columnsAB.elementAt(index),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
@@ -121,7 +258,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                     ),
                     onPressed: () {
                       AuthProvider().logout(_currentUser.token);
-                      context.vxNav.push(
+                      context.vxNav.clearAndPush(
                         Uri.parse(MyRoutes.loginRoute),
                       );
                     },
@@ -144,33 +281,14 @@ class _AdminCardState extends State<AdminResultsCard> {
                         Container(
                           child: PopupMenuButton(
                             onSelected: (result) {
-                              if (_isLoading == true) {
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: const Text('Geduld bitte'),
-                                    content: Text(
-                                        "Die Einträge werden noch geladen."),
-                                    actions: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child: const Text('Schliessen!'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                if (result == 0) {
-                                  setState(() {
-                                    this.selectedQueryType = 0;
-                                  });
-                                } else if (result == 1) {
-                                  setState(() {
-                                    this.selectedQueryType = 1;
-                                  });
-                                }
+                              if (result == 0) {
+                                setState(() {
+                                  this.selectedQueryType = 0;
+                                });
+                              } else if (result == 1) {
+                                setState(() {
+                                  this.selectedQueryType = 1;
+                                });
                               }
                             },
                             itemBuilder: (context) {
@@ -222,62 +340,13 @@ class _AdminCardState extends State<AdminResultsCard> {
                             ),
                           ),
                         ),
-                        //STANDART!!!!
                         Container(
                           alignment: Alignment.centerLeft,
                           child: PopupMenuButton(
                             itemBuilder: (context) {
-                              return List.generate(
-                                columnsStandart.length,
-                                (index) {
-                                  return PopupMenuItem(
-                                    child: StatefulBuilder(
-                                      builder: (BuildContext context,
-                                          StateSetter setState2) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            (isVisible(index, showColumns))
-                                                ? IconButton(
-                                                    onPressed: () {
-                                                      setState2(() {
-                                                        changeVisibilty(
-                                                            index, showColumns);
-                                                      });
-                                                      setState(() {
-                                                        _isLoading = false;
-                                                      });
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons.remove_circle,
-                                                      color: Colors.red,
-                                                    ),
-                                                  )
-                                                : IconButton(
-                                                    onPressed: () {
-                                                      setState2(() {
-                                                        changeVisibilty(
-                                                            index, showColumns);
-                                                      });
-                                                      setState(() {
-                                                        _isLoading = false;
-                                                      });
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons.add_circle,
-                                                      color: Colors.green,
-                                                    ),
-                                                  ),
-                                            Text(columnsStandart
-                                                .elementAt(index)),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              );
+                              return selectedQueryType == 0
+                                  ? popupMenuEntry_StandartList
+                                  : popupMenuEntry_ABList;
                             },
                             child: SizedBox(
                               width: 200,
@@ -396,40 +465,6 @@ class _AdminCardState extends State<AdminResultsCard> {
       );
     }
   }
-
-  final columnsStandart = [
-    'Büro',
-    'Totale Anrufe',
-    'Anrufe beantwortet',
-    'Organisation gesagt',
-    "Büro gesagt",
-    "Abteilung gesagt",
-    "Vorname gesagt",
-    "Nachname gesagt",
-    "Begrüssung gesagt",
-    "Spezifische Wörter gesagt",
-    "Erreicht",
-    "Anruf komplett",
-    "Durchschnittliche Klingelzeit", //13 Spalten (12 index)
-  ];
-
-  final columnsAB = [
-    'Büro',
-    "Organisation gesagt",
-    "Büro gesagt",
-    "Abteilung gesagt",
-    "Vorname gesagt",
-    "Nachname gesagt",
-    "Begrüssung gesagt",
-    "Spezifische Wörter gesagt",
-    "AB aufgeschaltet (falls nicht erreicht)",
-    "AB Nachricht korrekt",
-    "Kein AB geschaltet - Rückrufrate",
-    "AB geschaltet - Rückrufrate",
-    "Unerwarteter Rückruf",
-    "Rückrufrate gesamt",
-    "Rückruf innerhalb der Zeit", //15 Spalten (14 index)
-  ];
 
   Widget bureauResultsData(
       BureauResultsProvider _myBureauResultsProvider, tableType) {
