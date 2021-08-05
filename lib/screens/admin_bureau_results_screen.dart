@@ -439,6 +439,7 @@ class _AdminCardState extends State<AdminResultsCard> {
 
   void changeVisibilty(int index, List<bool> list) {
     list[index] = list.elementAt(index).toggle();
+    sortColumnIndex = null;
   }
 
   bool isVisible(int index, List<bool> list) {
@@ -534,26 +535,40 @@ class _AdminCardState extends State<AdminResultsCard> {
     return dataRowResult;
   }
 
+  int getHiddenCount(int index, List<bool> _showColumns) {
+    int result = 0;
+    for (int i = 0; i < index; i++) {
+      if (_showColumns[i] == false) {
+        result++;
+      }
+    }
+    return result;
+  }
+
   List<DataCell> getCellsStandart(List<dynamic> cells) =>
       cells.map((data) => DataCell(Text('$data'))).toList();
 
   void onSort(int columnIndex, bool ascending) {
-    if (columnIndex == 0) {
+    if (columnIndex == (0 - getHiddenCount(0, showColumns)) &&
+        showColumns[0] == true) {
       bureauResults.sort((user1, user2) =>
           compareString(ascending, user1.bureau, user2.bureau));
-    } else if (columnIndex == 1) {
+    } else if (columnIndex == (1 - getHiddenCount(1, showColumns)) &&
+        showColumns[1] == true) {
       bureauResults.sort((user1, user2) => compareInteger(
             ascending,
             int.parse(user1.bureauStatistics.totalCalls),
             int.parse(user2.bureauStatistics.totalCalls),
           ));
-    } else if (columnIndex == 2) {
+    } else if (columnIndex == (2 - getHiddenCount(2, showColumns)) &&
+        showColumns[2] == true) {
       bureauResults.sort((user1, user2) => compareInteger(
             ascending,
             int.parse(user1.bureauStatistics.totalCallsReached),
             int.parse(user2.bureauStatistics.totalCallsReached),
           ));
-    } else if (columnIndex == 3) {
+    } else if (columnIndex == (3 - getHiddenCount(3, showColumns)) &&
+        showColumns[3] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidOrganization != "-"
@@ -563,7 +578,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateSaidOrganization)
                 : -1.0,
           ));
-    } else if (columnIndex == 4) {
+    } else if (columnIndex == (4 - getHiddenCount(4, showColumns)) &&
+        showColumns[4] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidBureau != "-"
@@ -573,7 +589,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateSaidBureau)
                 : -1.0,
           ));
-    } else if (columnIndex == 5) {
+    } else if (columnIndex == (5 - getHiddenCount(5, showColumns)) &&
+        showColumns[5] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidDepartment != "-"
@@ -583,7 +600,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateSaidDepartment)
                 : -1.0,
           ));
-    } else if (columnIndex == 6) {
+    } else if (columnIndex == (6 - getHiddenCount(6, showColumns)) &&
+        showColumns[6] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidFirstname != "-"
@@ -593,7 +611,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateSaidFirstname)
                 : -1.0,
           ));
-    } else if (columnIndex == 7) {
+    } else if (columnIndex == (7 - getHiddenCount(7, showColumns)) &&
+        showColumns[7] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidName != "-"
@@ -603,7 +622,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateSaidName)
                 : -1.0,
           ));
-    } else if (columnIndex == 8) {
+    } else if (columnIndex == (8 - getHiddenCount(8, showColumns)) &&
+        showColumns[8] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidGreeting != "-"
@@ -613,7 +633,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateSaidGreeting)
                 : -1.0,
           ));
-    } else if (columnIndex == 9) {
+    } else if (columnIndex == (9 - getHiddenCount(9, showColumns)) &&
+        showColumns[9] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidSpecificWords != "-"
@@ -623,7 +644,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateSaidSpecificWords)
                 : -1.0,
           ));
-    } else if (columnIndex == 10) {
+    } else if (columnIndex == (10 - getHiddenCount(10, showColumns)) &&
+        showColumns[10] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateReached != "-"
@@ -633,7 +655,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 ? double.parse(user2.bureauStatistics.rateReached)
                 : -1.0,
           ));
-    } else if (columnIndex == 11) {
+    } else if (columnIndex == (11 - getHiddenCount(11, showColumns)) &&
+        showColumns[11] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateCallCompleted != "-"
@@ -694,7 +717,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                 : -1.0,
           ));
     } */
-    else if (columnIndex == 12) {
+    else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[12] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.meanRingingTime != "-"
@@ -710,6 +734,16 @@ class _AdminCardState extends State<AdminResultsCard> {
       this.isAscending = ascending;
     });
   }
+}
+
+int compareString(bool ascending, String value1, String value2) =>
+    ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+
+int compareInteger(bool ascending, int value1, int value2) =>
+    ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+
+int compareDouble(bool ascending, double value1, double value2) {
+  return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
 }
 
 class AbfrageButton extends StatefulWidget {
@@ -791,15 +825,6 @@ class _AbfrageButtonState extends State<AbfrageButton> {
   }
 }
 
-int compareString(bool ascending, String value1, String value2) =>
-    ascending ? value1.compareTo(value2) : value2.compareTo(value1);
-
-int compareInteger(bool ascending, int value1, int value2) =>
-    ascending ? value1.compareTo(value2) : value2.compareTo(value1);
-
-int compareDouble(bool ascending, double value1, double value2) {
-  return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
-}
 
 
 
