@@ -101,7 +101,7 @@ class _AdminCardState extends State<AdminResultsCard> {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
     _fetchTotalUserResults();
-    print(_currentUser.token);
+    print("CurrentUserToken: " + _currentUser.token!);
     initializeDateFormatting(); //set CalendarWidget language to German
   }
 

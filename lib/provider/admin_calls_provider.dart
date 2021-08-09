@@ -74,7 +74,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: callRangeJson,
     );
     if (response.statusCode == 200) {
-      debugPrint(response.toString());
+      debugPrint("setCallRange: " + response.toString());
     } else {
       throw Exception('Unable to getCallRange!');
     }
@@ -171,7 +171,7 @@ class AdminCallsProvider with ChangeNotifier {
           json.decode(response.body) as Map<String, dynamic>;
       final ConfigurationSummary result =
           ConfigurationSummary.fromJsonOpeningHours(responseData);
-      debugPrint(result.toString());
+      debugPrint("getOpeningHours:" + result.toString());
       return result;
     } else {
       throw Exception('Unable to get OpeningHours!');
@@ -192,7 +192,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint(response.toString());
+      debugPrint("setOpeningHours: " + response.toString());
     } else {
       throw Exception('Unable to set OpeningHours!');
     }
@@ -239,7 +239,6 @@ class AdminCallsProvider with ChangeNotifier {
           json.decode(response.body) as Map<String, dynamic>;
       ConfigurationSummary test =
           ConfigurationSummary.fromJsonGreeting(responseData);
-      debugPrint(test.toString());
       greetingConfigurationSummary = test;
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
       _pickedUserGreeting = greetingConfigurationSummary.users[0];
@@ -265,7 +264,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint(response.toString());
+      debugPrint("setGreetingConfiguration: " + response.toString());
     } else {
       throw Exception('Unable to set GreetingConfiguration!');
     }

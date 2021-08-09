@@ -118,7 +118,7 @@ class AuthProvider with ChangeNotifier {
           ),
         );
       }
-      debugPrint(response.toString());
+      debugPrint("changePassword: " + response.toString());
     } catch (error) {
       debugPrint(error.toString());
     }
