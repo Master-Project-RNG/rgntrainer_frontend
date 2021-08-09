@@ -7,15 +7,23 @@ import 'dart:convert';
 import '../widgets/error_dialog.dart';
 
 class AuthProvider with ChangeNotifier {
-  var activeHost = Host().getActiveHost();
+  String activeHost = Host().getActiveHost();
   late User currentUser;
 
   User get loggedInUser {
     return currentUser;
   }
 
-  Future<void> _authenticate(String username, String password, ctx) async {
-    final url = '${activeHost}/login';
+  Future<void> login(
+      String? username, String? password, BuildContext ctx) async {
+    UserSimplePreferences.resetUser();
+    return _authenticate(username!, password!,
+        ctx); //return needed for redirection to correct programm flow
+  }
+
+  Future<void> _authenticate(
+      String username, String password, BuildContext ctx) async {
+    final url = '$activeHost/login';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -27,31 +35,24 @@ class AuthProvider with ChangeNotifier {
           'password': password,
         }),
       );
-
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      currentUser = User.fromJson(responseData);
-      UserSimplePreferences.setUserToken(responseData['token'].toString());
-      UserSimplePreferences.setUser(currentUser);
-      /* if (responseData['error'] != null) {
-        throw HttpException(responseData['error']['message']);
-      } --> Dazu ist nichts in der DB */
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData =
+            json.decode(response.body) as Map<String, dynamic>;
+        currentUser = User.fromJson(responseData);
+        UserSimplePreferences.setUserToken(responseData['token'].toString());
+        UserSimplePreferences.setUser(currentUser);
+      }
     } catch (error) {
       const errorMessage = 'Login fehlgeschlagen!';
       SelfMadeErrorDialog().showErrorDialog(errorMessage, ctx);
-      debugPrint(error.toString());
     }
   }
 
-  Future<void> login(String? username, String? password, var ctx) async {
+  Future<void> logout(String token) async {
     UserSimplePreferences.resetUser();
-    return _authenticate(username!, password!, ctx);
-  }
-
-  Future<void> logout(token) async {
-    UserSimplePreferences.resetUser();
-    final url = '${activeHost}/logout';
+    final url = '$activeHost/logout';
     try {
-      final response = await http.post(
+      await http.post(
         Uri.parse(url),
         headers: {
           "content-type": "application/json",
@@ -61,15 +62,14 @@ class AuthProvider with ChangeNotifier {
         }),
       );
       //Logout successful!
-      debugPrint(response.toString());
     } catch (error) {
-      debugPrint(error.toString());
+      // Error!
     }
   }
 
   Future<void> changePassword(ctx, token, oldPassword, newPassword) async {
     // UserSimplePreferences.resetUser(); //Login required after password change or just
-    final url = '${activeHost}/changePassword';
+    final url = '$activeHost/changePassword';
     try {
       final response = await http.post(
         Uri.parse(url),
