@@ -35,7 +35,7 @@ class _NoTokenCardState extends State<NoTokenCard> {
             ElevatedButton(
               child: Text('Okay!'),
               onPressed: () {
-                context.vxNav.replace(
+                context.vxNav.clearAndPush(
                   Uri.parse(MyRoutes.loginRoute),
                 );
               },

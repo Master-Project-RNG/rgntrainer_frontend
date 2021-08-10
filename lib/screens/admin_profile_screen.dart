@@ -75,7 +75,7 @@ class _AdminCardState extends State<AdminProfileCard> {
         await Provider.of<AuthProvider>(context, listen: false).changePassword(
             context, _currentUser.token, oldPassword, newPassword);
       } catch (error) {
-        debugPrint(error.toString());
+        debugPrint("_submit:" + error.toString());
       }
       setState(() {
         _isLoading = false;
@@ -114,8 +114,8 @@ class _AdminCardState extends State<AdminProfileCard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      AuthProvider().logout(_currentUser.token);
-                      context.vxNav.push(
+                      AuthProvider().logout(_currentUser.token!);
+                      context.vxNav.clearAndPush(
                         Uri.parse(MyRoutes.loginRoute),
                       );
                     },

@@ -45,7 +45,7 @@ class _UserCardState extends State<UserCard> {
       _isLoading = true;
     });
     await Provider.of<UserResultsProvider>(context, listen: false)
-        .getUserResults(_currentUser.token);
+        .getUserResults(_currentUser.token!);
     setState(() {
       _isLoading = false;
     });
@@ -59,7 +59,7 @@ class _UserCardState extends State<UserCard> {
     });
 
     if (_currentUser.token == null || _currentUser.usertype != "user") {
-      AuthProvider().logout(_currentUser.token);
+      AuthProvider().logout(_currentUser.token!);
       return NoTokenScreen();
     } else {
       final _myUserResultsProvider = context.watch<UserResultsProvider>();
@@ -70,7 +70,7 @@ class _UserCardState extends State<UserCard> {
             IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () {
-                AuthProvider().logout(_currentUser.token);
+                AuthProvider().logout(_currentUser.token!);
                 context.vxNav.replace(
                   Uri.parse(MyRoutes.loginRoute),
                 );
