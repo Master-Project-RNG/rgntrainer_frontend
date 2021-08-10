@@ -45,7 +45,7 @@ class _UserCardState extends State<UserCard> {
       _isLoading = true;
     });
     await Provider.of<UserResultsProvider>(context, listen: false)
-        .getUserResults(_currentUser.token);
+        .getUserResults(_currentUser.token!);
     setState(() {
       _isLoading = false;
     });
