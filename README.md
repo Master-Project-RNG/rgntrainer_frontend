@@ -1,4 +1,4 @@
-# rgntrainer_frontend
+# rngtrainer_frontend
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
