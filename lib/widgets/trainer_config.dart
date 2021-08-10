@@ -240,7 +240,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                     ],
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
                   SizedBox(
                     width: 150,
@@ -250,47 +250,6 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       },
                       child: const Text('Speichern'),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 100,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.green, onPrimary: Colors.white),
-                          onPressed: () {
-                            adminCalls.startTrainer(_currentUser.token!);
-                            setState(() {
-                              getStatus(_currentUser.token!);
-                            });
-                            print('Short Press!');
-                          },
-                          child: const Text('Start'),
-                        ),
-                      ),
-                      getStatus(_currentUser.token!),
-                      SizedBox(
-                        width: 100,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.red, onPrimary: Colors.white),
-                          onPressed: () {
-                            adminCalls.stopTrainer(_currentUser.token!);
-                            setState(() {
-                              getStatus(_currentUser.token!);
-                            });
-                            // ignore: avoid_print
-                            print('Short Press!');
-                          },
-                          child: const Text('Stop'),
-                        ),
-                      )
-                    ],
                   ),
                 ],
               ),
@@ -310,37 +269,5 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
     setState(() {
       _isLoading = false;
     });
-  }
-
-  // _status has to be connected to the class attribute _status in order that setState() works, can't be handed in as a function parameter ;)
-  Widget getStatus(String token) {
-    return FutureBuilder<bool>(
-        future: adminCalls.getTrainerStatus(token),
-        builder: (context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.hasData) {
-            //TODO: TESTEN
-            if (snapshot.data == true) {
-              var statusText = 'Status: Eingeschaltet';
-              return SizedBox(
-                width: 200,
-                child: Text(
-                  statusText,
-                  textAlign: TextAlign.center,
-                ),
-              );
-            } else {
-              var statusText = 'Status: Ausgeschaltet';
-              return SizedBox(
-                width: 200,
-                child: Text(
-                  statusText,
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
-          } else {
-            return const CircularProgressIndicator();
-          }
-        });
   }
 }
