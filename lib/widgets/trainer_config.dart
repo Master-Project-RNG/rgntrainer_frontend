@@ -15,8 +15,8 @@ class TrainerConfiguration extends StatefulWidget {
 }
 
 class _TrainerConfigurationState extends State<TrainerConfiguration> {
-  var tempInterval = 0;
-  var adminCalls = AdminCallsProvider();
+  int tempInterval = 0;
+  AdminCallsProvider adminCalls = AdminCallsProvider();
   late User _currentUser = User.init();
   late CallRange _callRange = CallRange.init();
   var _isLoading = false;
@@ -53,7 +53,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
         elevation: 8.0,
         child: Column(
           children: <Widget>[
-            Container(
+            SizedBox(
               height: 50,
               child: AppBar(
                 shape: const RoundedRectangleBorder(
@@ -62,7 +62,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                     topRight: Radius.circular(10.0),
                   ),
                 ),
-                title: Text(
+                title: const Text(
                   "Trainer starten",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -78,7 +78,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 300,
                         child: Text(
                           'Minimale Anzahl Anrufe:',
@@ -86,11 +86,11 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                               fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         width: 150,
                         child: _isLoading
-                            ? Center(
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
                             : SpinBox(
@@ -104,13 +104,13 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 300,
                         child: Text(
                           'Maximale Anzahl Anrufe:',
@@ -118,11 +118,11 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                               fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         width: 150,
                         child: _isLoading
-                            ? Center(
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
                             : SpinBox(
@@ -136,13 +136,13 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 300,
                         child: Text(
                           'Minimale Anzahl Tage zwischen Anrufen einer einzelnen Nummer:',
@@ -150,11 +150,11 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                               fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         width: 150,
                         child: _isLoading
-                            ? Center(
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
                             : SpinBox(
@@ -171,13 +171,13 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 300,
                         child: Text(
                           'Anzahl Stunden bis ein Rückruf als zu spät gilt:',
@@ -185,11 +185,11 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                               fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         width: 150,
                         child: _isLoading
-                            ? Center(
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
                             : SpinBox(
@@ -205,13 +205,13 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 300,
                         child: Text(
                           'Pause zwischen den Anrufen (generell) in Sekunden:',
@@ -219,11 +219,11 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                               fontSize: 14, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         width: 150,
                         child: _isLoading
-                            ? Center(
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
                             : SpinBox(
@@ -239,7 +239,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   SizedBox(
@@ -260,7 +260,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
     );
   }
 
-  _submit(token, CallRange callRange) async {
+  Future<void> _submit(String token, CallRange callRange) async {
     setState(() {
       _isLoading = true;
     });
