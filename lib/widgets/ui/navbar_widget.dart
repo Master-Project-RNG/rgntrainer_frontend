@@ -7,7 +7,7 @@ import 'package:velocity_x/velocity_x.dart';
 class NavBarWidget extends StatelessWidget {
   final User _currentUser;
 
-  NavBarWidget(this._currentUser);
+  const NavBarWidget(this._currentUser);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class NavBarWidget extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.account_circle,
                 size: 120,
                 color: Colors.white,
@@ -34,14 +34,13 @@ class NavBarWidget extends StatelessWidget {
                 _currentUser.username.toString(),
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
           ),
         ),
         Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Divider(
+            const Divider(
               height: 1,
               color: Colors.white,
             ),
@@ -52,27 +51,31 @@ class NavBarWidget extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromRGBO(25, 177, 237, 1), //cyan
+                    const Color.fromRGBO(25, 177, 237, 1), //cyan
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  context.vxNav.push(
+                    Uri.parse(MyRoutes.adminCockpitRoute),
+                  );
+                },
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 50,
                       child: Icon(
                         Icons.category,
                       ),
                     ),
                     Text(
-                      "Cockpit (inactive)",
+                      "Cockpit",
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ],
                 ),
               ),
             ),
-            Divider(
+            const Divider(
               height: 1,
               color: Colors.white,
             ),
@@ -83,13 +86,13 @@ class NavBarWidget extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromRGBO(25, 177, 237, 1), //cyan
+                    const Color.fromRGBO(25, 177, 237, 1), //cyan
                   ),
                 ),
                 onPressed: () {},
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 50,
                       child: Icon(
                         Icons.call,
@@ -103,7 +106,7 @@ class NavBarWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(
+            const Divider(
               height: 1,
               color: Colors.white,
             ),
@@ -114,17 +117,17 @@ class NavBarWidget extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromRGBO(25, 177, 237, 1), //cyan
+                    const Color.fromRGBO(25, 177, 237, 1), //cyan
                   ),
                 ),
                 onPressed: () {
                   context.vxNav.push(
-                    Uri.parse(MyRoutes.adminRoute),
+                    Uri.parse(MyRoutes.adminConfigRoute),
                   );
                 },
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 50,
                       child: Icon(
                         Icons.build_rounded,
@@ -138,7 +141,7 @@ class NavBarWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(
+            const Divider(
               height: 1,
               color: Colors.white,
             ),
@@ -149,7 +152,7 @@ class NavBarWidget extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromRGBO(25, 177, 237, 1), //cyan
+                    const Color.fromRGBO(25, 177, 237, 1), //cyan
                   ),
                 ),
                 onPressed: () {
@@ -159,7 +162,7 @@ class NavBarWidget extends StatelessWidget {
                 },
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 50,
                       child: Icon(
                         Icons.list_alt,

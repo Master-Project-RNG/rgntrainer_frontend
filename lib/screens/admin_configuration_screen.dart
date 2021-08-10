@@ -75,8 +75,8 @@ class _AdminCardState extends State<AdminCard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      AuthProvider().logout(_currentUser.token);
-                      context.vxNav.push(
+                      AuthProvider().logout(_currentUser.token!);
+                      context.vxNav.clearAndPush(
                         Uri.parse(MyRoutes.loginRoute),
                       );
                     },

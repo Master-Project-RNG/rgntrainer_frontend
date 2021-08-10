@@ -2,6 +2,7 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+// ignore: avoid_classes_with_only_static_members
 class UserSimplePreferences {
   static late SharedPreferences _preferences;
 
@@ -14,7 +15,7 @@ class UserSimplePreferences {
       _preferences = await SharedPreferences.getInstance();
 
   static Future setUserToken(String token) async =>
-      await _preferences.setString(_keyUserToken, token);
+      _preferences.setString(_keyUserToken, token);
 
   static String? getUserToken() {
     if (_preferences.getString(_keyUserToken) == null) {

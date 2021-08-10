@@ -35,21 +35,18 @@ class ConfigurationSummary {
     List<Bureaus> bureausList = [];
     if (json['bureaus'] != null) {
       var list = json['bureaus'] as List;
-      print(list.runtimeType);
       bureausList = list.map((i) => Bureaus.fromJsonOpeningHours(i)).toList();
     }
 
     List<User> usersList = [];
     if (json['users'] != null) {
       var list2 = json['users'] as List;
-      print(list2.runtimeType);
       usersList = list2.map((i) => User.fromJson(i)).toList();
     }
 
     List<OpeningHours> openingHoursList = [];
     if (json['openingHours'] != null) {
       var list3 = json['openingHours'] as List;
-      print(list3.runtimeType);
       openingHoursList = list3.map((i) => OpeningHours.fromJson(i)).toList();
     }
 
@@ -85,14 +82,12 @@ class ConfigurationSummary {
     List<Bureaus> bureausList = [];
     if (json['bureaus'] != null) {
       var list = json['bureaus'] as List;
-      print(list.runtimeType);
       bureausList = list.map((i) => Bureaus.fromJsonGreeting(i)).toList();
     }
 
     List<User> usersList = [];
     if (json['users'] != null) {
       var list2 = json['users'] as List;
-      print(list2.runtimeType);
       usersList = list2.map((i) => User.fromJson(i)).toList();
     }
 
@@ -149,7 +144,6 @@ class Bureaus {
     List<OpeningHours> openingHoursList = [];
     if (json['openingHours'] != null) {
       var list = json['openingHours'] as List;
-      print(list.runtimeType);
       openingHoursList = list.map((i) => OpeningHours.fromJson(i)).toList();
     }
 

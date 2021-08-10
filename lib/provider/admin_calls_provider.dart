@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/models/call_range.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
+import 'package:rgntrainer_frontend/models/status_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import '../host.dart';
 
@@ -18,8 +19,7 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   //get trainer status ()
-  //--- currently unused ---
-  Future<bool> getTrainerStatus(String token) async {
+  Future<Status> getTrainerStatus(String token) async {
     var url = Uri.parse('$activeHost/status');
     final response = await http.post(
       url,
@@ -31,10 +31,9 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      final String responseStatus = response.body;
-      final bool status = responseStatus.toLowerCase() == 'true';
-      debugPrint("getTrainerStatus: $status");
-      return status;
+      final Map<String, dynamic> responseData =
+          json.decode(response.body) as Map<String, dynamic>;
+      return Status.fromJson(responseData);
     } else {
       throw Exception('Unable to get Status!');
     }
@@ -74,7 +73,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: callRangeJson,
     );
     if (response.statusCode == 200) {
-      debugPrint(response.toString());
+      debugPrint("setCallRange: " + response.toString());
     } else {
       throw Exception('Unable to getCallRange!');
     }
@@ -171,7 +170,7 @@ class AdminCallsProvider with ChangeNotifier {
           json.decode(response.body) as Map<String, dynamic>;
       final ConfigurationSummary result =
           ConfigurationSummary.fromJsonOpeningHours(responseData);
-      debugPrint(result.toString());
+      debugPrint("getOpeningHours:" + result.toString());
       return result;
     } else {
       throw Exception('Unable to get OpeningHours!');
@@ -192,7 +191,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint(response.toString());
+      debugPrint("setOpeningHours: " + response.toString());
     } else {
       throw Exception('Unable to set OpeningHours!');
     }
@@ -239,7 +238,6 @@ class AdminCallsProvider with ChangeNotifier {
           json.decode(response.body) as Map<String, dynamic>;
       ConfigurationSummary test =
           ConfigurationSummary.fromJsonGreeting(responseData);
-      debugPrint(test.toString());
       greetingConfigurationSummary = test;
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
       _pickedUserGreeting = greetingConfigurationSummary.users[0];
@@ -265,7 +263,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint(response.toString());
+      debugPrint("setGreetingConfiguration: " + response.toString());
     } else {
       throw Exception('Unable to set GreetingConfiguration!');
     }

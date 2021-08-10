@@ -35,6 +35,8 @@ class _AdminCardState extends State<AdminResultsCard> {
   late User _currentUser = User.init();
   var _isLoading = false;
   late List<BureauResults> bureauResults;
+  final List<String> queryType = ["Standart", "Anrufbeantworter"];
+  int selectedQueryType = 0;
 
   int? sortColumnIndex; //Reflects the column that is currently sorted!
   bool isAscending = false;
@@ -60,12 +62,46 @@ class _AdminCardState extends State<AdminResultsCard> {
     true,
   ];
 
+  final columnsStandart = [
+    'Büro',
+    'Totale Anrufe',
+    'Anrufe beantwortet',
+    'Organisation gesagt',
+    "Büro gesagt",
+    "Abteilung gesagt",
+    "Vorname gesagt",
+    "Nachname gesagt",
+    "Begrüssung gesagt",
+    "Spezifische Wörter gesagt",
+    "Erreicht",
+    "Anruf komplett",
+    "Durchschnittliche Klingelzeit", //13 Spalten (12 index)
+  ];
+
+  final columnsAB = [
+    'Büro',
+    "Organisation gesagt",
+    "Büro gesagt",
+    "Abteilung gesagt",
+    "Vorname gesagt",
+    "Nachname gesagt",
+    "Begrüssung gesagt",
+    "Spezifische Wörter gesagt",
+    "AB aufgeschaltet (falls nicht erreicht)",
+    "AB Nachricht korrekt",
+    "Kein AB geschaltet - Rückrufrate",
+    "AB geschaltet - Rückrufrate",
+    "Unerwarteter Rückruf",
+    "Rückrufrate gesamt",
+    "Rückruf innerhalb der Zeit", //15 Spalten (14 index)
+  ];
+
   @override
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
     _fetchTotalUserResults();
-    print(_currentUser.token);
+    print("CurrentUserToken: ${_currentUser.token!}");
     initializeDateFormatting(); //set CalendarWidget language to German
   }
 
@@ -84,7 +120,109 @@ class _AdminCardState extends State<AdminResultsCard> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+    List<PopupMenuEntry<String>> popupMenuEntry_StandartList = List.generate(
+      columnsStandart.length,
+      (index) {
+        return PopupMenuItem(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState2) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  (isVisible(index, showColumns))
+                      ? IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.green,
+                          ),
+                        ),
+                  Text(columnsStandart.elementAt(index)),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+
+    List<PopupMenuEntry<String>> popupMenuEntry_ABList = List.generate(
+      columnsAB.length,
+      (index) {
+        return PopupMenuItem(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState2) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  (isVisible(index, showColumns))
+                      ? IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            setState2(() {
+                              changeVisibilty(index, showColumns);
+                            });
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.green,
+                          ),
+                        ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    width: 208,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        columnsAB.elementAt(index),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
@@ -119,8 +257,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      AuthProvider().logout(_currentUser.token);
-                      context.vxNav.push(
+                      AuthProvider().logout(_currentUser.token!);
+                      context.vxNav.clearAndPush(
                         Uri.parse(MyRoutes.loginRoute),
                       );
                     },
@@ -141,55 +279,30 @@ class _AdminCardState extends State<AdminResultsCard> {
                           style: const TextStyle(fontSize: 34),
                         ),
                         Container(
-                          alignment: Alignment.centerLeft,
                           child: PopupMenuButton(
+                            onSelected: (result) {
+                              if (result == 0) {
+                                setState(() {
+                                  this.selectedQueryType = 0;
+                                });
+                              } else if (result == 1) {
+                                setState(() {
+                                  this.selectedQueryType = 1;
+                                });
+                              }
+                            },
                             itemBuilder: (context) {
                               return List.generate(
-                                columns.length,
+                                2,
                                 (index) {
                                   return PopupMenuItem(
-                                    child: StatefulBuilder(
-                                      builder: (BuildContext context,
-                                          StateSetter setState2) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            (isVisible(index, showColumns))
-                                                ? IconButton(
-                                                    onPressed: () {
-                                                      setState2(() {
-                                                        changeVisibilty(
-                                                            index, showColumns);
-                                                      });
-                                                      setState(() {
-                                                        _isLoading = false;
-                                                      });
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons.remove_circle,
-                                                      color: Colors.red,
-                                                    ),
-                                                  )
-                                                : IconButton(
-                                                    onPressed: () {
-                                                      setState2(() {
-                                                        changeVisibilty(
-                                                            index, showColumns);
-                                                      });
-                                                      setState(() {
-                                                        _isLoading = false;
-                                                      });
-                                                    },
-                                                    icon: const Icon(
-                                                      Icons.add_circle,
-                                                      color: Colors.green,
-                                                    ),
-                                                  ),
-                                            Text(columns.elementAt(index)),
-                                          ],
-                                        );
-                                      },
+                                    value: index,
+                                    child: Row(
+                                      children: [
+                                        index == 0
+                                            ? Text("Standart")
+                                            : Text("Anrufbeantworter"),
+                                      ],
                                     ),
                                   );
                                 },
@@ -197,12 +310,52 @@ class _AdminCardState extends State<AdminResultsCard> {
                             },
                             child: SizedBox(
                               width: 200,
-                              height: 30,
+                              height: 40,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                                alignment: Alignment.center,
+                                child: DropdownButton(
+                                  value: this.selectedQueryType,
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text(
+                                        "Standart",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      value: 0,
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text(
+                                        "Anrufbeantworter",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      value: 1,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: PopupMenuButton(
+                            itemBuilder: (context) {
+                              return selectedQueryType == 0
+                                  ? popupMenuEntry_StandartList
+                                  : popupMenuEntry_ABList;
+                            },
+                            child: SizedBox(
+                              width: 200,
+                              height: 40,
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).primaryColor,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(3))),
+                                        BorderRadius.all(Radius.circular(5))),
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Spalten ein-/ausblenden',
@@ -263,12 +416,12 @@ class _AdminCardState extends State<AdminResultsCard> {
                             },
                             child: SizedBox(
                               width: 200,
-                              height: 30,
+                              height: 40,
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).primaryColor,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(3))),
+                                        BorderRadius.all(Radius.circular(5))),
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Exportieren',
@@ -297,9 +450,9 @@ class _AdminCardState extends State<AdminResultsCard> {
                             height: 5,
                           ),
                           SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: bureauResultsData(_myBureauResultsProvider),
-                          ),
+                              scrollDirection: Axis.horizontal,
+                              child: bureauResultsData(_myBureauResultsProvider,
+                                  this.selectedQueryType)),
                         ],
                       ),
                     ),
@@ -313,28 +466,8 @@ class _AdminCardState extends State<AdminResultsCard> {
     }
   }
 
-  final columns = [
-    'Büro',
-    'Totale Anrufe',
-    'Anrufe beantwortet',
-    'Organisation gesagt',
-    "Büro gesagt",
-    "Abteilung gesagt",
-    "Vorname gesagt",
-    "Nachname gesagt",
-    "Begrüssung gesagt",
-    "Spezifische Wörter gesagt",
-    "Erreicht",
-    "Anruf komplett",
-    "AB aufgeschaltet (falls nicht erreicht)",
-    "AB Nachricht korrekt",
-    "Kein AB geschaltet - Rückrufrate",
-    "AB geschaltet - Rückrufrate",
-    "Rückruf innerhalb der Zeit",
-    "Durchschnittliche Klingelzeit",
-  ];
-
-  Widget bureauResultsData(BureauResultsProvider _myBureauResultsProvider) {
+  Widget bureauResultsData(
+      BureauResultsProvider _myBureauResultsProvider, tableType) {
     if (_isLoading == true) {
       return CircularProgressIndicator();
     } else
@@ -342,13 +475,19 @@ class _AdminCardState extends State<AdminResultsCard> {
         dataRowHeight: 25,
         sortAscending: isAscending,
         sortColumnIndex: sortColumnIndex,
-        columns: getColumns(columns, showColumns),
-        rows: getRows(_myBureauResultsProvider.bureauResults, showColumns),
+        columns: tableType == 0
+            ? getColumns(columnsStandart, showColumns, tableType)
+            : getColumns(columnsAB, showColumns, tableType),
+        rows: tableType == 0
+            ? getRowsStandart(
+                _myBureauResultsProvider.bureauResults, showColumns)
+            : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
       );
   }
 
   void changeVisibilty(int index, List<bool> list) {
     list[index] = list.elementAt(index).toggle();
+    sortColumnIndex = null;
   }
 
   bool isVisible(int index, List<bool> list) {
@@ -357,14 +496,15 @@ class _AdminCardState extends State<AdminResultsCard> {
     return result;
   }
 
-  List<DataColumn> getColumns(List<String> columns, List<bool> showColumns) {
+  List<DataColumn> getColumns(
+      List<String> columns, List<bool> showColumns, int tableType) {
     List<DataColumn> dataColumnResult = [];
     for (int i = 0; i < columns.length; i++) {
       if (showColumns[i] == true) {
         dataColumnResult.add(
           DataColumn(
             label: Text(columns[i]),
-            onSort: onSort,
+            onSort: tableType == 0 ? onSort : onSortAB,
           ),
         );
       }
@@ -372,38 +512,40 @@ class _AdminCardState extends State<AdminResultsCard> {
     return dataColumnResult;
   }
 
-  List<DataRow> getRows(
-      List<BureauResults> bureauResults, List<bool> showColums) {
+  List<DataRow> getRowsStandart(
+      List<BureauResults> bureauResults, List<bool> showColumns) {
     List<DataRow> dataRowResult = [];
     for (int i = 0; i < bureauResults.length; i++) {
       final cells = [];
       if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
-      if (showColumns[1]) cells.add(bureauResults[i].totalCalls.toString());
+      if (showColumns[1])
+        cells.add(bureauResults[i].bureauStatistics.totalCalls.toString());
       if (showColumns[2])
-        cells.add(bureauResults[i].totalCallsReached.toString());
+        cells.add(
+            bureauResults[i].bureauStatistics.totalCallsReached.toString());
       if (showColumns[3])
-        cells.add(bureauResults[i].rateSaidOrganization + "%");
-      if (showColumns[4]) cells.add(bureauResults[i].rateSaidBureau + "%");
-      if (showColumns[5]) cells.add(bureauResults[i].rateSaidDepartment + "%");
-      if (showColumns[6]) cells.add(bureauResults[i].rateSaidFirstname + "%");
-      if (showColumns[7]) cells.add(bureauResults[i].rateSaidName + "%");
-      if (showColumns[8]) cells.add(bureauResults[i].rateSaidGreeting + "%");
+        cells.add(bureauResults[i].bureauStatistics.rateSaidOrganization + "%");
+      if (showColumns[4])
+        cells.add(bureauResults[i].bureauStatistics.rateSaidBureau + "%");
+      if (showColumns[5])
+        cells.add(bureauResults[i].bureauStatistics.rateSaidDepartment + "%");
+      if (showColumns[6])
+        cells.add(bureauResults[i].bureauStatistics.rateSaidFirstname + "%");
+      if (showColumns[7])
+        cells.add(bureauResults[i].bureauStatistics.rateSaidName + "%");
+      if (showColumns[8])
+        cells.add(bureauResults[i].bureauStatistics.rateSaidGreeting + "%");
       if (showColumns[9])
-        cells.add(bureauResults[i].rateSaidSpecificWords + "%");
-      if (showColumns[10]) cells.add(bureauResults[i].rateReached + "%");
-      if (showColumns[11]) cells.add(bureauResults[i].rateCallCompleted + "%");
+        cells
+            .add(bureauResults[i].bureauStatistics.rateSaidSpecificWords + "%");
+      if (showColumns[10])
+        cells.add(bureauResults[i].bureauStatistics.rateReached + "%");
+      if (showColumns[11])
+        cells.add(bureauResults[i].bureauStatistics.rateCallCompleted + "%");
+
       if (showColumns[12])
-        cells.add(bureauResults[i].rateResponderStartedIfNotReached + "%");
-      if (showColumns[13])
-        cells.add(bureauResults[i].rateResponderCorrect + "%");
-      if (showColumns[14])
-        cells.add(bureauResults[i].rateCallbackDoneNoAnswer + "%");
-      if (showColumns[15])
-        cells.add(bureauResults[i].rateCallbackDoneResponder + "%");
-      if (showColumns[16]) cells.add(bureauResults[i].rateCallbackInTime + "%");
-      if (showColumns[17])
-        cells.add(bureauResults[i].meanRingingTime != "-"
-            ? double.parse(bureauResults[i].meanRingingTime)
+        cells.add(bureauResults[i].bureauStatistics.meanRingingTime != "-"
+            ? double.parse(bureauResults[i].bureauStatistics.meanRingingTime)
                     .toStringAsFixed(2) +
                 " Sekunden"
             : "-");
@@ -412,165 +554,210 @@ class _AdminCardState extends State<AdminResultsCard> {
     return dataRowResult;
   }
 
+  List<DataRow> getRowsAB(
+      List<BureauResults> bureauResults, List<bool> showColumns) {
+    List<DataRow> dataRowResult = [];
+    for (int i = 0; i < bureauResults.length; i++) {
+      final cells = [];
+      if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
+      if (showColumns[1])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidOrganizationAB +
+                "%");
+      if (showColumns[2])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidBureauAB + "%");
+      if (showColumns[3])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidDepartmentAB +
+                "%");
+      if (showColumns[4])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidFirstnameAB + "%");
+      if (showColumns[5])
+        cells
+            .add(bureauResults[i].abAndCallbackStatistics.rateSaidNameAB + "%");
+      if (showColumns[6])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidGreetingAB + "%");
+      if (showColumns[7])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateSaidSpecificWordsAB +
+                "%");
+      if (showColumns[8])
+        cells.add(bureauResults[i]
+                .abAndCallbackStatistics
+                .rateResponderStartedIfNotReached +
+            "%");
+      if (showColumns[9])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateResponderCorrect +
+                "%");
+      if (showColumns[10])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateCallbackDoneNoAnswer +
+                "%");
+      if (showColumns[11])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateCallbackDoneResponder +
+                "%");
+      if (showColumns[12])
+        cells.add(bureauResults[i]
+                .abAndCallbackStatistics
+                .rateCallbackDoneUnexpected +
+            "%");
+      if (showColumns[13])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateCallbackDoneOverall +
+                "%");
+      if (showColumns[14])
+        cells.add(
+            bureauResults[i].abAndCallbackStatistics.rateCallbackInTime + "%");
+      dataRowResult.add(DataRow(cells: getCells(cells)));
+    }
+    return dataRowResult;
+  }
+
+  int getHiddenCount(int index, List<bool> _showColumns) {
+    int result = 0;
+    for (int i = 0; i < index; i++) {
+      if (_showColumns[i] == false) {
+        result++;
+      }
+    }
+    return result;
+  }
+
   List<DataCell> getCells(List<dynamic> cells) =>
       cells.map((data) => DataCell(Text('$data'))).toList();
 
   void onSort(int columnIndex, bool ascending) {
-    if (columnIndex == 0) {
+    if (columnIndex == (0 - getHiddenCount(0, showColumns)) &&
+        showColumns[0] == true) {
       bureauResults.sort((user1, user2) =>
           compareString(ascending, user1.bureau, user2.bureau));
-    } else if (columnIndex == 1) {
+    } else if (columnIndex == (1 - getHiddenCount(1, showColumns)) &&
+        showColumns[1] == true) {
       bureauResults.sort((user1, user2) => compareInteger(
             ascending,
-            int.parse(user1.totalCalls),
-            int.parse(user2.totalCalls),
+            int.parse(user1.bureauStatistics.totalCalls),
+            int.parse(user2.bureauStatistics.totalCalls),
           ));
-    } else if (columnIndex == 2) {
+    } else if (columnIndex == (2 - getHiddenCount(2, showColumns)) &&
+        showColumns[2] == true) {
       bureauResults.sort((user1, user2) => compareInteger(
             ascending,
-            int.parse(user1.totalCallsReached),
-            int.parse(user2.totalCallsReached),
+            int.parse(user1.bureauStatistics.totalCallsReached),
+            int.parse(user2.bureauStatistics.totalCallsReached),
           ));
-    } else if (columnIndex == 3) {
+    } else if (columnIndex == (3 - getHiddenCount(3, showColumns)) &&
+        showColumns[3] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateSaidOrganization != "-"
-                ? double.parse(user1.rateSaidOrganization)
+            user1.bureauStatistics.rateSaidOrganization != "-"
+                ? double.parse(user1.bureauStatistics.rateSaidOrganization)
                 : -1.0,
-            user2.rateSaidOrganization != "-"
-                ? double.parse(user2.rateSaidOrganization)
-                : -1.0,
-          ));
-    } else if (columnIndex == 4) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateSaidBureau != "-"
-                ? double.parse(user1.rateSaidBureau)
-                : -1.0,
-            user2.rateSaidBureau != "-"
-                ? double.parse(user2.rateSaidBureau)
+            user2.bureauStatistics.rateSaidOrganization != "-"
+                ? double.parse(user2.bureauStatistics.rateSaidOrganization)
                 : -1.0,
           ));
-    } else if (columnIndex == 5) {
+    } else if (columnIndex == (4 - getHiddenCount(4, showColumns)) &&
+        showColumns[4] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateSaidDepartment != "-"
-                ? double.parse(user1.rateSaidDepartment)
+            user1.bureauStatistics.rateSaidBureau != "-"
+                ? double.parse(user1.bureauStatistics.rateSaidBureau)
                 : -1.0,
-            user2.rateSaidDepartment != "-"
-                ? double.parse(user2.rateSaidDepartment)
+            user2.bureauStatistics.rateSaidBureau != "-"
+                ? double.parse(user2.bureauStatistics.rateSaidBureau)
                 : -1.0,
           ));
-    } else if (columnIndex == 6) {
+    } else if (columnIndex == (5 - getHiddenCount(5, showColumns)) &&
+        showColumns[5] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateSaidFirstname != "-"
-                ? double.parse(user1.rateSaidFirstname)
+            user1.bureauStatistics.rateSaidDepartment != "-"
+                ? double.parse(user1.bureauStatistics.rateSaidDepartment)
                 : -1.0,
-            user2.rateSaidFirstname != "-"
-                ? double.parse(user2.rateSaidFirstname)
+            user2.bureauStatistics.rateSaidDepartment != "-"
+                ? double.parse(user2.bureauStatistics.rateSaidDepartment)
                 : -1.0,
           ));
-    } else if (columnIndex == 7) {
+    } else if (columnIndex == (6 - getHiddenCount(6, showColumns)) &&
+        showColumns[6] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateSaidName != "-" ? double.parse(user1.rateSaidName) : -1.0,
-            user2.rateSaidName != "-" ? double.parse(user2.rateSaidName) : -1.0,
-          ));
-    } else if (columnIndex == 8) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateSaidGreeting != "-"
-                ? double.parse(user1.rateSaidGreeting)
+            user1.bureauStatistics.rateSaidFirstname != "-"
+                ? double.parse(user1.bureauStatistics.rateSaidFirstname)
                 : -1.0,
-            user2.rateSaidGreeting != "-"
-                ? double.parse(user2.rateSaidGreeting)
+            user2.bureauStatistics.rateSaidFirstname != "-"
+                ? double.parse(user2.bureauStatistics.rateSaidFirstname)
                 : -1.0,
           ));
-    } else if (columnIndex == 9) {
+    } else if (columnIndex == (7 - getHiddenCount(7, showColumns)) &&
+        showColumns[7] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateSaidSpecificWords != "-"
-                ? double.parse(user1.rateSaidSpecificWords)
+            user1.bureauStatistics.rateSaidName != "-"
+                ? double.parse(user1.bureauStatistics.rateSaidName)
                 : -1.0,
-            user2.rateSaidSpecificWords != "-"
-                ? double.parse(user2.rateSaidSpecificWords)
+            user2.bureauStatistics.rateSaidName != "-"
+                ? double.parse(user2.bureauStatistics.rateSaidName)
                 : -1.0,
           ));
-    } else if (columnIndex == 10) {
+    } else if (columnIndex == (8 - getHiddenCount(8, showColumns)) &&
+        showColumns[8] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateReached != "-" ? double.parse(user1.rateReached) : -1.0,
-            user2.rateReached != "-" ? double.parse(user2.rateReached) : -1.0,
-          ));
-    } else if (columnIndex == 11) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateCallCompleted != "-"
-                ? double.parse(user1.rateCallCompleted)
+            user1.bureauStatistics.rateSaidGreeting != "-"
+                ? double.parse(user1.bureauStatistics.rateSaidGreeting)
                 : -1.0,
-            user2.rateCallCompleted != "-"
-                ? double.parse(user2.rateCallCompleted)
+            user2.bureauStatistics.rateSaidGreeting != "-"
+                ? double.parse(user2.bureauStatistics.rateSaidGreeting)
                 : -1.0,
           ));
-    } else if (columnIndex == 12) {
+    } else if (columnIndex == (9 - getHiddenCount(9, showColumns)) &&
+        showColumns[9] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateResponderStartedIfNotReached != "-"
-                ? double.parse(user1.rateResponderStartedIfNotReached)
+            user1.bureauStatistics.rateSaidSpecificWords != "-"
+                ? double.parse(user1.bureauStatistics.rateSaidSpecificWords)
                 : -1.0,
-            user2.rateResponderStartedIfNotReached != "-"
-                ? double.parse(user2.rateResponderStartedIfNotReached)
+            user2.bureauStatistics.rateSaidSpecificWords != "-"
+                ? double.parse(user2.bureauStatistics.rateSaidSpecificWords)
                 : -1.0,
           ));
-    } else if (columnIndex == 13) {
+    } else if (columnIndex == (10 - getHiddenCount(10, showColumns)) &&
+        showColumns[10] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateResponderCorrect != "-"
-                ? double.parse(user1.rateResponderCorrect)
+            user1.bureauStatistics.rateReached != "-"
+                ? double.parse(user1.bureauStatistics.rateReached)
                 : -1.0,
-            user2.rateResponderCorrect != "-"
-                ? double.parse(user2.rateResponderCorrect)
+            user2.bureauStatistics.rateReached != "-"
+                ? double.parse(user2.bureauStatistics.rateReached)
                 : -1.0,
           ));
-    } else if (columnIndex == 14) {
+    } else if (columnIndex == (11 - getHiddenCount(11, showColumns)) &&
+        showColumns[11] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateCallbackDoneNoAnswer != "-"
-                ? double.parse(user1.rateCallbackDoneNoAnswer)
+            user1.bureauStatistics.rateCallCompleted != "-"
+                ? double.parse(user1.bureauStatistics.rateCallCompleted)
                 : -1.0,
-            user2.rateCallbackDoneNoAnswer != "-"
-                ? double.parse(user2.rateCallbackDoneNoAnswer)
+            user2.bureauStatistics.rateCallCompleted != "-"
+                ? double.parse(user2.bureauStatistics.rateCallCompleted)
                 : -1.0,
           ));
-    } else if (columnIndex == 14) {
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[12] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
-            user1.rateCallbackDoneResponder != "-"
-                ? double.parse(user1.rateCallbackDoneResponder)
+            user1.bureauStatistics.meanRingingTime != "-"
+                ? double.parse(user1.bureauStatistics.meanRingingTime)
                 : -1.0,
-            user2.rateCallbackDoneResponder != "-"
-                ? double.parse(user2.rateCallbackDoneResponder)
-                : -1.0,
-          ));
-    } else if (columnIndex == 15) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.rateCallbackInTime != "-"
-                ? double.parse(user1.rateCallbackInTime)
-                : -1.0,
-            user2.rateCallbackInTime != "-"
-                ? double.parse(user2.rateCallbackInTime)
-                : -1.0,
-          ));
-    } else if (columnIndex == 16) {
-      bureauResults.sort((user1, user2) => compareDouble(
-            ascending,
-            user1.meanRingingTime != "-"
-                ? double.parse(user1.meanRingingTime)
-                : -1.0,
-            user2.meanRingingTime != "-"
-                ? double.parse(user2.meanRingingTime)
+            user2.bureauStatistics.meanRingingTime != "-"
+                ? double.parse(user2.bureauStatistics.meanRingingTime)
                 : -1.0,
           ));
     }
@@ -580,73 +767,292 @@ class _AdminCardState extends State<AdminResultsCard> {
     });
   }
 
-  int compareString(bool ascending, String value1, String value2) =>
-      ascending ? value1.compareTo(value2) : value2.compareTo(value1);
-
-  int compareInteger(bool ascending, int value1, int value2) =>
-      ascending ? value1.compareTo(value2) : value2.compareTo(value1);
-
-  int compareDouble(bool ascending, double value1, double value2) {
-    return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+  void onSortAB(int columnIndex, bool ascending) {
+    if (columnIndex == (0 - getHiddenCount(0, showColumns)) &&
+        showColumns[0] == true) {
+      bureauResults.sort((user1, user2) =>
+          compareString(ascending, user1.bureau, user2.bureau));
+    } else if (columnIndex == (1 - getHiddenCount(1, showColumns)) &&
+        showColumns[1] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidOrganizationAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidOrganizationAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidOrganizationAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidOrganizationAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (2 - getHiddenCount(2, showColumns)) &&
+        showColumns[2] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidBureauAB != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateSaidBureauAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidBureauAB != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateSaidBureauAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (3 - getHiddenCount(3, showColumns)) &&
+        showColumns[3] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidDepartmentAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidDepartmentAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidDepartmentAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidDepartmentAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (4 - getHiddenCount(4, showColumns)) &&
+        showColumns[4] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidFirstnameAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidFirstnameAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidFirstnameAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidFirstnameAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (5 - getHiddenCount(5, showColumns)) &&
+        showColumns[5] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidNameAB != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateSaidNameAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidNameAB != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateSaidNameAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (6 - getHiddenCount(6, showColumns)) &&
+        showColumns[6] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidGreetingAB != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateSaidGreetingAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidGreetingAB != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateSaidGreetingAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (7 - getHiddenCount(7, showColumns)) &&
+        showColumns[7] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateSaidSpecificWordsAB != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateSaidSpecificWordsAB)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateSaidSpecificWordsAB != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateSaidSpecificWordsAB)
+                : -1.0,
+          ));
+    } else if (columnIndex == (8 - getHiddenCount(8, showColumns)) &&
+        showColumns[8] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateResponderStartedIfNotReached !=
+                    "-"
+                ? double.parse(user1
+                    .abAndCallbackStatistics.rateResponderStartedIfNotReached)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateResponderStartedIfNotReached !=
+                    "-"
+                ? double.parse(user2
+                    .abAndCallbackStatistics.rateResponderStartedIfNotReached)
+                : -1.0,
+          ));
+    } else if (columnIndex == (9 - getHiddenCount(9, showColumns)) &&
+        showColumns[9] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateResponderCorrect != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateResponderCorrect)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateResponderCorrect != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateResponderCorrect)
+                : -1.0,
+          ));
+    } else if (columnIndex == (10 - getHiddenCount(10, showColumns)) &&
+        showColumns[10] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneNoAnswer != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneNoAnswer)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneNoAnswer != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneNoAnswer)
+                : -1.0,
+          ));
+    } else if (columnIndex == (11 - getHiddenCount(11, showColumns)) &&
+        showColumns[11] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneResponder != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneResponder)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneResponder != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneResponder)
+                : -1.0,
+          ));
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[12] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneUnexpected != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneUnexpected)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneUnexpected != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneUnexpected)
+                : -1.0,
+          ));
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[13] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackDoneOverall != "-"
+                ? double.parse(
+                    user1.abAndCallbackStatistics.rateCallbackDoneOverall)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackDoneOverall != "-"
+                ? double.parse(
+                    user2.abAndCallbackStatistics.rateCallbackDoneOverall)
+                : -1.0,
+          ));
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
+        showColumns[14] == true) {
+      bureauResults.sort((user1, user2) => compareDouble(
+            ascending,
+            user1.abAndCallbackStatistics.rateCallbackInTime != "-"
+                ? double.parse(user1.abAndCallbackStatistics.rateCallbackInTime)
+                : -1.0,
+            user2.abAndCallbackStatistics.rateCallbackInTime != "-"
+                ? double.parse(user2.abAndCallbackStatistics.rateCallbackInTime)
+                : -1.0,
+          ));
+    }
+    setState(() {
+      this.sortColumnIndex = columnIndex;
+      this.isAscending = ascending;
+    });
   }
 }
 
+int compareString(bool ascending, String value1, String value2) =>
+    ascending ? value1.compareTo(value2) : value2.compareTo(value1);
 
+int compareInteger(bool ascending, int value1, int value2) =>
+    ascending ? value1.compareTo(value2) : value2.compareTo(value1);
 
-/*
-class BureauResultDataSource extends DataTableSource {
-  List<BureauResults> _bureauResults;
-  int _selectedCount = 0;
-
-  BureauResultDataSource(List<BureauResults> this._bureauResults);
-
-  @override
-  DataRow? getRow(int index) {
-    final format = NumberFormat.decimalPercentPattern(
-      decimalDigits: 0,
-    );
-    assert(index >= 0);
-    if (index >= _bureauResults.length) return null!;
-    final bureauResult = _bureauResults[index];
-    return DataRow.byIndex(
-      index: index,
-      cells: getRows(bureauResult),
-    );
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => _bureauResults.length;
-
-  @override
-  int get selectedRowCount => _selectedCount;
-
-  List<DataCell> getRows(BureauResults data) {
-    var cells = [
-      data.bureau.toString(),
-      data.totalCalls.toString(),
-      data.totalCallsReached.toString(),
-      data.rateSaidOrganization + "%",
-      data.rateSaidBureau + "%",
-      data.rateSaidDepartment + "%",
-      data.rateSaidFirstname + "%",
-      data.rateSaidName + "%",
-      data.rateSaidGreeting + "%",
-      data.rateSaidSpecificWords + "%",
-      data.rateReached + "%",
-      data.rateCallCompleted + "%",
-      data.rateResponderStartedIfNotReached + "%",
-      data.rateResponderCorrect + "%",
-      data.rateCallbackDone + "%",
-      data.rateCallbackInTime + "%",
-      data.meanRingingTime + "Sekunden",
-    ];
-    return getCells(cells);
-  }
-
-  List<DataCell> getCells(List<dynamic> cells) =>
-      cells.map((data) => DataCell(Text('$data'))).toList();
+int compareDouble(bool ascending, double value1, double value2) {
+  return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
 }
-*/
+
+class AbfrageButton extends StatefulWidget {
+  final bool isLoading;
+  AbfrageButton(this.isLoading);
+
+  @override
+  _AbfrageButtonState createState() => _AbfrageButtonState();
+}
+
+class _AbfrageButtonState extends State<AbfrageButton> {
+  int selectedQueryType = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(right: 50),
+      child: PopupMenuButton(
+        onSelected: (result) {
+          if (widget.isLoading == true) {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Geduld bitte'),
+                content: Text("Die Einträge werden noch geladen."),
+                actions: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: const Text('Schliessen!'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            if (result == 0) {
+              setState(() {
+                selectedQueryType = 0;
+              });
+            } else if (result == 1) {
+              setState(() {
+                selectedQueryType = 1;
+              });
+            }
+          }
+        },
+        itemBuilder: (context) {
+          return List.generate(
+            2,
+            (index) {
+              return PopupMenuItem(
+                value: index,
+                child: Row(
+                  children: [
+                    index == 0 ? Text("Standart") : Text("Anrufbeantworter"),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: SizedBox(
+          width: 200,
+          height: 30,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.all(Radius.circular(3))),
+            alignment: Alignment.center,
+            child: DropdownButton(value: this.selectedQueryType, items: [
+              DropdownMenuItem(
+                child: Text(
+                  "Standart",
+                  style: TextStyle(color: Colors.white),
+                ),
+                value: 0,
+              ),
+              DropdownMenuItem(
+                child: Text(
+                  "Anrufbeantworter",
+                  style: TextStyle(color: Colors.white),
+                ),
+                value: 1,
+              )
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}

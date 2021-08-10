@@ -38,7 +38,6 @@ class User {
     List<OpeningHours> openingHoursList = [];
     if (json['openingHours'] != null) {
       var list = json['openingHours'] as List;
-      print(list.runtimeType);
       openingHoursList = list.map((i) => OpeningHours.fromJson(i)).toList();
     }
 

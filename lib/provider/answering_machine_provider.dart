@@ -56,7 +56,7 @@ class AnsweringMachineProvider with ChangeNotifier {
       final Map<String, dynamic> responseData = json.decode(response.body);
       ConfigurationSummary test =
           ConfigurationSummary.fromJsonGreeting(responseData);
-      debugPrint(test.toString());
+      debugPrint("getAnsweringMachineConfiguration:" + test.toString());
       greetingConfigurationSummary = test;
       //  if (_pickedBureauGreeting == null) {
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
@@ -86,7 +86,7 @@ class AnsweringMachineProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint(response.toString());
+      debugPrint("setAnsweringMachineConfiguration: " + response.toString());
     } else {
       throw Exception('Unable to set GreetingConfiguration!');
     }
