@@ -11,7 +11,6 @@ import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
 
 class CockpitScreen extends StatefulWidget {
   @override
@@ -22,17 +21,31 @@ class _CockpitScreenState extends State<CockpitScreen> {
   late User _currentUser = User.init();
   AdminCallsProvider adminCalls = AdminCallsProvider();
   late Status _status = Status.init();
+  var startButtonColor = Colors.green[200];
+  var stopButtonColor = Colors.red[200];
 
   @override
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
-    gedAsyncStatus();
+    getAsyncStatus();
     initializeDateFormatting(); //Set language of CalendarWidget to German
   }
 
-  gedAsyncStatus() async {
-    Status _status = await adminCalls.getTrainerStatus(_currentUser.token!);
+  Future<Status> getAsyncStatus() async {
+    _status = await adminCalls.getTrainerStatus(_currentUser.token!);
+    if (_status.status == true) {
+      setState(() {
+        startButtonColor = Colors.green[200];
+        stopButtonColor = Colors.red;
+      });
+    } else {
+      setState(() {
+        startButtonColor = Colors.green;
+        stopButtonColor = Colors.red[200];
+      });
+    }
+    return _status;
   }
 
   String _printDuration(Duration duration) {
@@ -44,41 +57,39 @@ class _CockpitScreenState extends State<CockpitScreen> {
 
   // _status has to be connected to the class attribute _status in order that setState() works, can't be handed in as a function parameter ;)
   Widget getStatus(String token) {
-    return FutureBuilder<Status>(
-        future: adminCalls.getTrainerStatus(token),
-        builder: (context, AsyncSnapshot<Status> snapshot) {
-          if (snapshot.hasData) {
-            //TODO: TESTEN
-            if (snapshot.data!.status == true) {
-              _status.status = true;
-              _status.startedAt = snapshot.data!.startedAt;
-              var statusText = 'Status: Eingeschaltet';
-              return SizedBox(
-                child: Text(
-                  statusText,
-                  textAlign: TextAlign.center,
-                ),
-              );
-            } else {
-              _status.status = false;
-              _status.startedAt = snapshot.data!.startedAt;
-              var statusText = 'Der Trainer ist ausgeschaltet.';
-              return SizedBox(
-                child: Text(
-                  statusText,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey[400],
-                    fontWeight: FontWeight.w200,
-                    fontSize: 16,
-                  ),
-                ),
-              );
-            }
-          } else {
-            return const CircularProgressIndicator();
-          }
-        });
+    if (_status.status == true) {
+      return StreamBuilder(
+        stream: Stream.periodic(const Duration(seconds: 1)),
+        builder: (context, snapshot) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Der Trainer läuft seit"),
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                _printDuration(DateTime.now().difference(_status.startedAt)),
+                style: const TextStyle(fontSize: 25, color: Colors.black),
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      var statusText = 'Der Trainer ist ausgeschaltet.';
+      return SizedBox(
+        child: Text(
+          statusText,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.grey[400],
+            fontWeight: FontWeight.w200,
+            fontSize: 16,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -170,48 +181,10 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                             child: Column(
                                               children: [
                                                 Expanded(
-                                                  child: _status.status == false
-                                                      ? Center(
-                                                          child: getStatus(
-                                                              _currentUser
-                                                                  .token!),
-                                                        )
-                                                      : Center(
-                                                          child: StreamBuilder(
-                                                            stream:
-                                                                Stream.periodic(
-                                                                    const Duration(
-                                                                        seconds:
-                                                                            1)),
-                                                            builder: (context,
-                                                                snapshot) {
-                                                              return Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                      "Der Trainer läuft seit"),
-                                                                  SizedBox(
-                                                                    height: 8,
-                                                                  ),
-                                                                  Text(
-                                                                    _printDuration(DateTime
-                                                                            .now()
-                                                                        .difference(
-                                                                            _status.startedAt)),
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            25,
-                                                                        color: Colors
-                                                                            .black),
-                                                                  )
-                                                                ],
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
-                                                ),
+                                                    child: Center(
+                                                  child: getStatus(
+                                                      _currentUser.token!),
+                                                )),
                                                 Expanded(
                                                   child: SizedBox(),
                                                 )
@@ -239,17 +212,26 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                                           Radius.circular(20),
                                                     ),
                                                   ),
-                                                  primary:
-                                                      _status.status == false
-                                                          ? Colors.green
-                                                          : Colors.green[200],
+                                                  primary: startButtonColor,
                                                   onPrimary: Colors.white),
-                                              onPressed: () {
-                                                adminCalls.startTrainer(
-                                                    _currentUser.token!);
+                                              onPressed: () async {
+                                                _status = await adminCalls
+                                                    .startTrainer(
+                                                        _currentUser.token!);
                                                 setState(() {
                                                   getStatus(
                                                       _currentUser.token!);
+                                                  if (_status.status == false) {
+                                                    startButtonColor =
+                                                        Colors.green;
+                                                    stopButtonColor =
+                                                        Colors.red[200];
+                                                  } else {
+                                                    startButtonColor =
+                                                        Colors.green[200];
+                                                    stopButtonColor =
+                                                        Colors.red;
+                                                  }
                                                 });
                                                 print('Short Press!');
                                               },
@@ -269,17 +251,26 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                                           Radius.circular(20),
                                                     ),
                                                   ),
-                                                  primary:
-                                                      _status.status == false
-                                                          ? Colors.red[200]
-                                                          : Colors.red,
+                                                  primary: stopButtonColor,
                                                   onPrimary: Colors.white),
-                                              onPressed: () {
-                                                adminCalls.stopTrainer(
-                                                    _currentUser.token!);
+                                              onPressed: () async {
+                                                _status = await adminCalls
+                                                    .stopTrainer(
+                                                        _currentUser.token!);
                                                 setState(() {
                                                   getStatus(
                                                       _currentUser.token!);
+                                                  if (_status.status == false) {
+                                                    startButtonColor =
+                                                        Colors.green;
+                                                    stopButtonColor =
+                                                        Colors.red[200];
+                                                  } else {
+                                                    startButtonColor =
+                                                        Colors.green[200];
+                                                    stopButtonColor =
+                                                        Colors.red;
+                                                  }
                                                 });
                                                 // ignore: avoid_print
                                                 print('Short Press!');

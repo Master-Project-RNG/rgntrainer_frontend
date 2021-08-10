@@ -33,6 +33,7 @@ class AdminCallsProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
+      debugPrint("Status: " + response.body);
       return Status.fromJson(responseData);
     } else {
       throw Exception('Unable to get Status!');
@@ -80,7 +81,7 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   //start the trainer
-  Future<void> startTrainer(String token) async {
+  Future<Status> startTrainer(String token) async {
     final url = '$activeHost/start';
     try {
       final response = await http.post(
@@ -95,14 +96,14 @@ class AdminCallsProvider with ChangeNotifier {
         ),
       );
       debugPrint("startTrainer: ${response.body}");
-      getTrainerStatus(token);
+      return getTrainerStatus(token);
     } catch (error) {
       throw error;
     }
   }
 
   //stop the trainer
-  Future<void> stopTrainer(String token) async {
+  Future<Status> stopTrainer(String token) async {
     final url = '$activeHost/stop';
     try {
       final response = await http.post(
@@ -117,7 +118,7 @@ class AdminCallsProvider with ChangeNotifier {
         ),
       );
       debugPrint("stopTrainer: ${response.body}");
-      getTrainerStatus(token);
+      return getTrainerStatus(token);
     } catch (error) {
       throw error;
     }
