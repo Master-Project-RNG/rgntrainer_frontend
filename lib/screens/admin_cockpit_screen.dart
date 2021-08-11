@@ -173,7 +173,28 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            flex: 2,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Icon(
+                                                  Icons.person_outline,
+                                                  size: 120,
+                                                  color: Colors.black,
+                                                ),
+                                                Text(
+                                                  _currentUser.username
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
                                             child: SizedBox(),
                                           ),
                                           Expanded(
@@ -288,6 +309,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                             Row(
                               children: [
                                 Expanded(
+                                  //Nummern Kachel
                                   child: Container(
                                     margin: const EdgeInsets.all(20),
                                     height: 200,
@@ -302,7 +324,20 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                               3), // changes position of shadow
                                         ),
                                       ],
-                                      color: Colors.blue,
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: InkWell(
+                                      onTap: () => {},
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Nummern (inactive)",
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -321,7 +356,24 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                               3), // changes position of shadow
                                         ),
                                       ],
-                                      color: Colors.orange,
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.vxNav.push(
+                                          Uri.parse(MyRoutes.adminConfigRoute),
+                                        );
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Konfiguration",
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -344,7 +396,24 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                               3), // changes position of shadow
                                         ),
                                       ],
-                                      color: Colors.green,
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.vxNav.push(
+                                          Uri.parse(MyRoutes.adminResultsRoute),
+                                        );
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Resultate",
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -363,7 +432,20 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                               3), // changes position of shadow
                                         ),
                                       ],
-                                      color: Colors.purple,
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Diagramme (inactive)",
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -386,7 +468,24 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                               3), // changes position of shadow
                                         ),
                                       ],
-                                      color: Colors.cyan,
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.vxNav.push(
+                                          Uri.parse(MyRoutes.adminProfilRoute),
+                                        );
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Profil",
+                                            style: TextStyle(fontSize: 20),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -405,7 +504,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                               3), // changes position of shadow
                                         ),
                                       ],
-                                      color: Colors.yellow,
+                                      color: Colors.grey[300],
                                     ),
                                   ),
                                 ),
@@ -415,6 +514,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                         ),
                       ),
                       Expanded(
+                        flex: MediaQuery.of(context).size.width < 1500 ? 0 : 1,
                         child: Container(),
                       ),
                     ],
