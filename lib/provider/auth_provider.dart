@@ -39,8 +39,8 @@ class AuthProvider with ChangeNotifier {
         final Map<String, dynamic> responseData =
             json.decode(response.body) as Map<String, dynamic>;
         currentUser = User.fromJson(responseData);
-        UserSimplePreferences.setUserToken(responseData['token'].toString());
         UserSimplePreferences.setUser(currentUser);
+        UserSimplePreferences.setAbfrageTabOpen(false);
       }
     } catch (error) {
       const errorMessage = 'Login fehlgeschlagen!';
