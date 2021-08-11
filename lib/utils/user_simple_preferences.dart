@@ -6,29 +6,27 @@ import 'dart:convert';
 class UserSimplePreferences {
   static late SharedPreferences _preferences;
 
-  static const _keyUserToken = "userToken";
   static const _keyUser = "user";
+  static const _showAbfragenTab = "abfragenTabOpen";
 
   static User myUser = User.init();
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
 
-  static Future setUserToken(String token) async =>
-      _preferences.setString(_keyUserToken, token);
-
-  static String? getUserToken() {
-    if (_preferences.getString(_keyUserToken) == null) {
-      return null;
-    } else {
-      return _preferences.getString(_keyUserToken);
-    }
-  }
-
   static Future setUser(User user) async {
     final json = jsonEncode(user.toJson());
 
     await _preferences.setString(_keyUser, json);
+  }
+
+  static Future setAbfrageTabOpen(bool abfrageTabOpen) async {
+    await _preferences.setBool(_showAbfragenTab, abfrageTabOpen);
+  }
+
+  static bool getAbfrageTabOpen() {
+    final abfrageTabOpen = _preferences.getBool(_showAbfragenTab);
+    return abfrageTabOpen!;
   }
 
   static Future resetUser() async {
