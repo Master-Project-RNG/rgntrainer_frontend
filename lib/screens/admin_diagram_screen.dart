@@ -77,29 +77,26 @@ class _DiagramScreenState extends State<DiagramScreen> {
               body: ListView(
                 children: [
                   TitleWidget("Diagram"),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(50),
-                          height: 600,
-                          color: Colors.red,
+                  Container(
+                    color: Colors.grey[100],
+                    child: Row(
+                      children: [
+                        Expanded(
                           child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)),
-                            padding: EdgeInsets.all(25),
+                            padding: EdgeInsets.all(100),
+                            height: 800,
+                            color: Colors.grey[100],
                             child: LineChartSample1(title: "Overall"),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 600,
-                          color: Colors.yellow,
-                        ),
-                      )
-                    ],
+                        Expanded(
+                          child: Container(
+                            height: 800,
+                            color: Colors.yellow,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),

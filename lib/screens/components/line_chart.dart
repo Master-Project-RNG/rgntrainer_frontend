@@ -6,7 +6,6 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:intl/intl.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class MyLineChart extends StatefulWidget {
   const MyLineChart({
@@ -24,6 +23,7 @@ class _MyLineChartState extends State<MyLineChart> {
 
   bool _isLoading = false;
   late List<Diagram> diagramResults;
+  late List<int> _numericScalaTotalCalls = [];
 
   final DateFormat formatter = DateFormat('dd.MM.yy');
 
@@ -41,9 +41,27 @@ class _MyLineChartState extends State<MyLineChart> {
     diagramResults =
         await Provider.of<BureauResultsProvider>(context, listen: false)
             .getTotalResultsWeekly(_currentUser.token);
+    _numericScalaTotalCalls =
+        calculateNumericScalaBureauStatistics(diagramResults);
     setState(() {
       _isLoading = false;
     });
+  }
+
+  List<int> calculateNumericScalaBureauStatistics(List<Diagram> list) {
+    double _max = 0;
+    List<int> _result = [];
+    for (int i = 0; i < list.length; i++) {
+      _max < double.parse(list[i].bureauStatistics.totalCalls)
+          ? _max = double.parse(list[i].bureauStatistics.totalCalls)
+          : _max = _max;
+    }
+    int scalaMax = ((_max / 10) + 0.5).round() * 10;
+    _result.add(((scalaMax / 4) + 0.5).round() * 1);
+    _result.add(((scalaMax / 4) + 0.5).round() * 2);
+    _result.add(((scalaMax / 4) + 0.5).round() * 3);
+    _result.add(scalaMax);
+    return _result;
   }
 
   @override
@@ -53,9 +71,12 @@ class _MyLineChartState extends State<MyLineChart> {
         child: CircularProgressIndicator(),
       );
     } else
-      return LineChart(
-        widget.isShowingMainData ? sampleData : sampleDataCallsNumeric,
-        swapAnimationDuration: const Duration(milliseconds: 250),
+      return Container(
+        padding: EdgeInsets.all(25),
+        child: LineChart(
+          widget.isShowingMainData ? sampleData : sampleDataCallsNumeric,
+          swapAnimationDuration: const Duration(milliseconds: 250),
+        ),
       );
   }
 
@@ -193,10 +214,10 @@ class _MyLineChartState extends State<MyLineChart> {
         gridData: gridData,
         titlesData: titlesData2,
         borderData: borderData,
-        lineBarsData: lineBarsData2,
+        lineBarsData: lineBarsDataNumeric,
         minX: 0,
         maxX: 11,
-        maxY: 30,
+        maxY: double.parse(_numericScalaTotalCalls[3].toString()),
         minY: 0,
       );
 
@@ -249,20 +270,32 @@ class _MyLineChartState extends State<MyLineChart> {
         bottomTitles: bottomTitles,
         leftTitles: leftTitles(
           getTitles: (value) {
-            switch (value.toInt()) {
+            if (value == _numericScalaTotalCalls[0]) {
+              return _numericScalaTotalCalls[0].toString();
+            }
+            if (value == _numericScalaTotalCalls[1]) {
+              return _numericScalaTotalCalls[1].toString();
+            }
+            if (value == _numericScalaTotalCalls[2]) {
+              return _numericScalaTotalCalls[2].toString();
+            }
+            if (value == _numericScalaTotalCalls[3]) {
+              return _numericScalaTotalCalls[3].toString();
+            }
+            /*switch (value.toInt()) {
               case 10:
                 return '10';
               case 20:
                 return '20';
               case 30:
                 return '30';
-            }
+            }*/
             return '';
           },
         ),
       );
 
-  List<LineChartBarData> get lineBarsData2 => [
+  List<LineChartBarData> get lineBarsDataNumeric => [
         lineChartBarDataCalls(
           y0: diagramResults[0].bureauStatistics.totalCalls,
           y1: diagramResults[1].bureauStatistics.totalCalls,
@@ -300,8 +333,8 @@ class _MyLineChartState extends State<MyLineChart> {
         showTitles: true,
         margin: 8,
         reservedSize: 30,
-        getTextStyles: (value) => const TextStyle(
-          color: Color(0xff75729e),
+        getTextStyles: (value) => TextStyle(
+          color: Theme.of(context).accentColor,
           fontWeight: FontWeight.bold,
           fontSize: 14,
         ),
@@ -311,8 +344,8 @@ class _MyLineChartState extends State<MyLineChart> {
         showTitles: true,
         reservedSize: 22,
         margin: 10,
-        getTextStyles: (value) => const TextStyle(
-          color: Color(0xff72719b),
+        getTextStyles: (value) => TextStyle(
+          color: Theme.of(context).accentColor,
           fontWeight: FontWeight.bold,
           fontSize: 16,
         ),
@@ -335,12 +368,15 @@ class _MyLineChartState extends State<MyLineChart> {
         },
       );
 
-  FlGridData get gridData => FlGridData(show: false);
+  FlGridData get gridData => FlGridData(
+        show: true,
+        horizontalInterval: 10,
+      );
 
   FlBorderData get borderData => FlBorderData(
         show: true,
         border: const Border(
-          bottom: BorderSide(color: Color(0xff4e4965), width: 4),
+          bottom: BorderSide(color: Colors.black, width: 2),
           left: BorderSide(color: Colors.transparent),
           right: BorderSide(color: Colors.transparent),
           top: BorderSide(color: Colors.transparent),
@@ -457,16 +493,19 @@ class LineChartSample1State extends State<LineChartSample1> {
     return AspectRatio(
       aspectRatio: 1.23,
       child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(18)),
-          gradient: LinearGradient(
-            colors: [
-              Color(0xff2c274c),
-              Color(0xff46426c),
-            ],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
           ),
+          color: Colors.grey[100],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
         ),
         child: Stack(
           children: <Widget>[
@@ -476,10 +515,10 @@ class LineChartSample1State extends State<LineChartSample1> {
                 const SizedBox(
                   height: 37,
                 ),
-                const Text(
+                Text(
                   'Normaler Anruf',
                   style: TextStyle(
-                    color: Color(0xff827daa),
+                    color: Theme.of(context).accentColor,
                     fontSize: 16,
                   ),
                   textAlign: TextAlign.center,
@@ -490,7 +529,7 @@ class LineChartSample1State extends State<LineChartSample1> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColor,
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2),
@@ -515,7 +554,7 @@ class LineChartSample1State extends State<LineChartSample1> {
             IconButton(
               icon: Icon(
                 Icons.refresh,
-                color: Colors.white.withOpacity(isShowingMainData ? 1.0 : 0.5),
+                color: Colors.black.withOpacity(isShowingMainData ? 1.0 : 0.5),
               ),
               onPressed: () {
                 setState(() {
