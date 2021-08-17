@@ -1,8 +1,13 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/models/diagram_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
+import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
+import 'package:rgntrainer_frontend/screens/components/line_chart.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
@@ -20,24 +25,11 @@ class _DiagramScreenState extends State<DiagramScreen> {
   late User _currentUser = User.init();
   AdminCallsProvider adminCalls = AdminCallsProvider();
 
-  bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
-    getAsyncData();
     initializeDateFormatting(); //Set language of CalendarWidget to German
-  }
-
-  getAsyncData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    //
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -89,13 +81,21 @@ class _DiagramScreenState extends State<DiagramScreen> {
                     children: [
                       Expanded(
                         child: Container(
-                          height: 200,
+                          padding: EdgeInsets.all(50),
+                          height: 600,
                           color: Colors.red,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)),
+                            padding: EdgeInsets.all(25),
+                            child: LineChartSample1(title: "Overall"),
+                          ),
                         ),
                       ),
                       Expanded(
                         child: Container(
-                          height: 200,
+                          height: 600,
                           color: Colors.yellow,
                         ),
                       )
