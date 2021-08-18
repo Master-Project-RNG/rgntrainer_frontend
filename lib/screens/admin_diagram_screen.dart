@@ -1,12 +1,8 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rgntrainer_frontend/models/diagram_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/components/line_chart.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
@@ -84,14 +80,14 @@ class _DiagramScreenState extends State<DiagramScreen> {
                         Expanded(
                           child: Container(
                             padding: EdgeInsets.all(100),
-                            height: 800,
+                            height: 1000,
                             color: Colors.grey[100],
                             child: LineChartSample1(title: "Overall"),
                           ),
                         ),
                         Expanded(
                           child: Container(
-                            height: 800,
+                            height: 1000,
                             color: Colors.yellow,
                           ),
                         )

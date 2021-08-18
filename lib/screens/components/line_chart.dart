@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 import 'package:rgntrainer_frontend/models/diagram_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
@@ -243,7 +244,119 @@ class _MyLineChartState extends State<MyLineChart> {
           y9: diagramResults[9].bureauStatistics.rateSaidOrganization,
           y10: diagramResults[10].bureauStatistics.rateSaidOrganization,
           y11: diagramResults[11].bureauStatistics.rateSaidOrganization,
-          color: Color(0xff4af699),
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidOrganization"]!,
+        ),
+        lineChartBarRate(
+          y0: diagramResults[0].bureauStatistics.rateSaidBureau,
+          y1: diagramResults[1].bureauStatistics.rateSaidBureau,
+          y2: diagramResults[2].bureauStatistics.rateSaidBureau,
+          y3: diagramResults[3].bureauStatistics.rateSaidBureau,
+          y4: diagramResults[4].bureauStatistics.rateSaidBureau,
+          y5: diagramResults[5].bureauStatistics.rateSaidBureau,
+          y6: diagramResults[6].bureauStatistics.rateSaidBureau,
+          y7: diagramResults[7].bureauStatistics.rateSaidBureau,
+          y8: diagramResults[8].bureauStatistics.rateSaidBureau,
+          y9: diagramResults[9].bureauStatistics.rateSaidBureau,
+          y10: diagramResults[10].bureauStatistics.rateSaidBureau,
+          y11: diagramResults[11].bureauStatistics.rateSaidBureau,
+          color:
+              BureauStatistics.bureauStatisticsDiagramColors["rateSaidBureau"]!,
+        ),
+        lineChartBarRate(
+          y0: diagramResults[0].bureauStatistics.rateSaidDepartment,
+          y1: diagramResults[1].bureauStatistics.rateSaidDepartment,
+          y2: diagramResults[2].bureauStatistics.rateSaidDepartment,
+          y3: diagramResults[3].bureauStatistics.rateSaidDepartment,
+          y4: diagramResults[4].bureauStatistics.rateSaidDepartment,
+          y5: diagramResults[5].bureauStatistics.rateSaidDepartment,
+          y6: diagramResults[6].bureauStatistics.rateSaidDepartment,
+          y7: diagramResults[7].bureauStatistics.rateSaidDepartment,
+          y8: diagramResults[8].bureauStatistics.rateSaidDepartment,
+          y9: diagramResults[9].bureauStatistics.rateSaidDepartment,
+          y10: diagramResults[10].bureauStatistics.rateSaidDepartment,
+          y11: diagramResults[11].bureauStatistics.rateSaidDepartment,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidDepartment"]!,
+        ),
+        lineChartBarRate(
+          y0: diagramResults[0].bureauStatistics.rateSaidFirstname,
+          y1: diagramResults[1].bureauStatistics.rateSaidFirstname,
+          y2: diagramResults[2].bureauStatistics.rateSaidFirstname,
+          y3: diagramResults[3].bureauStatistics.rateSaidFirstname,
+          y4: diagramResults[4].bureauStatistics.rateSaidFirstname,
+          y5: diagramResults[5].bureauStatistics.rateSaidFirstname,
+          y6: diagramResults[6].bureauStatistics.rateSaidFirstname,
+          y7: diagramResults[7].bureauStatistics.rateSaidFirstname,
+          y8: diagramResults[8].bureauStatistics.rateSaidFirstname,
+          y9: diagramResults[9].bureauStatistics.rateSaidFirstname,
+          y10: diagramResults[10].bureauStatistics.rateSaidFirstname,
+          y11: diagramResults[11].bureauStatistics.rateSaidFirstname,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidFirstname"]!,
+        ),
+        lineChartBarRate(
+          y0: diagramResults[0].bureauStatistics.rateSaidName,
+          y1: diagramResults[1].bureauStatistics.rateSaidName,
+          y2: diagramResults[2].bureauStatistics.rateSaidName,
+          y3: diagramResults[3].bureauStatistics.rateSaidName,
+          y4: diagramResults[4].bureauStatistics.rateSaidName,
+          y5: diagramResults[5].bureauStatistics.rateSaidName,
+          y6: diagramResults[6].bureauStatistics.rateSaidName,
+          y7: diagramResults[7].bureauStatistics.rateSaidName,
+          y8: diagramResults[8].bureauStatistics.rateSaidName,
+          y9: diagramResults[9].bureauStatistics.rateSaidName,
+          y10: diagramResults[10].bureauStatistics.rateSaidName,
+          y11: diagramResults[11].bureauStatistics.rateSaidName,
+          color:
+              BureauStatistics.bureauStatisticsDiagramColors["rateSaidName"]!,
+        ),
+        lineChartBarRate(
+          y0: diagramResults[0].bureauStatistics.rateSaidGreeting,
+          y1: diagramResults[1].bureauStatistics.rateSaidGreeting,
+          y2: diagramResults[2].bureauStatistics.rateSaidGreeting,
+          y3: diagramResults[3].bureauStatistics.rateSaidGreeting,
+          y4: diagramResults[4].bureauStatistics.rateSaidGreeting,
+          y5: diagramResults[5].bureauStatistics.rateSaidGreeting,
+          y6: diagramResults[6].bureauStatistics.rateSaidGreeting,
+          y7: diagramResults[7].bureauStatistics.rateSaidGreeting,
+          y8: diagramResults[8].bureauStatistics.rateSaidGreeting,
+          y9: diagramResults[9].bureauStatistics.rateSaidGreeting,
+          y10: diagramResults[10].bureauStatistics.rateSaidGreeting,
+          y11: diagramResults[11].bureauStatistics.rateSaidGreeting,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidGreeting"]!,
+        ),
+        lineChartBarRate(
+          y0: diagramResults[0].bureauStatistics.rateSaidSpecificWords,
+          y1: diagramResults[1].bureauStatistics.rateSaidSpecificWords,
+          y2: diagramResults[2].bureauStatistics.rateSaidSpecificWords,
+          y3: diagramResults[3].bureauStatistics.rateSaidSpecificWords,
+          y4: diagramResults[4].bureauStatistics.rateSaidSpecificWords,
+          y5: diagramResults[5].bureauStatistics.rateSaidSpecificWords,
+          y6: diagramResults[6].bureauStatistics.rateSaidSpecificWords,
+          y7: diagramResults[7].bureauStatistics.rateSaidSpecificWords,
+          y8: diagramResults[8].bureauStatistics.rateSaidSpecificWords,
+          y9: diagramResults[9].bureauStatistics.rateSaidSpecificWords,
+          y10: diagramResults[10].bureauStatistics.rateSaidSpecificWords,
+          y11: diagramResults[11].bureauStatistics.rateSaidSpecificWords,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidSpecificWords"]!,
+        ),
+        lineChartBarRate(
+          y0: diagramResults[0].bureauStatistics.rateReached,
+          y1: diagramResults[1].bureauStatistics.rateReached,
+          y2: diagramResults[2].bureauStatistics.rateReached,
+          y3: diagramResults[3].bureauStatistics.rateReached,
+          y4: diagramResults[4].bureauStatistics.rateReached,
+          y5: diagramResults[5].bureauStatistics.rateReached,
+          y6: diagramResults[6].bureauStatistics.rateReached,
+          y7: diagramResults[7].bureauStatistics.rateReached,
+          y8: diagramResults[8].bureauStatistics.rateReached,
+          y9: diagramResults[9].bureauStatistics.rateReached,
+          y10: diagramResults[10].bureauStatistics.rateReached,
+          y11: diagramResults[11].bureauStatistics.rateReached,
+          color: BureauStatistics.bureauStatisticsDiagramColors["rateReached"]!,
         ),
         lineChartBarRate(
           y0: diagramResults[0].bureauStatistics.rateCallCompleted,
@@ -258,7 +371,8 @@ class _MyLineChartState extends State<MyLineChart> {
           y9: diagramResults[9].bureauStatistics.rateCallCompleted,
           y10: diagramResults[10].bureauStatistics.rateCallCompleted,
           y11: diagramResults[11].bureauStatistics.rateCallCompleted,
-          color: Color(0xff42e9f5),
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateCallCompleted"]!,
         ),
       ];
 
@@ -473,7 +587,9 @@ class _MyLineChartState extends State<MyLineChart> {
 
 class LineChartSample1 extends StatefulWidget {
   final String title;
-  LineChartSample1({required this.title});
+  LineChartSample1({
+    required this.title,
+  });
 
   @override
   State<StatefulWidget> createState() => LineChartSample1State();
@@ -549,6 +665,290 @@ class LineChartSample1State extends State<LineChartSample1> {
                 const SizedBox(
                   height: 10,
                 ),
+                isShowingMainData
+                    ? Container(
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        height: 200,
+                        child: GridView(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            childAspectRatio: 4,
+                            mainAxisSpacing: 15,
+                            crossAxisSpacing: 15,
+                            maxCrossAxisExtent: 200,
+                          ),
+                          children: [
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateSaidOrganization"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateSaidOrganization"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateSaidBureau"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateSaidBureau"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateSaidDepartment"]!, //cyan
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateSaidDepartment"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateSaidFirstname"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateSaidFirstname"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateSaidName"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateSaidName"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateSaidGreeting"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateSaidGreeting"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateSaidSpecificWords"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateSaidSpecificWords"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateReached"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateReached"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "rateCallCompleted"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "rateCallCompleted"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        height: 200,
+                        child: GridView(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            childAspectRatio: 4,
+                            mainAxisSpacing: 15,
+                            crossAxisSpacing: 15,
+                            maxCrossAxisExtent: 200,
+                          ),
+                          children: [
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "totalCalls"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "totalCalls"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  BureauStatistics
+                                          .bureauStatisticsDiagramColors[
+                                      "totalCallsReached"]!,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                BureauStatistics
+                                        .bureauStatisticsTranslationToGerman[
+                                    "totalCallsReached"]!,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
               ],
             ),
             IconButton(

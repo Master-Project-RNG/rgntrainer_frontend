@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'dart:ui';
+
 List<BureauResults> bureauResultsFromJson(String str) =>
     List<BureauResults>.from(
         json.decode(str).map((x) => BureauResults.fromJson(x)));
@@ -95,6 +97,36 @@ class BureauStatistics {
         "rateCallCompleted": rateCallCompleted,
         "meanRingingTime": meanRingingTime,
       };
+
+  ///Used in diagrams
+  static Map<String, Color> bureauStatisticsDiagramColors = {
+    "totalCalls": const Color(0xff4af699),
+    "totalCallsReached": const Color(0xfff542a4),
+    "rateSaidOrganization": const Color(0xfffad51b),
+    "rateSaidBureau": const Color(0xffff0000),
+    "rateSaidDepartment": const Color(0xff8c12ff),
+    "rateSaidFirstname": const Color(0xffffff1c),
+    "rateSaidName": const Color(0xffff29f1),
+    "rateSaidGreeting": const Color(0xff009c41),
+    "rateSaidSpecificWords": const Color(0xffffb300),
+    "rateReached": const Color(0xff1c95ff),
+    "rateCallCompleted": const Color(0xff42e9f5)
+  };
+
+  ///Provides translation from English to German
+  static Map<String, String> bureauStatisticsTranslationToGerman = {
+    "totalCalls": "Totale Anrufe",
+    "totalCallsReached": "Anrufe beantwortet",
+    "rateSaidOrganization": "Organisation gesagt",
+    "rateSaidBureau": "Büro gesagt",
+    "rateSaidDepartment": "Abteilung gesagt",
+    "rateSaidFirstname": "Vorname gesagt",
+    "rateSaidName": "Nachname gesagt",
+    "rateSaidGreeting": "Begrüssung gesagt",
+    "rateSaidSpecificWords": "Spezifische Wörter gesagt",
+    "rateReached": "Erreicht",
+    "rateCallCompleted": "Anruf komplett"
+  };
 }
 
 class AbAndCallbackStatistics {
