@@ -45,14 +45,15 @@ class _MyLineChartState extends State<MyLineChart> {
     _getBureausNames =
         await Provider.of<BureauResultsProvider>(context, listen: false)
             .getBureausNames(_currentUser.token);
-    _numericScalaTotalCalls =
-        calculateNumericScalaBureauStatistics(widget.diagramResults);
+    _numericScalaTotalCalls = calculateNumericYAxis(widget.diagramResults);
     setState(() {
       _isLoading = false;
     });
   }
 
-  List<int> calculateNumericScalaBureauStatistics(List<Diagram> list) {
+  /// Get the Y-axis of the numeric values e.g. Total Calls, Calls reached.
+  /// @param List<Diagram>, List of data that will be displayed in the line chart.
+  List<int> calculateNumericYAxis(List<Diagram> list) {
     double _max = 0;
     List<int> _result = [];
     for (int i = 0; i < list.length; i++) {
@@ -78,25 +79,51 @@ class _MyLineChartState extends State<MyLineChart> {
       return Container(
         padding: EdgeInsets.all(25),
         child: LineChart(
-          widget.isShowingMainData ? sampleData : sampleDataCallsNumeric,
+          widget.isShowingMainData
+              ? sampleDataRateValues
+              : sampleDataNumericValues,
           swapAnimationDuration: const Duration(milliseconds: 250),
         ),
       );
   }
 
-  LineChartData get sampleData => LineChartData(
+  LineChartData get sampleDataRateValues => LineChartData(
         lineTouchData: lineTouchData1,
         gridData: gridData,
-        titlesData: titlesData,
+        titlesData: titlesDataRateValues,
         borderData: borderData,
-        lineBarsData: lineBarsData1,
+        lineBarsData: lineBarsDataRateValues,
         minX: 0,
         maxX: 11,
         maxY: 100,
         minY: 0,
       );
 
-  FlTitlesData get titlesData => FlTitlesData(
+  LineChartData get sampleDataNumericValues => LineChartData(
+        lineTouchData: lineTouchData1,
+        gridData: gridData,
+        titlesData: titlesDataNumericValues,
+        borderData: borderData,
+        lineBarsData: lineBarsDataNumeric,
+        minX: 0,
+        maxX: 11,
+        maxY: double.parse(_numericScalaTotalCalls[3].toString()),
+        minY: 0,
+      );
+
+  ///Used as a parameter in [LineChartData],
+  ///can be used for rate values and numeric values both.
+  LineTouchData get lineTouchData1 => LineTouchData(
+        touchCallback: (LineTouchResponse touchResponse) {},
+        handleBuiltInTouches: true,
+        touchTooltipData: LineTouchTooltipData(
+          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
+        ),
+      );
+
+  ///Labeling of the Y and X axis
+  ///Used as a parameter in [LineChartData]
+  FlTitlesData get titlesDataRateValues => FlTitlesData(
         bottomTitles: bottomTitles,
         leftTitles: leftTitles(
           getTitles: (value) {
@@ -127,215 +154,9 @@ class _MyLineChartState extends State<MyLineChart> {
         ),
       );
 
-  LineChartBarData lineChartBarRate({
-    required int diagramLength,
-    required List<Diagram> diagramResults,
-    required Color color,
-    required String bureauStatisticType,
-  }) =>
-      LineChartBarData(
-        isCurved: false,
-        colors: [color],
-        barWidth: 4,
-        isStrokeCapRound: false,
-        dotData: FlDotData(show: true),
-        belowBarData: BarAreaData(show: false),
-        spots: getFlSpotsRate(
-          diagramLength: diagramLength,
-          diagramResults: diagramResults,
-          bureauStatisticType: bureauStatisticType,
-        ),
-      );
-
-  List<FlSpot> getFlSpotsRate(
-      {required int diagramLength,
-      required List<Diagram> diagramResults,
-      required String bureauStatisticType}) {
-    final List<FlSpot> result = [];
-    for (int i = 0; i < diagramLength; i++) {
-      if (bureauStatisticType == 'rateSaidOrganization') {
-        if (diagramResults[i].bureauStatistics.rateSaidOrganization != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(
-                  diagramResults[i].bureauStatistics.rateSaidOrganization),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateSaidBureau') {
-        if (diagramResults[i].bureauStatistics.rateSaidBureau != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(diagramResults[i].bureauStatistics.rateSaidBureau),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateSaidDepartment') {
-        if (diagramResults[i].bureauStatistics.rateSaidDepartment != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(
-                  diagramResults[i].bureauStatistics.rateSaidDepartment),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateSaidFirstname') {
-        if (diagramResults[i].bureauStatistics.rateSaidFirstname != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(
-                  diagramResults[i].bureauStatistics.rateSaidFirstname),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateSaidName') {
-        if (diagramResults[i].bureauStatistics.rateSaidName != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(diagramResults[i].bureauStatistics.rateSaidName),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateSaidGreeting') {
-        if (diagramResults[i].bureauStatistics.rateSaidGreeting != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(diagramResults[i].bureauStatistics.rateSaidGreeting),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateSaidSpecificWords') {
-        if (diagramResults[i].bureauStatistics.rateSaidSpecificWords != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(
-                  diagramResults[i].bureauStatistics.rateSaidSpecificWords),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateReached') {
-        if (diagramResults[i].bureauStatistics.rateReached != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(diagramResults[i].bureauStatistics.rateReached),
-            ),
-          );
-        }
-      } else if (bureauStatisticType == 'rateCallCompleted') {
-        if (diagramResults[i].bureauStatistics.rateCallCompleted != "-") {
-          result.add(
-            FlSpot(
-              i as double,
-              double.parse(
-                  diagramResults[i].bureauStatistics.rateCallCompleted),
-            ),
-          );
-        }
-      }
-    }
-    return result;
-  }
-
-  LineChartData get sampleDataCallsNumeric => LineChartData(
-        lineTouchData: lineTouchData1,
-        gridData: gridData,
-        titlesData: titlesData2,
-        borderData: borderData,
-        lineBarsData: lineBarsDataNumeric,
-        minX: 0,
-        maxX: 11,
-        maxY: double.parse(_numericScalaTotalCalls[3].toString()),
-        minY: 0,
-      );
-
-  LineTouchData get lineTouchData1 => LineTouchData(
-        touchCallback: (LineTouchResponse touchResponse) {},
-        handleBuiltInTouches: true,
-        touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-        ),
-      );
-
-  List<LineChartBarData> get lineBarsData1 {
-    int diagramLength = widget.diagramResults.length;
-    return [
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidOrganization"]!,
-        bureauStatisticType: "rateSaidOrganization",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color:
-            BureauStatistics.bureauStatisticsDiagramColors["rateSaidBureau"]!,
-        bureauStatisticType: "rateSaidBureau",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidDepartment"]!,
-        bureauStatisticType: "rateSaidDepartment",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidFirstname"]!,
-        bureauStatisticType: "rateSaidFirstname",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics.bureauStatisticsDiagramColors["rateSaidName"]!,
-        bureauStatisticType: "rateSaidName",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color:
-            BureauStatistics.bureauStatisticsDiagramColors["rateSaidGreeting"]!,
-        bureauStatisticType: "rateSaidGreeting",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidSpecificWords"]!,
-        bureauStatisticType: "rateSaidSpecificWords",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics.bureauStatisticsDiagramColors["rateReached"]!,
-        bureauStatisticType: "rateReached",
-      ),
-      lineChartBarRate(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateCallCompleted"]!,
-        bureauStatisticType: "rateCallCompleted",
-      ),
-    ];
-  }
-
-  LineTouchData get lineTouchData2 => LineTouchData(
-        enabled: false,
-      );
-
-  FlTitlesData get titlesData2 => FlTitlesData(
+  ///Labeling of the Y and X axis
+  ///Used as a parameter in [LineChartData]
+  FlTitlesData get titlesDataNumericValues => FlTitlesData(
         bottomTitles: bottomTitles,
         leftTitles: leftTitles(
           getTitles: (value) {
@@ -362,6 +183,239 @@ class _MyLineChartState extends State<MyLineChart> {
             return '';
           },
         ),
+      );
+
+  ///Labeling of the X axis
+  ///Used as a parameter in [FlTitlesData]
+  SideTitles get bottomTitles => SideTitles(
+        showTitles: true,
+        reservedSize: 22,
+        margin: 10,
+        getTextStyles: (value) => TextStyle(
+          color: Theme.of(context).accentColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+        getTitles: (value) {
+          switch (value.toInt()) {
+            case 0:
+              return formatter.format(widget.diagramResults[0].date).toString();
+            case 2:
+              return formatter.format(widget.diagramResults[2].date).toString();
+            case 4:
+              return formatter.format(widget.diagramResults[4].date).toString();
+            /*   case 6:
+              return formatter.format(diagramResults[6].date).toString();
+            case 8:
+              return formatter.format(diagramResults[8].date).toString();
+            case 10:
+              return formatter.format(diagramResults[10].date).toString();*/
+          }
+          return '';
+        },
+      );
+
+  ///Used as a parameter in [LineChartData]
+  ///Defines the border
+  FlBorderData get borderData => FlBorderData(
+        show: true,
+        border: const Border(
+          bottom: BorderSide(color: Colors.black, width: 2),
+          left: BorderSide(color: Colors.transparent),
+          right: BorderSide(color: Colors.transparent),
+          top: BorderSide(color: Colors.transparent),
+        ),
+      );
+
+  ///Used as a parameter in [LineChartData]
+  ///Returns a list of Lines that should be drawn in the diagram.
+  ///Handles the relevant data to be drawn!
+  List<LineChartBarData> get lineBarsDataRateValues {
+    int diagramLength = widget.diagramResults.length;
+    return [
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color: BureauStatistics
+            .bureauStatisticsDiagramColors["rateSaidOrganization"]!,
+        lineName: "rateSaidOrganization",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color:
+            BureauStatistics.bureauStatisticsDiagramColors["rateSaidBureau"]!,
+        lineName: "rateSaidBureau",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color: BureauStatistics
+            .bureauStatisticsDiagramColors["rateSaidDepartment"]!,
+        lineName: "rateSaidDepartment",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color: BureauStatistics
+            .bureauStatisticsDiagramColors["rateSaidFirstname"]!,
+        lineName: "rateSaidFirstname",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color: BureauStatistics.bureauStatisticsDiagramColors["rateSaidName"]!,
+        lineName: "rateSaidName",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color:
+            BureauStatistics.bureauStatisticsDiagramColors["rateSaidGreeting"]!,
+        lineName: "rateSaidGreeting",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color: BureauStatistics
+            .bureauStatisticsDiagramColors["rateSaidSpecificWords"]!,
+        lineName: "rateSaidSpecificWords",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color: BureauStatistics.bureauStatisticsDiagramColors["rateReached"]!,
+        lineName: "rateReached",
+      ),
+      lineChartBarRateValues(
+        diagramLength: diagramLength,
+        diagramResults: widget.diagramResults,
+        color: BureauStatistics
+            .bureauStatisticsDiagramColors["rateCallCompleted"]!,
+        lineName: "rateCallCompleted",
+      ),
+    ];
+  }
+
+  LineChartBarData lineChartBarRateValues({
+    required int diagramLength,
+    required List<Diagram> diagramResults,
+    required Color color,
+    required String lineName,
+  }) =>
+      LineChartBarData(
+        isCurved: false,
+        colors: [color],
+        barWidth: 4,
+        isStrokeCapRound: false,
+        dotData: FlDotData(show: true),
+        belowBarData: BarAreaData(show: false),
+        spots: getFlSpotsRate(
+          diagramLength: diagramLength,
+          diagramResults: diagramResults,
+          lineName: lineName,
+        ),
+      );
+
+  List<FlSpot> getFlSpotsRate(
+      {required int diagramLength,
+      required List<Diagram> diagramResults,
+      required String lineName}) {
+    final List<FlSpot> result = [];
+    for (int i = 0; i < diagramLength; i++) {
+      if (lineName == 'rateSaidOrganization') {
+        if (diagramResults[i].bureauStatistics.rateSaidOrganization != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].bureauStatistics.rateSaidOrganization),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidBureau') {
+        if (diagramResults[i].bureauStatistics.rateSaidBureau != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i].bureauStatistics.rateSaidBureau),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidDepartment') {
+        if (diagramResults[i].bureauStatistics.rateSaidDepartment != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].bureauStatistics.rateSaidDepartment),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidFirstname') {
+        if (diagramResults[i].bureauStatistics.rateSaidFirstname != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].bureauStatistics.rateSaidFirstname),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidName') {
+        if (diagramResults[i].bureauStatistics.rateSaidName != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i].bureauStatistics.rateSaidName),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidGreeting') {
+        if (diagramResults[i].bureauStatistics.rateSaidGreeting != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i].bureauStatistics.rateSaidGreeting),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidSpecificWords') {
+        if (diagramResults[i].bureauStatistics.rateSaidSpecificWords != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].bureauStatistics.rateSaidSpecificWords),
+            ),
+          );
+        }
+      } else if (lineName == 'rateReached') {
+        if (diagramResults[i].bureauStatistics.rateReached != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i].bureauStatistics.rateReached),
+            ),
+          );
+        }
+      } else if (lineName == 'rateCallCompleted') {
+        if (diagramResults[i].bureauStatistics.rateCallCompleted != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].bureauStatistics.rateCallCompleted),
+            ),
+          );
+        }
+      }
+    }
+    return result;
+  }
+
+  LineTouchData get lineTouchData2 => LineTouchData(
+        enabled: false,
       );
 
   List<LineChartBarData> get lineBarsDataNumeric => [
@@ -409,47 +463,9 @@ class _MyLineChartState extends State<MyLineChart> {
         ),
       );
 
-  SideTitles get bottomTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 22,
-        margin: 10,
-        getTextStyles: (value) => TextStyle(
-          color: Theme.of(context).accentColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-        getTitles: (value) {
-          switch (value.toInt()) {
-            case 0:
-              return formatter.format(widget.diagramResults[0].date).toString();
-            case 2:
-              return formatter.format(widget.diagramResults[2].date).toString();
-            case 4:
-              return formatter.format(widget.diagramResults[4].date).toString();
-            /*   case 6:
-              return formatter.format(diagramResults[6].date).toString();
-            case 8:
-              return formatter.format(diagramResults[8].date).toString();
-            case 10:
-              return formatter.format(diagramResults[10].date).toString();*/
-          }
-          return '';
-        },
-      );
-
   FlGridData get gridData => FlGridData(
         show: true,
         horizontalInterval: 10,
-      );
-
-  FlBorderData get borderData => FlBorderData(
-        show: true,
-        border: const Border(
-          bottom: BorderSide(color: Colors.black, width: 2),
-          left: BorderSide(color: Colors.transparent),
-          right: BorderSide(color: Colors.transparent),
-          top: BorderSide(color: Colors.transparent),
-        ),
       );
 
   LineChartBarData lineChartBarDataCalls({
@@ -538,473 +554,4 @@ class _MyLineChartState extends State<MyLineChart> {
             ),
         ],
       );
-}
-
-class LineChartSample1 extends StatefulWidget {
-  final String title;
-  LineChartSample1({
-    required this.title,
-  });
-
-  @override
-  State<StatefulWidget> createState() => LineChartSample1State();
-}
-
-class LineChartSample1State extends State<LineChartSample1> {
-  late bool isShowingMainData;
-  int selectedQueryType = 0;
-  late List<String> _getBureausNames = [];
-  late User _currentUser;
-  bool _isLoading = false;
-  late List<Diagram> diagramResults;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentUser = UserSimplePreferences.getUser();
-    isShowingMainData = true;
-    getAsyncData();
-  }
-
-  getAsyncData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    _getBureausNames =
-        await Provider.of<BureauResultsProvider>(context, listen: false)
-            .getBureausNames(_currentUser.token);
-    selectedQueryType = _getBureausNames.indexWhere((element) =>
-        element == "Overall"); //Set standart of selected dropdown to "Overall"
-    diagramResults =
-        await Provider.of<BureauResultsProvider>(context, listen: false)
-            .getTotalResultsWeekly(
-                _currentUser.token, _getBureausNames[selectedQueryType]);
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.23,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(20),
-          ),
-          color: Colors.grey[100],
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.refresh,
-                    color:
-                        Colors.black.withOpacity(isShowingMainData ? 1.0 : 0.5),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isShowingMainData = !isShowingMainData;
-                    });
-                  },
-                ),
-                _isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : PopupMenuButton(
-                        onSelected: (result) {
-                          setState(() {
-                            selectedQueryType = result as int;
-                            getAsyncData();
-                          });
-                        },
-                        itemBuilder: (context) {
-                          return List.generate(
-                            _getBureausNames.length,
-                            (index) {
-                              return PopupMenuItem(
-                                value: index,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      width: 240,
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          _getBureausNames[index].toString(),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: SizedBox(
-                          width: 300,
-                          height: 40,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: DropdownButton(
-                              value: this.selectedQueryType,
-                              items: getDropdownMenuItemList(_getBureausNames),
-                            ),
-                          ),
-                        ),
-                      ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              'Normaler Anruf',
-              style: TextStyle(
-                color: Theme.of(context).accentColor,
-                fontSize: 16,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Text(
-              widget.title,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(
-              height: 37,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16.0, left: 6.0),
-                child: _isLoading == true
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : MyLineChart(
-                        isShowingMainData: isShowingMainData,
-                        selectedQueryType: selectedQueryType,
-                        diagramResults: diagramResults,
-                      ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            isShowingMainData
-                ? Container(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    height: 200,
-                    child: GridView(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        childAspectRatio: 4,
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 15,
-                        maxCrossAxisExtent: 200,
-                      ),
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidOrganization"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidOrganization"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidBureau"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidBureau"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidDepartment"]!, //cyan
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidDepartment"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidFirstname"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidFirstname"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidName"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidName"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidGreeting"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidGreeting"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidSpecificWords"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidSpecificWords"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateReached"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateReached"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateCallCompleted"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateCallCompleted"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    height: 200,
-                    child: GridView(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        childAspectRatio: 4,
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 15,
-                        maxCrossAxisExtent: 200,
-                      ),
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics
-                                  .bureauStatisticsDiagramColors["totalCalls"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "totalCalls"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "totalCallsReached"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "totalCallsReached"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-          ],
-        ),
-      ),
-    );
-  }
-
-  List<DropdownMenuItem> getDropdownMenuItemList(List<String> bureauNames) {
-    List<DropdownMenuItem> result = [];
-    for (int i = 0; i < bureauNames.length; i++) {
-      result.add(
-        DropdownMenuItem(
-          child: Container(
-            alignment: Alignment.centerLeft,
-            width: 210,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                _getBureausNames[i],
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-          value: i,
-        ),
-      );
-    }
-    return result;
-  }
 }
