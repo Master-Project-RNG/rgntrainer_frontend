@@ -12,11 +12,14 @@ class MyLineChart extends StatefulWidget {
   final int selectedQueryType;
   final bool isShowingMainData;
   final List<Diagram> diagramResults;
+  final Map<String, bool> showChartLine;
 
-  const MyLineChart(
-      {required this.isShowingMainData,
-      required this.selectedQueryType,
-      required this.diagramResults});
+  const MyLineChart({
+    required this.isShowingMainData,
+    required this.selectedQueryType,
+    required this.diagramResults,
+    required this.showChartLine,
+  });
 
   @override
   _MyLineChartState createState() => _MyLineChartState();
@@ -236,67 +239,77 @@ class _MyLineChartState extends State<MyLineChart> {
   List<LineChartBarData> get lineBarsDataRateValues {
     int diagramLength = widget.diagramResults.length;
     return [
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidOrganization"]!,
-        lineName: "rateSaidOrganization",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color:
-            BureauStatistics.bureauStatisticsDiagramColors["rateSaidBureau"]!,
-        lineName: "rateSaidBureau",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidDepartment"]!,
-        lineName: "rateSaidDepartment",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidFirstname"]!,
-        lineName: "rateSaidFirstname",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics.bureauStatisticsDiagramColors["rateSaidName"]!,
-        lineName: "rateSaidName",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color:
-            BureauStatistics.bureauStatisticsDiagramColors["rateSaidGreeting"]!,
-        lineName: "rateSaidGreeting",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateSaidSpecificWords"]!,
-        lineName: "rateSaidSpecificWords",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics.bureauStatisticsDiagramColors["rateReached"]!,
-        lineName: "rateReached",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["rateCallCompleted"]!,
-        lineName: "rateCallCompleted",
-      ),
+      if (widget.showChartLine['rateSaidOrganization'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidOrganization"]!,
+          lineName: "rateSaidOrganization",
+        ),
+      if (widget.showChartLine['rateSaidBureau'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color:
+              BureauStatistics.bureauStatisticsDiagramColors["rateSaidBureau"]!,
+          lineName: "rateSaidBureau",
+        ),
+      if (widget.showChartLine['rateSaidDepartment'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidDepartment"]!,
+          lineName: "rateSaidDepartment",
+        ),
+      if (widget.showChartLine['rateSaidFirstname'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidFirstname"]!,
+          lineName: "rateSaidFirstname",
+        ),
+      if (widget.showChartLine['rateSaidName'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color:
+              BureauStatistics.bureauStatisticsDiagramColors["rateSaidName"]!,
+          lineName: "rateSaidName",
+        ),
+      if (widget.showChartLine['rateSaidGreeting'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidGreeting"]!,
+          lineName: "rateSaidGreeting",
+        ),
+      if (widget.showChartLine['rateSaidSpecificWords'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateSaidSpecificWords"]!,
+          lineName: "rateSaidSpecificWords",
+        ),
+      if (widget.showChartLine['rateReached'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics.bureauStatisticsDiagramColors["rateReached"]!,
+          lineName: "rateReached",
+        ),
+      if (widget.showChartLine['rateCallCompleted'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["rateCallCompleted"]!,
+          lineName: "rateCallCompleted",
+        ),
     ];
   }
 
@@ -306,19 +319,21 @@ class _MyLineChartState extends State<MyLineChart> {
   List<LineChartBarData> get lineBarsDataNumericValues {
     int diagramLength = widget.diagramResults.length;
     return [
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics.bureauStatisticsDiagramColors["totalCalls"]!,
-        lineName: "totalCalls",
-      ),
-      lineChartBar(
-        diagramLength: diagramLength,
-        diagramResults: widget.diagramResults,
-        color: BureauStatistics
-            .bureauStatisticsDiagramColors["totalCallsReached"]!,
-        lineName: "totalCallsReached",
-      ),
+      if (widget.showChartLine['totalCalls'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics.bureauStatisticsDiagramColors["totalCalls"]!,
+          lineName: "totalCalls",
+        ),
+      if (widget.showChartLine['totalCallsReached'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: BureauStatistics
+              .bureauStatisticsDiagramColors["totalCallsReached"]!,
+          lineName: "totalCallsReached",
+        ),
     ];
   }
 

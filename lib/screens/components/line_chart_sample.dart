@@ -23,6 +23,20 @@ class LineChartSample1State extends State<LineChartSample1> {
   bool _isLoadingDiagram = false;
   late List<Diagram> diagramResults;
 
+  Map<String, bool> showChartLine = {
+    'totalCalls': true,
+    'totalCallsReached': true,
+    'rateSaidOrganization': true,
+    'rateSaidBureau': true,
+    'rateSaidDepartment': true,
+    'rateSaidFirstname': true,
+    'rateSaidName': true,
+    'rateSaidGreeting': true,
+    'rateSaidSpecificWords': true,
+    'rateReached': true,
+    'rateCallCompleted': true,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -177,6 +191,7 @@ class LineChartSample1State extends State<LineChartSample1> {
                         isShowingMainData: isShowingMainData,
                         selectedQueryType: selectedQueryType,
                         diagramResults: diagramResults,
+                        showChartLine: showChartLine,
                       ),
               ),
             ),
@@ -194,197 +209,7 @@ class LineChartSample1State extends State<LineChartSample1> {
                         crossAxisSpacing: 15,
                         maxCrossAxisExtent: 200,
                       ),
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidOrganization"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidOrganization"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidBureau"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidBureau"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidDepartment"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidDepartment"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidFirstname"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidFirstname"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidName"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidName"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidGreeting"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidGreeting"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidSpecificWords"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateSaidSpecificWords"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateReached"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateReached"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateCallCompleted"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "rateCallCompleted"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
+                      children: elevatedButtonsNormalCall,
                     ),
                   )
                 : Container(
@@ -397,50 +222,7 @@ class LineChartSample1State extends State<LineChartSample1> {
                         crossAxisSpacing: 15,
                         maxCrossAxisExtent: 200,
                       ),
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics
-                                  .bureauStatisticsDiagramColors["totalCalls"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "totalCalls"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              BureauStatistics.bureauStatisticsDiagramColors[
-                                  "totalCallsReached"]!,
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            BureauStatistics
-                                    .bureauStatisticsTranslationToGerman[
-                                "totalCallsReached"]!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
+                      children: elevatedButtonRateCall,
                     ),
                   )
           ],
@@ -476,5 +258,330 @@ class LineChartSample1State extends State<LineChartSample1> {
       );
     }
     return result;
+  }
+
+  List<Widget> get elevatedButtonsNormalCall {
+    return [
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateSaidOrganization'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateSaidOrganization"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateSaidOrganization'] == true
+                ? showChartLine['rateSaidOrganization'] = false
+                : showChartLine['rateSaidOrganization'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["rateSaidOrganization"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateSaidBureau'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateSaidBureau"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateSaidBureau'] == true
+                ? showChartLine['rateSaidBureau'] = false
+                : showChartLine['rateSaidBureau'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["rateSaidBureau"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateSaidDepartment'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateSaidDepartment"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateSaidDepartment'] == true
+                ? showChartLine['rateSaidDepartment'] = false
+                : showChartLine['rateSaidDepartment'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["rateSaidDepartment"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateSaidFirstname'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateSaidFirstname"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateSaidFirstname'] == true
+                ? showChartLine['rateSaidFirstname'] = false
+                : showChartLine['rateSaidFirstname'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["rateSaidFirstname"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateSaidName'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateSaidName"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateSaidName'] == true
+                ? showChartLine['rateSaidName'] = false
+                : showChartLine['rateSaidName'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics.bureauStatisticsTranslationToGerman["rateSaidName"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateSaidGreeting'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateSaidGreeting"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateSaidGreeting'] == true
+                ? showChartLine['rateSaidGreeting'] = false
+                : showChartLine['rateSaidGreeting'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["rateSaidGreeting"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateSaidSpecificWords'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateSaidSpecificWords"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateSaidSpecificWords'] == true
+                ? showChartLine['rateSaidSpecificWords'] = false
+                : showChartLine['rateSaidSpecificWords'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["rateSaidSpecificWords"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateReached'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateReached"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateReached'] == true
+                ? showChartLine['rateReached'] = false
+                : showChartLine['rateReached'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics.bureauStatisticsTranslationToGerman["rateReached"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['rateCallCompleted'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["rateCallCompleted"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['rateCallCompleted'] == true
+                ? showChartLine['rateCallCompleted'] = false
+                : showChartLine['rateCallCompleted'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["rateCallCompleted"]!,
+          textAlign: TextAlign.center,
+        ),
+      )
+    ];
+  }
+
+  List<Widget> get elevatedButtonRateCall {
+    return [
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['totalCalls'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics.bureauStatisticsDiagramColors["totalCalls"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['totalCalls'] == true
+                ? showChartLine['totalCalls'] = false
+                : showChartLine['totalCalls'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics.bureauStatisticsTranslationToGerman["totalCalls"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: showChartLine['totalCallsReached'] == true
+              ? MaterialStateProperty.all<Color>(
+                  BureauStatistics
+                      .bureauStatisticsDiagramColors["totalCallsReached"]!,
+                )
+              : MaterialStateProperty.all<Color>(
+                  Colors.grey,
+                ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            showChartLine['totalCallsReached'] == true
+                ? showChartLine['totalCallsReached'] = false
+                : showChartLine['totalCallsReached'] = true;
+          });
+        },
+        child: Text(
+          BureauStatistics
+              .bureauStatisticsTranslationToGerman["totalCallsReached"]!,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    ];
   }
 }
