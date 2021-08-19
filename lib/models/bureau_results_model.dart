@@ -98,7 +98,7 @@ class BureauStatistics {
         "meanRingingTime": meanRingingTime,
       };
 
-  ///Used in diagrams
+  /// Used in diagrams
   static Map<String, Color> bureauStatisticsDiagramColors = {
     "totalCalls": const Color(0xff4af699),
     "totalCallsReached": const Color(0xfff542a4),
@@ -113,7 +113,9 @@ class BureauStatistics {
     "rateCallCompleted": const Color(0xff42e9f5)
   };
 
-  ///Provides translation from English to German
+  /// Provides translation from English to German.
+  /// Be aware of the reference to  [columnsAB] at [AdminResultsScreen] at the ResultsScreen.
+  /// Be aware of the reference to the Buttons at the DiagramScreen.
   static Map<String, String> bureauStatisticsTranslationToGerman = {
     "totalCalls": "Totale Anrufe",
     "totalCallsReached": "Anrufe beantwortet",
@@ -125,7 +127,8 @@ class BureauStatistics {
     "rateSaidGreeting": "Begrüssung gesagt",
     "rateSaidSpecificWords": "Spezifische Wörter gesagt",
     "rateReached": "Erreicht",
-    "rateCallCompleted": "Anruf komplett"
+    "rateCallCompleted": "Anruf komplett",
+    "meanRingingTime": "Durchschnittliche Klingelzeit",
   };
 }
 
@@ -198,4 +201,25 @@ class AbAndCallbackStatistics {
         "rateCallbackDoneOverall": rateCallbackDoneOverall,
         "rateCallbackInTime": rateCallbackInTime,
       };
+
+  /// Provides translation from English to German.
+  /// Be aware of the reference to  [columnsAB] at [AdminResultsScreen] at the ResultsScreen.
+  /// Be aware of the reference to the Buttons at the DiagramScreen.
+  static Map<String, String> abAndCallbackStatisticsTranslationToGerman = {
+    "rateSaidOrganizationAB": "Organisation gesagt",
+    "rateSaidBureauAB": "Büro gesagt",
+    "rateSaidDepartmentAB": "Abteilung gesagt",
+    "rateSaidFirstnameAB": "Vorname gesagt",
+    "rateSaidNameAB": "Nachname gesagt",
+    "rateSaidGreetingAB": "Begrüssung gesagt",
+    "rateSaidSpecificWordsAB": "Spezifische Wörter gesagt",
+    "rateResponderStartedIfNotReached":
+        "AB aufgeschaltet (falls nicht erreicht)",
+    "rateResponderCorrect": "AB Nachricht korrekt",
+    "rateCallbackDoneNoAnswer": "Kein AB geschaltet - Rückrufrate",
+    "rateCallbackDoneResponder": "AB geschaltet - Rückrufrate",
+    "rateCallbackDoneUnexpected": "Unerwarteter Rückruf",
+    "rateCallbackDoneOverall": "Rückrufrate gesamt",
+    "rateCallbackInTime": "Rückruf innerhalb der Zeit",
+  };
 }
