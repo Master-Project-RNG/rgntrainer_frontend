@@ -15,6 +15,10 @@ class BureauResultsProvider with ChangeNotifier {
     return _bureauResults;
   }
 
+  List<Diagram> get diagramResults {
+    return _diagramResults;
+  }
+
   Future<List<BureauResults>> getBureauResults(String? token) async {
     final url = Uri.parse('$activeHost/getTotalResults');
     final response = await post(
@@ -40,11 +44,12 @@ class BureauResultsProvider with ChangeNotifier {
       _bureauResults = _result;
       return _result;
     } else {
-      throw Exception('Failed to load user results');
+      throw Exception('Failed to load getTotalResults');
     }
   }
 
-  Future<List<Diagram>> getTotalResultsWeekly(String? token) async {
+  Future<List<Diagram>> getTotalResultsWeekly(
+      String? token, String bureauName) async {
     final url = Uri.parse('$activeHost/getTotalResultsWeekly');
     final response = await post(
       url,
@@ -53,7 +58,8 @@ class BureauResultsProvider with ChangeNotifier {
       },
       body: json.encode({
         'token': token,
-        'overall': true,
+        "bureau": bureauName,
+        'overall': false,
       }),
     );
     if (response.statusCode == 200) {
@@ -70,7 +76,34 @@ class BureauResultsProvider with ChangeNotifier {
       _diagramResults = _result;
       return _result;
     } else {
-      throw Exception('Failed to load user results');
+      throw Exception('Failed to load getTotalResultsWeekly');
+    }
+  }
+
+  Future<List<String>> getBureausNames(String? token) async {
+    final url = Uri.parse('$activeHost/getAllBureaus');
+    final response = await post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        'token': token,
+        'overall': true,
+      }),
+    );
+    if (response.statusCode == 200) {
+      print(response.body);
+      final dynamic jsonResponse = jsonDecode(response.body);
+      final List<String> _result = [];
+      final List<dynamic> _temp = jsonResponse as List<dynamic>;
+      // ignore: avoid_function_literals_in_foreach_calls
+      jsonResponse.forEach((element) {
+        _result.add(element);
+      });
+      return _result;
+    } else {
+      throw Exception('Failed to load getAllBureaus');
     }
   }
 }
