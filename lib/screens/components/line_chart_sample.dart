@@ -8,10 +8,7 @@ import 'package:rgntrainer_frontend/screens/components/line_chart.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 
 class LineChartSample1 extends StatefulWidget {
-  final String title;
-  LineChartSample1({
-    required this.title,
-  });
+  LineChartSample1();
 
   @override
   State<StatefulWidget> createState() => LineChartSample1State();
@@ -22,7 +19,8 @@ class LineChartSample1State extends State<LineChartSample1> {
   int selectedQueryType = 0;
   late List<String> _getBureausNames = [];
   late User _currentUser;
-  bool _isLoading = false;
+  bool _isLoadingInit = true;
+  bool _isLoadingDiagram = false;
   late List<Diagram> diagramResults;
 
   @override
@@ -34,9 +32,6 @@ class LineChartSample1State extends State<LineChartSample1> {
   }
 
   getAsyncData() async {
-    setState(() {
-      _isLoading = true;
-    });
     _getBureausNames =
         await Provider.of<BureauResultsProvider>(context, listen: false)
             .getBureausNames(_currentUser.token);
@@ -47,20 +42,20 @@ class LineChartSample1State extends State<LineChartSample1> {
             .getTotalResultsWeekly(
                 _currentUser.token, _getBureausNames[selectedQueryType]);
     setState(() {
-      _isLoading = false;
+      _isLoadingInit = false;
     });
   }
 
   updateAsyncData() async {
     setState(() {
-      _isLoading = true;
+      _isLoadingDiagram = true;
     });
     diagramResults =
         await Provider.of<BureauResultsProvider>(context, listen: false)
             .getTotalResultsWeekly(
                 _currentUser.token, _getBureausNames[selectedQueryType]);
     setState(() {
-      _isLoading = false;
+      _isLoadingDiagram = false;
     });
   }
 
@@ -84,7 +79,7 @@ class LineChartSample1State extends State<LineChartSample1> {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          //   crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,59 +96,6 @@ class LineChartSample1State extends State<LineChartSample1> {
                     });
                   },
                 ),
-                _isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : PopupMenuButton(
-                        onSelected: (result) {
-                          setState(() {
-                            selectedQueryType = result as int;
-                            updateAsyncData();
-                          });
-                        },
-                        itemBuilder: (context) {
-                          return List.generate(
-                            _getBureausNames.length,
-                            (index) {
-                              return PopupMenuItem(
-                                value: index,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      width: 240,
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          _getBureausNames[index].toString(),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: SizedBox(
-                          width: 300,
-                          height: 40,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: DropdownButton(
-                              value: this.selectedQueryType,
-                              items: getDropdownMenuItemList(_getBureausNames),
-                            ),
-                          ),
-                        ),
-                      ),
               ],
             ),
             const SizedBox(
@@ -170,22 +112,64 @@ class LineChartSample1State extends State<LineChartSample1> {
             const SizedBox(
               height: 4,
             ),
-            Text(
-              widget.title,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2),
-              textAlign: TextAlign.center,
-            ),
+            _isLoadingInit
+                ? Container()
+                : SizedBox(
+                    width: 240,
+                    height: 50,
+                    child: PopupMenuButton(
+                      onSelected: (result) {
+                        setState(() {
+                          selectedQueryType = result as int;
+                          updateAsyncData();
+                        });
+                      },
+                      itemBuilder: (context) {
+                        return List.generate(
+                          _getBureausNames.length,
+                          (index) {
+                            return PopupMenuItem(
+                              value: index,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    width: 240,
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        _getBureausNames[index].toString(),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: DropdownButton(
+                          value: this.selectedQueryType,
+                          items: getDropdownMenuItemList(_getBureausNames),
+                        ),
+                      ),
+                    ),
+                  ),
             const SizedBox(
               height: 37,
             ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(right: 16.0, left: 6.0),
-                child: _isLoading == true
+                child: (_isLoadingDiagram || _isLoadingInit) == true
                     ? Center(
                         child: CircularProgressIndicator(),
                       )
@@ -257,7 +241,7 @@ class LineChartSample1State extends State<LineChartSample1> {
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
                               BureauStatistics.bureauStatisticsDiagramColors[
-                                  "rateSaidDepartment"]!, //cyan
+                                  "rateSaidDepartment"]!,
                             ),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(
@@ -473,11 +457,17 @@ class LineChartSample1State extends State<LineChartSample1> {
           child: Container(
             alignment: Alignment.centerLeft,
             width: 210,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                _getBureausNames[i],
-                style: TextStyle(color: Colors.white),
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  _getBureausNames[i],
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),

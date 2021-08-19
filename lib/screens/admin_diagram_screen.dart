@@ -82,7 +82,7 @@ class _DiagramScreenState extends State<DiagramScreen> {
                             padding: EdgeInsets.all(100),
                             height: 1000,
                             color: Colors.grey[100],
-                            child: LineChartSample1(title: "Overall"),
+                            child: LineChartSample1(),
                           ),
                         ),
                         Expanded(
