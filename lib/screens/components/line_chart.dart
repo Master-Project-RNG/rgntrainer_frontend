@@ -199,13 +199,13 @@ class _MyLineChartState extends State<MyLineChart> {
         showTitles: true,
         reservedSize: 22,
         margin: 10,
-        getTextStyles: (value) => TextStyle(
+        getTextStyles: (ctx, value) => TextStyle(
           color: Theme.of(context).accentColor,
           fontWeight: FontWeight.bold,
           fontSize: 16,
         ),
         getTitles: (value) {
-          int diagramLength = widget.diagramResults.length;
+          final int diagramLength = widget.diagramResults.length;
           for (int i = 0; i < diagramLength; i = i + 2) {
             if (value == i) {
               return formatter.format(widget.diagramResults[i].date).toString();
@@ -220,7 +220,7 @@ class _MyLineChartState extends State<MyLineChart> {
         showTitles: true,
         margin: 8,
         reservedSize: 30,
-        getTextStyles: (value) => TextStyle(
+        getTextStyles: (ctx, value) => TextStyle(
           color: Theme.of(context).accentColor,
           fontWeight: FontWeight.bold,
           fontSize: 14,
