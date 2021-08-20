@@ -435,13 +435,17 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       color: Colors.grey[100],
                                     ),
                                     child: InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        context.vxNav.push(
+                                          Uri.parse(MyRoutes.adminDiagramRoute),
+                                        );
+                                      },
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Diagramme (inactive)",
+                                            "Diagramme",
                                             style: TextStyle(fontSize: 20),
                                           )
                                         ],
