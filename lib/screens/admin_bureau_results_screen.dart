@@ -63,37 +63,54 @@ class _AdminCardState extends State<AdminResultsCard> {
   ];
 
   final columnsStandart = [
-    'Büro',
-    'Totale Anrufe',
-    'Anrufe beantwortet',
-    'Organisation gesagt',
-    "Büro gesagt",
-    "Abteilung gesagt",
-    "Vorname gesagt",
-    "Nachname gesagt",
-    "Begrüssung gesagt",
-    "Spezifische Wörter gesagt",
-    "Erreicht",
-    "Anruf komplett",
-    "Durchschnittliche Klingelzeit", //13 Spalten (12 index)
+    "Büro",
+    BureauStatistics.bureauStatisticsTranslationToGerman["totalCalls"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["totalCallsReached"]!,
+    BureauStatistics
+        .bureauStatisticsTranslationToGerman["rateSaidOrganization"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["rateSaidBureau"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["rateSaidDepartment"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["rateSaidFirstname"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["rateSaidName"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["rateSaidGreeting"]!,
+    BureauStatistics
+        .bureauStatisticsTranslationToGerman["rateSaidSpecificWords"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["rateReached"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["rateCallCompleted"]!,
+    BureauStatistics.bureauStatisticsTranslationToGerman["meanRingingTime"]!,
+    //13 Spalten (12 index)
   ];
 
   final columnsAB = [
-    'Büro',
-    "Organisation gesagt",
-    "Büro gesagt",
-    "Abteilung gesagt",
-    "Vorname gesagt",
-    "Nachname gesagt",
-    "Begrüssung gesagt",
-    "Spezifische Wörter gesagt",
-    "AB aufgeschaltet (falls nicht erreicht)",
-    "AB Nachricht korrekt",
-    "Kein AB geschaltet - Rückrufrate",
-    "AB geschaltet - Rückrufrate",
-    "Unerwarteter Rückruf",
-    "Rückrufrate gesamt",
-    "Rückruf innerhalb der Zeit", //15 Spalten (14 index)
+    "Büro",
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateSaidOrganizationAB"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateSaidBureauAB"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateSaidDepartmentAB"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateSaidFirstnameAB"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateSaidNameAB"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateSaidGreetingAB"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateSaidSpecificWordsAB"]!,
+    AbAndCallbackStatistics.abAndCallbackStatisticsTranslationToGerman[
+        "rateResponderStartedIfNotReached"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateResponderCorrect"]!,
+    AbAndCallbackStatistics.abAndCallbackStatisticsTranslationToGerman[
+        "rateCallbackDoneNoAnswer"]!,
+    AbAndCallbackStatistics.abAndCallbackStatisticsTranslationToGerman[
+        "rateCallbackDoneResponder"]!,
+    AbAndCallbackStatistics.abAndCallbackStatisticsTranslationToGerman[
+        "rateCallbackDoneUnexpected"]!,
+    AbAndCallbackStatistics
+        .abAndCallbackStatisticsTranslationToGerman["rateCallbackDoneOverall"]!,
+    AbAndCallbackStatistics.abAndCallbackStatisticsTranslationToGerman[
+        "rateCallbackInTime"]!, //15 Spalten (14 index)
   ];
 
   @override
