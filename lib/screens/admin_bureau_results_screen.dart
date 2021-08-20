@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
+import 'package:rgntrainer_frontend/models/call_type.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
@@ -15,28 +16,20 @@ import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-class AdminResultsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdminResultsCard();
-  }
-}
-
-class AdminResultsCard extends StatefulWidget {
-  const AdminResultsCard({
+class AdminResultsScreen extends StatefulWidget {
+  const AdminResultsScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  _AdminCardState createState() => _AdminCardState();
+  _AdminResultsState createState() => _AdminResultsState();
 }
 
-class _AdminCardState extends State<AdminResultsCard> {
+class _AdminResultsState extends State<AdminResultsScreen> {
   late User _currentUser = User.init();
   var _isLoading = false;
   late List<BureauResults> bureauResults;
-  final List<String> queryType = ["Standart", "Anrufbeantworter"];
-  int selectedQueryType = 0;
+  CallType callType = CallType.Standart;
 
   int? sortColumnIndex; //Reflects the column that is currently sorted!
   bool isAscending = false;
@@ -300,11 +293,11 @@ class _AdminCardState extends State<AdminResultsCard> {
                             onSelected: (result) {
                               if (result == 0) {
                                 setState(() {
-                                  this.selectedQueryType = 0;
+                                  this.callType = CallType.Standart;
                                 });
                               } else if (result == 1) {
                                 setState(() {
-                                  this.selectedQueryType = 1;
+                                  this.callType = CallType.Anrufbeantworter;
                                 });
                               }
                             },
@@ -335,7 +328,9 @@ class _AdminCardState extends State<AdminResultsCard> {
                                         BorderRadius.all(Radius.circular(5))),
                                 alignment: Alignment.center,
                                 child: DropdownButton(
-                                  value: this.selectedQueryType,
+                                  value: this.callType == CallType.Standart
+                                      ? 0
+                                      : 1,
                                   items: [
                                     DropdownMenuItem(
                                       child: Text(
@@ -361,7 +356,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                           alignment: Alignment.centerLeft,
                           child: PopupMenuButton(
                             itemBuilder: (context) {
-                              return selectedQueryType == 0
+                              return callType == CallType.Standart
                                   ? popupMenuEntry_StandartList
                                   : popupMenuEntry_ABList;
                             },
@@ -468,8 +463,8 @@ class _AdminCardState extends State<AdminResultsCard> {
                           ),
                           SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
-                              child: bureauResultsData(_myBureauResultsProvider,
-                                  this.selectedQueryType)),
+                              child: bureauResultsData(
+                                  _myBureauResultsProvider, callType)),
                         ],
                       ),
                     ),
@@ -484,7 +479,7 @@ class _AdminCardState extends State<AdminResultsCard> {
   }
 
   Widget bureauResultsData(
-      BureauResultsProvider _myBureauResultsProvider, tableType) {
+      BureauResultsProvider _myBureauResultsProvider, CallType callType) {
     if (_isLoading == true) {
       return CircularProgressIndicator();
     } else
@@ -492,10 +487,10 @@ class _AdminCardState extends State<AdminResultsCard> {
         dataRowHeight: 25,
         sortAscending: isAscending,
         sortColumnIndex: sortColumnIndex,
-        columns: tableType == 0
-            ? getColumns(columnsStandart, showColumns, tableType)
-            : getColumns(columnsAB, showColumns, tableType),
-        rows: tableType == 0
+        columns: callType == CallType.Standart
+            ? getColumns(columnsStandart, showColumns, callType)
+            : getColumns(columnsAB, showColumns, callType),
+        rows: callType == CallType.Standart
             ? getRowsStandart(
                 _myBureauResultsProvider.bureauResults, showColumns)
             : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
@@ -514,14 +509,14 @@ class _AdminCardState extends State<AdminResultsCard> {
   }
 
   List<DataColumn> getColumns(
-      List<String> columns, List<bool> showColumns, int tableType) {
+      List<String> columns, List<bool> showColumns, CallType callType) {
     List<DataColumn> dataColumnResult = [];
     for (int i = 0; i < columns.length; i++) {
       if (showColumns[i] == true) {
         dataColumnResult.add(
           DataColumn(
             label: Text(columns[i]),
-            onSort: tableType == 0 ? onSort : onSortAB,
+            onSort: callType == CallType.Standart ? onSort : onSortAB,
           ),
         );
       }
@@ -981,95 +976,4 @@ int compareInteger(bool ascending, int value1, int value2) =>
 
 int compareDouble(bool ascending, double value1, double value2) {
   return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
-}
-
-class AbfrageButton extends StatefulWidget {
-  final bool isLoading;
-  AbfrageButton(this.isLoading);
-
-  @override
-  _AbfrageButtonState createState() => _AbfrageButtonState();
-}
-
-class _AbfrageButtonState extends State<AbfrageButton> {
-  int selectedQueryType = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(right: 50),
-      child: PopupMenuButton(
-        onSelected: (result) {
-          if (widget.isLoading == true) {
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Text('Geduld bitte'),
-                content: Text("Die Einträge werden noch geladen."),
-                actions: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: const Text('Schliessen!'),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            if (result == 0) {
-              setState(() {
-                selectedQueryType = 0;
-              });
-            } else if (result == 1) {
-              setState(() {
-                selectedQueryType = 1;
-              });
-            }
-          }
-        },
-        itemBuilder: (context) {
-          return List.generate(
-            2,
-            (index) {
-              return PopupMenuItem(
-                value: index,
-                child: Row(
-                  children: [
-                    index == 0 ? Text("Standart") : Text("Anrufbeantworter"),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-        child: SizedBox(
-          width: 200,
-          height: 30,
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(3))),
-            alignment: Alignment.center,
-            child: DropdownButton(value: this.selectedQueryType, items: [
-              DropdownMenuItem(
-                child: Text(
-                  "Standart",
-                  style: TextStyle(color: Colors.white),
-                ),
-                value: 0,
-              ),
-              DropdownMenuItem(
-                child: Text(
-                  "Anrufbeantworter",
-                  style: TextStyle(color: Colors.white),
-                ),
-                value: 1,
-              )
-            ]),
-          ),
-        ),
-      ),
-    );
-  }
 }

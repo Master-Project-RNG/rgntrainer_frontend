@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
+import 'package:rgntrainer_frontend/models/call_type.dart';
 import 'package:rgntrainer_frontend/models/diagram_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
@@ -8,8 +9,8 @@ import 'package:rgntrainer_frontend/screens/components/line_chart.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 
 class LineChartWidget extends StatefulWidget {
-  final String diagramType;
-  LineChartWidget({required this.diagramType});
+  final CallType callType;
+  LineChartWidget({required this.callType});
 
   @override
   State<StatefulWidget> createState() => LineChartWidgetState();
@@ -118,25 +119,29 @@ class LineChartWidgetState extends State<LineChartWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.refresh,
-                      color: Colors.black
-                          .withOpacity(isShowingMainData ? 1.0 : 0.5),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isShowingMainData = !isShowingMainData;
-                      });
-                    },
-                  ),
+                  widget.callType == CallType.Standart
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Colors.black
+                                .withOpacity(isShowingMainData ? 1.0 : 0.5),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isShowingMainData = !isShowingMainData;
+                            });
+                          },
+                        )
+                      : Container(),
                 ],
               ),
             ),
             Expanded(
               flex: 1,
               child: Text(
-                widget.diagramType,
+                widget.callType == CallType.Standart
+                    ? "Standart"
+                    : "Anrufbeantworter",
                 style: TextStyle(
                   color: Theme.of(context).accentColor,
                   fontSize: 20,
@@ -214,7 +219,7 @@ class LineChartWidgetState extends State<LineChartWidget> {
                         diagramResults: diagramResults,
                         showChartLineStandartStandart: showChartLineStandart,
                         showChartLineAB: showChartLineAB,
-                        diagramType: widget.diagramType,
+                        callType: widget.callType,
                       ),
               ),
             ),
@@ -230,7 +235,7 @@ class LineChartWidgetState extends State<LineChartWidget> {
                           crossAxisSpacing: 15,
                           maxCrossAxisExtent: 200,
                         ),
-                        children: widget.diagramType == "Standart"
+                        children: widget.callType == CallType.Standart
                             ? elevatedButtonsNormalCall //"Standart"
                             : elevatedButtonsAB, //"Anrufbeantworter"
                       ),

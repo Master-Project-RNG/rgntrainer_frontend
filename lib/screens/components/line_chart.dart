@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
+import 'package:rgntrainer_frontend/models/call_type.dart';
 import 'package:rgntrainer_frontend/models/diagram_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
@@ -14,7 +15,7 @@ class MyLineChart extends StatefulWidget {
   final List<Diagram> diagramResults;
   final Map<String, bool> showChartLineStandartStandart;
   final Map<String, bool> showChartLineAB;
-  final String diagramType;
+  final CallType callType;
 
   const MyLineChart({
     required this.isShowingMainData,
@@ -22,7 +23,7 @@ class MyLineChart extends StatefulWidget {
     required this.diagramResults,
     required this.showChartLineStandartStandart,
     required this.showChartLineAB,
-    required this.diagramType,
+    required this.callType,
   });
 
   @override
@@ -102,7 +103,7 @@ class _MyLineChartState extends State<MyLineChart> {
         ),
         titlesData: titlesDataRateValues,
         borderData: borderData,
-        lineBarsData: widget.diagramType == "Standart"
+        lineBarsData: widget.callType == CallType.Standart
             ? lineBarsDataRateValuesStandart
             : lineBarsDataRateValuesAB,
         minX: 0,
@@ -478,7 +479,7 @@ class _MyLineChartState extends State<MyLineChart> {
         isStrokeCapRound: false,
         dotData: FlDotData(show: true),
         belowBarData: BarAreaData(show: false),
-        spots: widget.diagramType == "Standart"
+        spots: widget.callType == CallType.Standart
             ? getFlSpotsStandart(
                 diagramLength: diagramLength,
                 diagramResults: diagramResults,
