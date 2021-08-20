@@ -12,13 +12,17 @@ class MyLineChart extends StatefulWidget {
   final int selectedQueryType;
   final bool isShowingMainData;
   final List<Diagram> diagramResults;
-  final Map<String, bool> showChartLine;
+  final Map<String, bool> showChartLineStandartStandart;
+  final Map<String, bool> showChartLineAB;
+  final String diagramType;
 
   const MyLineChart({
     required this.isShowingMainData,
     required this.selectedQueryType,
     required this.diagramResults,
-    required this.showChartLine,
+    required this.showChartLineStandartStandart,
+    required this.showChartLineAB,
+    required this.diagramType,
   });
 
   @override
@@ -98,7 +102,9 @@ class _MyLineChartState extends State<MyLineChart> {
         ),
         titlesData: titlesDataRateValues,
         borderData: borderData,
-        lineBarsData: lineBarsDataRateValues,
+        lineBarsData: widget.diagramType == "Standart"
+            ? lineBarsDataRateValuesStandart
+            : lineBarsDataRateValuesAB,
         minX: 0,
         maxX: 11,
         maxY: 100,
@@ -236,10 +242,10 @@ class _MyLineChartState extends State<MyLineChart> {
   ///Used as a parameter in [LineChartData]
   ///Returns a list of Lines that should be drawn in the diagram.
   ///Handles the relevant data to be drawn!
-  List<LineChartBarData> get lineBarsDataRateValues {
+  List<LineChartBarData> get lineBarsDataRateValuesStandart {
     int diagramLength = widget.diagramResults.length;
     return [
-      if (widget.showChartLine['rateSaidOrganization'] == true)
+      if (widget.showChartLineStandartStandart['rateSaidOrganization'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -247,7 +253,7 @@ class _MyLineChartState extends State<MyLineChart> {
               .bureauStatisticsDiagramColors["rateSaidOrganization"]!,
           lineName: "rateSaidOrganization",
         ),
-      if (widget.showChartLine['rateSaidBureau'] == true)
+      if (widget.showChartLineStandartStandart['rateSaidBureau'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -255,7 +261,7 @@ class _MyLineChartState extends State<MyLineChart> {
               BureauStatistics.bureauStatisticsDiagramColors["rateSaidBureau"]!,
           lineName: "rateSaidBureau",
         ),
-      if (widget.showChartLine['rateSaidDepartment'] == true)
+      if (widget.showChartLineStandartStandart['rateSaidDepartment'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -263,7 +269,7 @@ class _MyLineChartState extends State<MyLineChart> {
               .bureauStatisticsDiagramColors["rateSaidDepartment"]!,
           lineName: "rateSaidDepartment",
         ),
-      if (widget.showChartLine['rateSaidFirstname'] == true)
+      if (widget.showChartLineStandartStandart['rateSaidFirstname'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -271,7 +277,7 @@ class _MyLineChartState extends State<MyLineChart> {
               .bureauStatisticsDiagramColors["rateSaidFirstname"]!,
           lineName: "rateSaidFirstname",
         ),
-      if (widget.showChartLine['rateSaidName'] == true)
+      if (widget.showChartLineStandartStandart['rateSaidName'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -279,7 +285,7 @@ class _MyLineChartState extends State<MyLineChart> {
               BureauStatistics.bureauStatisticsDiagramColors["rateSaidName"]!,
           lineName: "rateSaidName",
         ),
-      if (widget.showChartLine['rateSaidGreeting'] == true)
+      if (widget.showChartLineStandartStandart['rateSaidGreeting'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -287,7 +293,7 @@ class _MyLineChartState extends State<MyLineChart> {
               .bureauStatisticsDiagramColors["rateSaidGreeting"]!,
           lineName: "rateSaidGreeting",
         ),
-      if (widget.showChartLine['rateSaidSpecificWords'] == true)
+      if (widget.showChartLineStandartStandart['rateSaidSpecificWords'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -295,14 +301,14 @@ class _MyLineChartState extends State<MyLineChart> {
               .bureauStatisticsDiagramColors["rateSaidSpecificWords"]!,
           lineName: "rateSaidSpecificWords",
         ),
-      if (widget.showChartLine['rateReached'] == true)
+      if (widget.showChartLineStandartStandart['rateReached'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
           color: BureauStatistics.bureauStatisticsDiagramColors["rateReached"]!,
           lineName: "rateReached",
         ),
-      if (widget.showChartLine['rateCallCompleted'] == true)
+      if (widget.showChartLineStandartStandart['rateCallCompleted'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -316,17 +322,138 @@ class _MyLineChartState extends State<MyLineChart> {
   ///Used as a parameter in [LineChartData]
   ///Returns a list of Lines that should be drawn in the diagram.
   ///Handles the relevant data to be drawn!
+  List<LineChartBarData> get lineBarsDataRateValuesAB {
+    int diagramLength = widget.diagramResults.length;
+    return [
+      if (widget.showChartLineAB['rateSaidOrganizationAB'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateSaidOrganizationAB"]!,
+          lineName: "rateSaidOrganizationAB",
+        ),
+      if (widget.showChartLineAB['rateSaidBureauAB'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateSaidBureauAB"]!,
+          lineName: "rateSaidBureauAB",
+        ),
+      if (widget.showChartLineAB['rateSaidDepartmentAB'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateSaidDepartmentAB"]!,
+          lineName: "rateSaidDepartmentAB",
+        ),
+      if (widget.showChartLineAB['rateSaidFirstnameAB'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateSaidFirstnameAB"]!,
+          lineName: "rateSaidFirstnameAB",
+        ),
+      if (widget.showChartLineAB['rateSaidNameAB'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateSaidNameAB"]!,
+          lineName: "rateSaidNameAB",
+        ),
+      if (widget.showChartLineAB['rateSaidGreetingAB'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateSaidGreetingAB"]!,
+          lineName: "rateSaidGreetingAB",
+        ),
+      if (widget.showChartLineAB['rateSaidSpecificWordsAB'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateSaidSpecificWordsAB"]!,
+          lineName: "rateSaidSpecificWordsAB",
+        ),
+      if (widget.showChartLineAB['rateResponderStartedIfNotReached'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics.abAndCallbackStatisticDiagramColors[
+              "rateResponderStartedIfNotReached"]!,
+          lineName: "rateResponderStartedIfNotReached",
+        ),
+      if (widget.showChartLineAB['rateResponderCorrect'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateResponderCorrect"]!,
+          lineName: "rateResponderCorrect",
+        ),
+      if (widget.showChartLineAB['rateCallbackDoneNoAnswer'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateCallbackDoneNoAnswer"]!,
+          lineName: "rateCallbackDoneNoAnswer",
+        ),
+      if (widget.showChartLineAB['rateCallbackDoneResponder'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics.abAndCallbackStatisticDiagramColors[
+              "rateCallbackDoneResponder"]!,
+          lineName: "rateCallbackDoneResponder",
+        ),
+      if (widget.showChartLineAB['rateCallbackDoneUnexpected'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics.abAndCallbackStatisticDiagramColors[
+              "rateCallbackDoneUnexpected"]!,
+          lineName: "rateCallbackDoneUnexpected",
+        ),
+      if (widget.showChartLineAB['rateCallbackDoneOverall'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateCallbackDoneOverall"]!,
+          lineName: "rateCallbackDoneOverall",
+        ),
+      if (widget.showChartLineAB['rateCallbackInTime'] == true)
+        lineChartBar(
+          diagramLength: diagramLength,
+          diagramResults: widget.diagramResults,
+          color: AbAndCallbackStatistics
+              .abAndCallbackStatisticDiagramColors["rateCallbackInTime"]!,
+          lineName: "rateCallbackInTime",
+        ),
+    ];
+  }
+
+  ///Used as a parameter in [LineChartData]
+  ///Returns a list of Lines that should be drawn in the diagram.
+  ///Handles the relevant data to be drawn!
   List<LineChartBarData> get lineBarsDataNumericValues {
     int diagramLength = widget.diagramResults.length;
     return [
-      if (widget.showChartLine['totalCalls'] == true)
+      if (widget.showChartLineStandartStandart['totalCalls'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
           color: BureauStatistics.bureauStatisticsDiagramColors["totalCalls"]!,
           lineName: "totalCalls",
         ),
-      if (widget.showChartLine['totalCallsReached'] == true)
+      if (widget.showChartLineStandartStandart['totalCallsReached'] == true)
         lineChartBar(
           diagramLength: diagramLength,
           diagramResults: widget.diagramResults,
@@ -351,15 +478,21 @@ class _MyLineChartState extends State<MyLineChart> {
         isStrokeCapRound: false,
         dotData: FlDotData(show: true),
         belowBarData: BarAreaData(show: false),
-        spots: getFlSpots(
-          diagramLength: diagramLength,
-          diagramResults: diagramResults,
-          lineName: lineName,
-        ),
+        spots: widget.diagramType == "Standart"
+            ? getFlSpotsStandart(
+                diagramLength: diagramLength,
+                diagramResults: diagramResults,
+                lineName: lineName,
+              )
+            : getFlSpotsAB(
+                diagramLength: diagramLength,
+                diagramResults: diagramResults,
+                lineName: lineName,
+              ),
       );
 
   ///Creates single dots/data points per [lineName]
-  List<FlSpot> getFlSpots(
+  List<FlSpot> getFlSpotsStandart(
       {required int diagramLength,
       required List<Diagram> diagramResults,
       required String lineName}) {
@@ -467,6 +600,188 @@ class _MyLineChartState extends State<MyLineChart> {
               i as double,
               double.parse(
                   diagramResults[i].bureauStatistics.rateCallCompleted),
+            ),
+          );
+        }
+      }
+    }
+    return result;
+  }
+
+  ///Creates single dots/data points per [lineName]
+  List<FlSpot> getFlSpotsAB(
+      {required int diagramLength,
+      required List<Diagram> diagramResults,
+      required String lineName}) {
+    final List<FlSpot> result = [];
+    for (int i = 0; i < diagramLength; i++) {
+      if (lineName == 'rateSaidOrganizationAB') {
+        if (diagramResults[i].abAndCallbackStatistics.rateSaidOrganizationAB !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateSaidOrganizationAB),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidBureauAB') {
+        if (diagramResults[i].abAndCallbackStatistics.rateSaidBureauAB != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].abAndCallbackStatistics.rateSaidBureauAB),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidDepartmentAB') {
+        if (diagramResults[i].abAndCallbackStatistics.rateSaidDepartmentAB !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateSaidDepartmentAB),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidFirstnameAB') {
+        if (diagramResults[i].abAndCallbackStatistics.rateSaidFirstnameAB !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateSaidFirstnameAB),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidNameAB') {
+        if (diagramResults[i].abAndCallbackStatistics.rateSaidNameAB != "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].abAndCallbackStatistics.rateSaidNameAB),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidGreetingAB') {
+        if (diagramResults[i].abAndCallbackStatistics.rateSaidGreetingAB !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].abAndCallbackStatistics.rateSaidGreetingAB),
+            ),
+          );
+        }
+      } else if (lineName == 'rateSaidSpecificWordsAB') {
+        if (diagramResults[i].abAndCallbackStatistics.rateSaidSpecificWordsAB !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateSaidSpecificWordsAB),
+            ),
+          );
+        }
+      } else if (lineName == 'rateResponderStartedIfNotReached') {
+        if (diagramResults[i]
+                .abAndCallbackStatistics
+                .rateResponderStartedIfNotReached !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateResponderStartedIfNotReached),
+            ),
+          );
+        }
+      } else if (lineName == 'rateResponderCorrect') {
+        if (diagramResults[i].abAndCallbackStatistics.rateResponderCorrect !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateResponderCorrect),
+            ),
+          );
+        }
+      } else if (lineName == 'rateCallbackDoneNoAnswer') {
+        if (diagramResults[i]
+                .abAndCallbackStatistics
+                .rateCallbackDoneNoAnswer !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateCallbackDoneNoAnswer),
+            ),
+          );
+        }
+      } else if (lineName == 'rateCallbackDoneResponder') {
+        if (diagramResults[i]
+                .abAndCallbackStatistics
+                .rateCallbackDoneResponder !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateCallbackDoneResponder),
+            ),
+          );
+        }
+      } else if (lineName == 'rateCallbackDoneUnexpected') {
+        if (diagramResults[i]
+                .abAndCallbackStatistics
+                .rateCallbackDoneUnexpected !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateCallbackDoneUnexpected),
+            ),
+          );
+        }
+      } else if (lineName == 'rateCallbackDoneOverall') {
+        if (diagramResults[i].abAndCallbackStatistics.rateCallbackDoneOverall !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(diagramResults[i]
+                  .abAndCallbackStatistics
+                  .rateCallbackDoneOverall),
+            ),
+          );
+        }
+      } else if (lineName == 'rateCallbackInTime') {
+        if (diagramResults[i].abAndCallbackStatistics.rateCallbackInTime !=
+            "-") {
+          result.add(
+            FlSpot(
+              i as double,
+              double.parse(
+                  diagramResults[i].abAndCallbackStatistics.rateCallbackInTime),
             ),
           );
         }

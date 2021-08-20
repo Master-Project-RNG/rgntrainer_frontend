@@ -3,7 +3,7 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
-import 'package:rgntrainer_frontend/screens/components/line_chart_sample.dart';
+import 'package:rgntrainer_frontend/screens/components/line_chart_widget.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
@@ -70,28 +70,39 @@ class _DiagramScreenState extends State<DiagramScreen> {
                 ],
                 automaticallyImplyLeading: false,
               ),
-              body: ListView(
+              body: Column(
                 children: [
                   TitleWidget("Diagram"),
-                  Container(
-                    color: Colors.grey[100],
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.all(100),
-                            height: 1000,
-                            color: Colors.grey[100],
-                            child: LineChartSample1(),
+                  Expanded(
+                    child: Container(
+                      constraints: BoxConstraints(minHeight: 800),
+                      color: Colors.grey[100],
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              constraints: BoxConstraints(minHeight: 800),
+                              padding: EdgeInsets.all(100),
+                              height: double.infinity,
+                              color: Colors.grey[100],
+                              child: LineChartWidget(
+                                diagramType: "Standart",
+                              ),
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            height: 1000,
-                            color: Colors.yellow,
+                          Expanded(
+                            child: Container(
+                              constraints: BoxConstraints(minHeight: 800),
+                              padding: EdgeInsets.all(100),
+                              height: double.infinity,
+                              color: Colors.grey[100],
+                              child: LineChartWidget(
+                                diagramType: "Anrufbeantworter",
+                              ),
+                            ),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
