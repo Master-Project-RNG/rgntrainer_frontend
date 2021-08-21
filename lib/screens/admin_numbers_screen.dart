@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/models/numbers_model.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
+import 'package:rgntrainer_frontend/provider/admin_numbers_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
@@ -24,6 +27,8 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   late User _currentUser = User.init();
   var _isLoading = false;
 
+  List<Number> _numbers = [];
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +43,8 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     setState(() {
       _isLoading = true;
     });
-
+    _numbers = await Provider.of<NumbersProvider>(context, listen: false)
+        .getAllUsersNumbers(_currentUser.token);
     setState(() {
       _isLoading = false;
     });
