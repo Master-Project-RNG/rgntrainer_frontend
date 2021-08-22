@@ -6,8 +6,10 @@ import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_numbers_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
+import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:rgntrainer_frontend/widgets/text_dialog_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
@@ -28,6 +30,10 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   var _isLoading = false;
 
   List<Number> _numbers = [];
+  List<Number> _numberPerBureau = [];
+
+  List<String> _getBureausNames = [];
+  String pickedBureau = '';
 
   @override
   void initState() {
@@ -43,10 +49,35 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     setState(() {
       _isLoading = true;
     });
+    _getBureausNames =
+        await Provider.of<BureauResultsProvider>(context, listen: false)
+            .getBureausNames(_currentUser.token);
+    pickedBureau = _getBureausNames[0];
     _numbers = await Provider.of<NumbersProvider>(context, listen: false)
         .getAllUsersNumbers(_currentUser.token);
+    numberPerBureau();
+
+    ///testing
+    /*await Provider.of<NumbersProvider>(context, listen: false).createUser(
+        _currentUser.token,
+        "number",
+        "bureau",
+        "department",
+        "firstName",
+        "lastName",
+        "email",
+        context);*/
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  void numberPerBureau() {
+    this._numberPerBureau = [];
+    _numbers.forEach((element) {
+      if (element.bureau == pickedBureau) {
+        _numberPerBureau.add(element);
+      }
     });
   }
 
@@ -109,16 +140,17 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                     ),
                   ),
                   Expanded(
+                    flex: 6,
                     child: Container(
-                      padding: const EdgeInsets.only(left: 50.0),
+                      padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                       child: ListView(
                         children: [
                           const SizedBox(
                             height: 5,
                           ),
                           Container(
-                            height: 1,
                             color: Colors.grey[300],
+                            child: buildDataTable(),
                           ),
                           const SizedBox(
                             height: 5,
@@ -127,6 +159,9 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                       ),
                     ),
                   ),
+                  Expanded(
+                    child: Container(),
+                  )
                 ],
               ),
             ),
@@ -135,4 +170,91 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       );
     }
   }
+
+  final columns = [
+    "number",
+    "bureau",
+    "department",
+    "firstname",
+    "lastname",
+    "email",
+  ];
+
+  List<DataColumn> getColumns(List<String> columns) {
+    return columns.map((String column) {
+      return DataColumn(label: Text(column));
+    }).toList();
+  }
+
+  List<DataRow> getRows(List<Number> numbers) => numbers.map((Number number) {
+        final cells = [
+          number.number,
+          number.bureau,
+          number.department,
+          number.firstname,
+          number.lastname,
+          number.email
+        ];
+
+        return DataRow(
+          cells: modelBuilder(cells, (index, cell) {
+            final showEditIcon = index == 3 || index == 4;
+            return DataCell(
+              Text('$cell'),
+              showEditIcon: showEditIcon,
+              onTap: () {
+                switch (index) {
+                  case 3:
+                    editFirstName(number);
+                    break;
+                  case 4:
+                    editLastName(number);
+                    break;
+                }
+              },
+            );
+          }),
+        );
+      }).toList();
+
+  Future editFirstName(Number editUser) async {
+    final firstName = await showTextDialog(
+      context,
+      title: 'Change First Name',
+      value: editUser.firstname,
+    );
+
+    setState(() => _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(firstname: firstName) : user;
+        }).toList());
+  }
+
+  Future editLastName(Number editUser) async {
+    final lastName = await showTextDialog(
+      context,
+      title: 'Change Last Name',
+      value: editUser.lastname,
+    );
+
+    setState(() => _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(lastname: lastName) : user;
+        }).toList());
+  }
+
+  Widget buildDataTable() {
+    return DataTable(
+      columns: getColumns(columns),
+      rows: getRows(_numbers),
+    );
+  }
+
+  static List<T> modelBuilder<M, T>(
+          List<M> models, T Function(int index, M model) builder) =>
+      models
+          .asMap()
+          .map<int, T>((index, model) => MapEntry(index, builder(index, model)))
+          .values
+          .toList();
 }

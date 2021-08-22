@@ -29,4 +29,25 @@ class Number {
         department: json["department"],
         email: json["email"],
       );
+
+  Number copy({
+    String? basepool_id,
+    String? user_id,
+    String? number,
+    String? firstname,
+    String? lastname,
+    String? bureau,
+    String? department,
+    String? email,
+  }) =>
+      Number(
+        basepool_id: basepool_id ?? this.basepool_id,
+        user_id: user_id ?? this.user_id,
+        number: number ?? this.number,
+        firstname: firstname ?? this.firstname,
+        lastname: lastname ?? this.lastname,
+        bureau: bureau ?? this.bureau,
+        department: department ?? this.department,
+        email: email ?? this.email,
+      );
 }
