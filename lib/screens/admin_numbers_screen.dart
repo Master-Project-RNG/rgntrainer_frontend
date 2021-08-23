@@ -9,6 +9,7 @@ import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:rgntrainer_frontend/widgets/error_dialog.dart';
 import 'package:rgntrainer_frontend/widgets/text_dialog_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
@@ -59,15 +60,16 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     numberPerBureau();
 
     ///testing
-    /*await Provider.of<NumbersProvider>(context, listen: false).createUser(
-        _currentUser.token,
-        "number",
-        "bureau",
-        "department",
-        "firstName",
-        "lastName",
-        "email",
-        context);*/
+    await Provider.of<NumbersProvider>(context, listen: false).createUser(
+      token: _currentUser.token!,
+      number: "Nummer",
+      bureau: "Büro",
+      department: "Abteilung",
+      firstName: "Vorname",
+      lastName: "Nachname",
+      email: "Email",
+      ctx: context,
+    );
     setState(() {
       _isLoading = false;
     });
@@ -129,7 +131,8 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                 children: [
                   TitleWidget("Nummern"),
                   Container(
-                    padding: const EdgeInsets.only(left: 50, top: 50),
+                    padding:
+                        const EdgeInsets.only(left: 50, top: 50, right: 50),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -161,9 +164,25 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Container(),
-                  )
+                  if (_isLoading == true)
+                    Expanded(
+                      flex: 80,
+                      child: const SizedBox(
+                        height: 60,
+                        child: Center(
+                          child: SizedBox(
+                            height: 40,
+                            width: 40,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
                 ],
               ),
             ),
@@ -174,12 +193,12 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   final columns = [
-    "number",
-    "bureau",
-    "department",
-    "firstname",
-    "lastname",
-    "email",
+    "Nummer",
+    "Büro",
+    "Abteilung",
+    "Vorname",
+    "Nachname",
+    "Email",
   ];
 
   List<DataColumn> getColumns(List<String> columns) {
@@ -200,12 +219,16 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
 
         return DataRow(
           cells: modelBuilder(cells, (index, cell) {
-            final showEditIcon = index == 3 || index == 4 || index == 5;
+            final showEditIcon =
+                index == 2 || index == 3 || index == 4 || index == 5;
             return DataCell(
               Text('$cell'),
               showEditIcon: showEditIcon,
               onTap: () {
                 switch (index) {
+                  case 2:
+                    editDepartment(number);
+                    break;
                   case 3:
                     editFirstName(number);
                     break;
@@ -222,17 +245,62 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
         );
       }).toList();
 
+  Future editDepartment(Number editUser) async {
+    final department = await showTextDialog(
+      context,
+      title: 'Email aktualisieren',
+      value: editUser.email,
+    );
+    if (department != null) {
+      try {
+        await Provider.of<NumbersProvider>(context, listen: false).updateUser(
+            token: _currentUser.token!,
+            basepool_id: editUser.basepool_id,
+            user_id: editUser.user_id,
+            department: department, //To be changed!
+            firstName: editUser.firstname,
+            lastName: editUser.lastname,
+            email: editUser.email,
+            ctx: context);
+        setState(() => _numbers = _numbers.map((user) {
+              final isEditedUser = user == editUser;
+              return isEditedUser ? user.copy(department: department) : user;
+            }).toList());
+      } catch (error) {
+        SelfMadeErrorDialog.showErrorDialog(
+            message: "Die neue Abteilung konnte nicht abgespeichert werden!",
+            context: context);
+      }
+    }
+  }
+
   Future editFirstName(Number editUser) async {
     final firstName = await showTextDialog(
       context,
       title: 'Change First Name',
       value: editUser.firstname,
     );
-
-    setState(() => _numbers = _numbers.map((user) {
-          final isEditedUser = user == editUser;
-          return isEditedUser ? user.copy(firstname: firstName) : user;
-        }).toList());
+    if (firstName != null) {
+      try {
+        await Provider.of<NumbersProvider>(context, listen: false).updateUser(
+            token: _currentUser.token!,
+            basepool_id: editUser.basepool_id,
+            user_id: editUser.user_id,
+            department: editUser.department,
+            firstName: firstName, //To be changed!
+            lastName: editUser.lastname,
+            email: editUser.email,
+            ctx: context);
+        setState(() => _numbers = _numbers.map((user) {
+              final isEditedUser = user == editUser;
+              return isEditedUser ? user.copy(firstname: firstName) : user;
+            }).toList());
+      } catch (error) {
+        SelfMadeErrorDialog.showErrorDialog(
+            message: "Die neue Vorname konnte nicht abgespeichert werden!",
+            context: context);
+      }
+    }
   }
 
   Future editLastName(Number editUser) async {
@@ -241,28 +309,63 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       title: 'Change Last Name',
       value: editUser.lastname,
     );
-
-    setState(() => _numbers = _numbers.map((user) {
-          final isEditedUser = user == editUser;
-          return isEditedUser ? user.copy(lastname: lastName) : user;
-        }).toList());
+    if (lastName != null) {
+      try {
+        await Provider.of<NumbersProvider>(context, listen: false).updateUser(
+            token: _currentUser.token!,
+            basepool_id: editUser.basepool_id,
+            user_id: editUser.user_id,
+            department: editUser.department,
+            firstName: editUser.firstname,
+            lastName: lastName, //To be changed!
+            email: editUser.email,
+            ctx: context);
+        setState(() => _numbers = _numbers.map((user) {
+              final isEditedUser = user == editUser;
+              return isEditedUser ? user.copy(lastname: lastName) : user;
+            }).toList());
+      } catch (error) {
+        SelfMadeErrorDialog.showErrorDialog(
+            message: "Der neue Nachname konnte nicht abgespeichert werden!",
+            context: context);
+      }
+    }
   }
 
   Future editEmail(Number editUser) async {
     final eMail = await showTextDialog(
       context,
-      title: 'Change Email',
+      title: 'Email aktualisieren',
       value: editUser.email,
     );
-
-    setState(() => _numbers = _numbers.map((user) {
-          final isEditedUser = user == editUser;
-          return isEditedUser ? user.copy(email: eMail) : user;
-        }).toList());
+    if (eMail != null) {
+      try {
+        await Provider.of<NumbersProvider>(context, listen: false).updateUser(
+            token: _currentUser.token!,
+            basepool_id: editUser.basepool_id,
+            user_id: editUser.user_id,
+            department: editUser.department,
+            firstName: editUser.firstname,
+            lastName: editUser.lastname,
+            email: eMail, //To be changed!
+            ctx: context);
+        setState(() => _numbers = _numbers.map((user) {
+              final isEditedUser = user == editUser;
+              return isEditedUser ? user.copy(email: eMail) : user;
+            }).toList());
+      } catch (error) {
+        SelfMadeErrorDialog.showErrorDialog(
+            message: "Die neue Email konnte nicht abgespeichert werden!",
+            context: context);
+      }
+    }
   }
 
   Widget buildDataTable() {
     return DataTable(
+      headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
+      headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
+      dataRowHeight: 35,
       columns: getColumns(columns),
       rows: getRows(_numbers),
     );

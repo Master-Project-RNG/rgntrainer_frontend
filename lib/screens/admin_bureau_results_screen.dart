@@ -478,7 +478,9 @@ class _AdminResultsState extends State<AdminResultsScreen> {
         Container(
           color: Colors.grey[200],
           child: DataTable(
-            dataRowHeight: 25,
+            headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
+            headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
+            dataRowHeight: 35,
             sortAscending: isAscending,
             sortColumnIndex: sortColumnIndex,
             columns: callType == CallType.Standart

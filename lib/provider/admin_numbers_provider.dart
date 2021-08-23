@@ -21,20 +21,20 @@ class NumbersProvider with ChangeNotifier {
   ///Create Users!
 
   ///Read Users!
-  Future<void> createUser(
-    String? token,
-    String number,
-    String bureau,
-    String department,
-    String firstName,
-    String lastName,
-    String email,
-    BuildContext ctx,
-  ) async {
+  Future<void> createUser({
+    required String token,
+    required String number,
+    required String bureau,
+    required String department,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required BuildContext ctx,
+  }) async {
     final url = Uri.parse('$activeHost/createUser');
     if (!isBureau()) {
-      return SelfMadeErrorDialog()
-          .showErrorDialog("Dieses Büro gibt es nicht!", ctx);
+      return SelfMadeErrorDialog.showErrorDialog(
+          message: "Dieses Büro gibt es nicht!", context: ctx);
     }
     final response = await post(
       url,
@@ -87,6 +87,38 @@ class NumbersProvider with ChangeNotifier {
   }
 
   ///Update Users!
+  Future<void> updateUser({
+    required String token,
+    required String basepool_id,
+    required String user_id,
+    required String department,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required BuildContext ctx,
+  }) async {
+    final url = Uri.parse('$activeHost/updateUser');
+    final response = await post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        "token": token,
+        "basepool_id": basepool_id,
+        "user_id": user_id,
+        "department": department,
+        "firstname": firstName,
+        "lastname": lastName,
+        "email": email
+      }),
+    );
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      throw Exception('Failed to update User!');
+    }
+  }
 
   ///Delete Users! (Out of scope)
 

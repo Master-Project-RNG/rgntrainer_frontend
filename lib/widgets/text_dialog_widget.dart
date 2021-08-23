@@ -48,8 +48,12 @@ class _TextDialogWidgetState extends State<TextDialogWidget> {
         ),
         actions: [
           ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Abbrechen'),
+          ),
+          ElevatedButton(
             onPressed: () => Navigator.of(context).pop(controller.text),
-            child: const Text('Done'),
+            child: const Text('Speichern'),
           )
         ],
       );
