@@ -33,8 +33,9 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   List<Number> _numbers = [];
   List<Number> _numberPerBureau = [];
 
-  List<String> _getBureausNames = [];
+  late List<String> _getBureausNames = [];
   String pickedBureau = '';
+  int selectedQueryType = 0; //pickedBureau index for dropdownmenu
 
   @override
   void initState() {
@@ -54,13 +55,14 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     _getBureausNames =
         await Provider.of<BureauResultsProvider>(context, listen: false)
             .getBureausNames(_currentUser.token);
+    _getBureausNames.remove("Overall");
     pickedBureau = _getBureausNames[0];
     _numbers = await Provider.of<NumbersProvider>(context, listen: false)
         .getAllUsersNumbers(_currentUser.token);
     numberPerBureau();
 
     ///testing
-    await Provider.of<NumbersProvider>(context, listen: false).createUser(
+    /* await Provider.of<NumbersProvider>(context, listen: false).createUser(
       token: _currentUser.token!,
       number: "Nummer",
       bureau: "Büro",
@@ -69,7 +71,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       lastName: "Nachname",
       email: "Email",
       ctx: context,
-    );
+    );*/
     setState(() {
       _isLoading = false;
     });
@@ -141,6 +143,76 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                           style: const TextStyle(fontSize: 34),
                         ),
                         Container(),
+                        _isLoading
+                            ? Container()
+                            : SizedBox(
+                                child: PopupMenuButton(
+                                  onSelected: (result) {
+                                    setState(() {
+                                      selectedQueryType = result as int;
+                                      pickedBureau = _getBureausNames[result];
+                                      numberPerBureau();
+                                    });
+                                  },
+                                  itemBuilder: (context) {
+                                    return List.generate(
+                                      _getBureausNames.length,
+                                      (index) {
+                                        return PopupMenuItem(
+                                          value: index,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.centerLeft,
+                                                width: 240,
+                                                child: FittedBox(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    _getBureausNames[index]
+                                                        .toString(),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[100],
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8),
+                                      ),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: DropdownButton(
+                                      value: this.selectedQueryType,
+                                      items: getDropdownMenuItemList(
+                                          _getBureausNames),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        InkWell(
+                          onTap: () {},
+                          child: SizedBox(
+                            width: 200,
+                            height: 40,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(5))),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'Nummer hinzufügen',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -248,8 +320,8 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   Future editDepartment(Number editUser) async {
     final department = await showTextDialog(
       context,
-      title: 'Email aktualisieren',
-      value: editUser.email,
+      title: 'Abteilung aktualisieren',
+      value: editUser.department,
     );
     if (department != null) {
       try {
@@ -262,7 +334,13 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
             lastName: editUser.lastname,
             email: editUser.email,
             ctx: context);
-        setState(() => _numbers = _numbers.map((user) {
+        // update hole list
+        _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(department: department) : user;
+        }).toList();
+        // apply to current selection
+        setState(() => _numberPerBureau = _numberPerBureau.map((user) {
               final isEditedUser = user == editUser;
               return isEditedUser ? user.copy(department: department) : user;
             }).toList());
@@ -277,7 +355,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   Future editFirstName(Number editUser) async {
     final firstName = await showTextDialog(
       context,
-      title: 'Change First Name',
+      title: 'Vorname aktualisieren',
       value: editUser.firstname,
     );
     if (firstName != null) {
@@ -291,7 +369,13 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
             lastName: editUser.lastname,
             email: editUser.email,
             ctx: context);
-        setState(() => _numbers = _numbers.map((user) {
+        // update hole list
+        _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(firstname: firstName) : user;
+        }).toList();
+        // apply to current selection
+        setState(() => _numberPerBureau = _numberPerBureau.map((user) {
               final isEditedUser = user == editUser;
               return isEditedUser ? user.copy(firstname: firstName) : user;
             }).toList());
@@ -306,7 +390,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   Future editLastName(Number editUser) async {
     final lastName = await showTextDialog(
       context,
-      title: 'Change Last Name',
+      title: 'Nachname aktualisieren',
       value: editUser.lastname,
     );
     if (lastName != null) {
@@ -320,7 +404,13 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
             lastName: lastName, //To be changed!
             email: editUser.email,
             ctx: context);
-        setState(() => _numbers = _numbers.map((user) {
+        //update hole list
+        _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(lastname: lastName) : user;
+        }).toList();
+        // Also apply to current selection
+        setState(() => _numberPerBureau = _numberPerBureau.map((user) {
               final isEditedUser = user == editUser;
               return isEditedUser ? user.copy(lastname: lastName) : user;
             }).toList());
@@ -349,7 +439,13 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
             lastName: editUser.lastname,
             email: eMail, //To be changed!
             ctx: context);
-        setState(() => _numbers = _numbers.map((user) {
+        //update hole list
+        _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(email: eMail) : user;
+        }).toList();
+        // Also apply to current selection
+        setState(() => _numberPerBureau = _numberPerBureau.map((user) {
               final isEditedUser = user == editUser;
               return isEditedUser ? user.copy(email: eMail) : user;
             }).toList());
@@ -367,7 +463,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
       dataRowHeight: 35,
       columns: getColumns(columns),
-      rows: getRows(_numbers),
+      rows: getRows(_numberPerBureau),
     );
   }
 
@@ -378,4 +474,33 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
           .map<int, T>((index, model) => MapEntry(index, builder(index, model)))
           .values
           .toList();
+
+  List<DropdownMenuItem> getDropdownMenuItemList(List<String> bureauNames) {
+    List<DropdownMenuItem> result = [];
+    for (int i = 0; i < bureauNames.length; i++) {
+      result.add(
+        DropdownMenuItem(
+          child: Container(
+            alignment: Alignment.centerLeft,
+            width: 210,
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  _getBureausNames[i],
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          value: i,
+        ),
+      );
+    }
+    return result;
+  }
 }
