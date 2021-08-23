@@ -30,6 +30,20 @@ class Number {
         email: json["email"],
       );
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Number &&
+          runtimeType == other.runtimeType &&
+          basepool_id == other.basepool_id &&
+          user_id == other.user_id &&
+          number == other.number &&
+          firstname == other.firstname &&
+          lastname == other.lastname &&
+          bureau == other.bureau &&
+          department == other.department &&
+          email == other.email;
+
   Number copy({
     String? basepool_id,
     String? user_id,
@@ -50,4 +64,15 @@ class Number {
         department: department ?? this.department,
         email: email ?? this.email,
       );
+
+  @override
+  int get hashCode =>
+      basepool_id.hashCode ^
+      user_id.hashCode ^
+      number.hashCode ^
+      firstname.hashCode ^
+      lastname.hashCode ^
+      bureau.hashCode ^
+      department.hashCode ^
+      email.hashCode;
 }

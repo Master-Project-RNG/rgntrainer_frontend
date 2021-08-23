@@ -40,6 +40,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
     _asyncData();
+    // ignore: avoid_print
     print("CurrentUserToken: ${_currentUser.token!}");
     initializeDateFormatting(); //set CalendarWidget language to German
   }
@@ -73,7 +74,8 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   void numberPerBureau() {
-    this._numberPerBureau = [];
+    _numberPerBureau = [];
+    // ignore: avoid_function_literals_in_foreach_calls
     _numbers.forEach((element) {
       if (element.bureau == pickedBureau) {
         _numberPerBureau.add(element);
@@ -98,7 +100,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                 title: CalendarWidget(),
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.account_circle,
                       color: Colors.white,
                     ),
@@ -109,7 +111,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                     },
                   ),
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.logout,
                       color: Colors.white,
                     ),
@@ -127,7 +129,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                 children: [
                   TitleWidget("Nummern"),
                   Container(
-                    padding: EdgeInsets.only(left: 50, top: 50),
+                    padding: const EdgeInsets.only(left: 50, top: 50),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -146,10 +148,10 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                       child: ListView(
                         children: [
                           const SizedBox(
-                            height: 5,
+                            height: 15,
                           ),
                           Container(
-                            color: Colors.grey[300],
+                            color: Colors.grey[200],
                             child: buildDataTable(),
                           ),
                           const SizedBox(
@@ -198,7 +200,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
 
         return DataRow(
           cells: modelBuilder(cells, (index, cell) {
-            final showEditIcon = index == 3 || index == 4;
+            final showEditIcon = index == 3 || index == 4 || index == 5;
             return DataCell(
               Text('$cell'),
               showEditIcon: showEditIcon,
@@ -209,6 +211,9 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                     break;
                   case 4:
                     editLastName(number);
+                    break;
+                  case 5:
+                    editEmail(number);
                     break;
                 }
               },
@@ -240,6 +245,19 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     setState(() => _numbers = _numbers.map((user) {
           final isEditedUser = user == editUser;
           return isEditedUser ? user.copy(lastname: lastName) : user;
+        }).toList());
+  }
+
+  Future editEmail(Number editUser) async {
+    final eMail = await showTextDialog(
+      context,
+      title: 'Change Email',
+      value: editUser.email,
+    );
+
+    setState(() => _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(email: eMail) : user;
         }).toList());
   }
 

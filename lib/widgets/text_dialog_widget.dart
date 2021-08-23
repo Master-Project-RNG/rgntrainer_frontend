@@ -42,14 +42,14 @@ class _TextDialogWidgetState extends State<TextDialogWidget> {
         title: Text(widget.title),
         content: TextField(
           controller: controller,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
           ),
         ),
         actions: [
           ElevatedButton(
-            child: Text('Done'),
             onPressed: () => Navigator.of(context).pop(controller.text),
+            child: const Text('Done'),
           )
         ],
       );
