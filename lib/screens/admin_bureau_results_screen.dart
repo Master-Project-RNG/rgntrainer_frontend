@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
+import 'package:rgntrainer_frontend/models/call_type.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
@@ -15,28 +16,20 @@ import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-class AdminResultsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdminResultsCard();
-  }
-}
-
-class AdminResultsCard extends StatefulWidget {
-  const AdminResultsCard({
+class AdminResultsScreen extends StatefulWidget {
+  const AdminResultsScreen({
     Key? key,
   }) : super(key: key);
 
   @override
-  _AdminCardState createState() => _AdminCardState();
+  _AdminResultsState createState() => _AdminResultsState();
 }
 
-class _AdminCardState extends State<AdminResultsCard> {
+class _AdminResultsState extends State<AdminResultsScreen> {
   late User _currentUser = User.init();
   var _isLoading = false;
   late List<BureauResults> bureauResults;
-  final List<String> queryType = ["Standart", "Anrufbeantworter"];
-  int selectedQueryType = 0;
+  CallType callType = CallType.Standart;
 
   int? sortColumnIndex; //Reflects the column that is currently sorted!
   bool isAscending = false;
@@ -146,35 +139,36 @@ class _AdminCardState extends State<AdminResultsCard> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  (isVisible(index, showColumns))
-                      ? IconButton(
-                          onPressed: () {
-                            setState2(() {
-                              changeVisibilty(index, showColumns);
-                            });
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.remove_circle,
-                            color: Colors.red,
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            setState2(() {
-                              changeVisibilty(index, showColumns);
-                            });
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.add_circle,
-                            color: Colors.green,
-                          ),
-                        ),
+                  if (isVisible(index, showColumns))
+                    IconButton(
+                      onPressed: () {
+                        setState2(() {
+                          changeVisibilty(index, showColumns);
+                        });
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.remove_circle,
+                        color: Colors.red,
+                      ),
+                    )
+                  else
+                    IconButton(
+                      onPressed: () {
+                        setState2(() {
+                          changeVisibilty(index, showColumns);
+                        });
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.add_circle,
+                        color: Colors.green,
+                      ),
+                    ),
                   Text(columnsStandart.elementAt(index)),
                 ],
               );
@@ -193,35 +187,36 @@ class _AdminCardState extends State<AdminResultsCard> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  (isVisible(index, showColumns))
-                      ? IconButton(
-                          onPressed: () {
-                            setState2(() {
-                              changeVisibilty(index, showColumns);
-                            });
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.remove_circle,
-                            color: Colors.red,
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            setState2(() {
-                              changeVisibilty(index, showColumns);
-                            });
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.add_circle,
-                            color: Colors.green,
-                          ),
-                        ),
+                  if (isVisible(index, showColumns))
+                    IconButton(
+                      onPressed: () {
+                        setState2(() {
+                          changeVisibilty(index, showColumns);
+                        });
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.remove_circle,
+                        color: Colors.red,
+                      ),
+                    )
+                  else
+                    IconButton(
+                      onPressed: () {
+                        setState2(() {
+                          changeVisibilty(index, showColumns);
+                        });
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.add_circle,
+                        color: Colors.green,
+                      ),
+                    ),
                   Container(
                     alignment: Alignment.centerLeft,
                     width: 208,
@@ -258,7 +253,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                 title: CalendarWidget(),
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.account_circle,
                       color: Colors.white,
                     ),
@@ -269,7 +264,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                     },
                   ),
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.logout,
                       color: Colors.white,
                     ),
@@ -287,7 +282,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                 children: [
                   TitleWidget("Abfragen"),
                   Container(
-                    padding: EdgeInsets.only(left: 50, top: 50),
+                    padding: const EdgeInsets.only(left: 50, top: 50),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -295,64 +290,63 @@ class _AdminCardState extends State<AdminResultsCard> {
                           "Resultate der Büros für ${_currentUser.username}",
                           style: const TextStyle(fontSize: 34),
                         ),
-                        Container(
-                          child: PopupMenuButton(
-                            onSelected: (result) {
-                              if (result == 0) {
-                                setState(() {
-                                  this.selectedQueryType = 0;
-                                });
-                              } else if (result == 1) {
-                                setState(() {
-                                  this.selectedQueryType = 1;
-                                });
-                              }
-                            },
-                            itemBuilder: (context) {
-                              return List.generate(
-                                2,
-                                (index) {
-                                  return PopupMenuItem(
-                                    value: index,
-                                    child: Row(
-                                      children: [
-                                        index == 0
-                                            ? Text("Standart")
-                                            : Text("Anrufbeantworter"),
-                                      ],
+                        PopupMenuButton(
+                          onSelected: (result) {
+                            if (result == 0) {
+                              setState(() {
+                                this.callType = CallType.Standart;
+                              });
+                            } else if (result == 1) {
+                              setState(() {
+                                this.callType = CallType.Anrufbeantworter;
+                              });
+                            }
+                          },
+                          itemBuilder: (context) {
+                            return List.generate(
+                              2,
+                              (index) {
+                                return PopupMenuItem(
+                                  value: index,
+                                  child: Row(
+                                    children: [
+                                      if (index == 0)
+                                        Text("Standart")
+                                      else
+                                        Text("Anrufbeantworter"),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: SizedBox(
+                            width: 200,
+                            height: 40,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                              alignment: Alignment.center,
+                              child: DropdownButton(
+                                value: callType == CallType.Standart ? 0 : 1,
+                                items: [
+                                  const DropdownMenuItem(
+                                    value: 0,
+                                    child: Text(
+                                      "Standart",
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                  );
-                                },
-                              );
-                            },
-                            child: SizedBox(
-                              width: 200,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
-                                alignment: Alignment.center,
-                                child: DropdownButton(
-                                  value: this.selectedQueryType,
-                                  items: [
-                                    DropdownMenuItem(
-                                      child: Text(
-                                        "Standart",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      value: 0,
+                                  ),
+                                  const DropdownMenuItem(
+                                    value: 1,
+                                    child: Text(
+                                      "Anrufbeantworter",
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                    DropdownMenuItem(
-                                      child: Text(
-                                        "Anrufbeantworter",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      value: 1,
-                                    )
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
                             ),
                           ),
@@ -361,7 +355,7 @@ class _AdminCardState extends State<AdminResultsCard> {
                           alignment: Alignment.centerLeft,
                           child: PopupMenuButton(
                             itemBuilder: (context) {
-                              return selectedQueryType == 0
+                              return callType == CallType.Standart
                                   ? popupMenuEntry_StandartList
                                   : popupMenuEntry_ABList;
                             },
@@ -371,10 +365,10 @@ class _AdminCardState extends State<AdminResultsCard> {
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).primaryColor,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5))),
                                 alignment: Alignment.center,
-                                child: Text(
+                                child: const Text(
                                   'Spalten ein-/ausblenden',
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -422,9 +416,10 @@ class _AdminCardState extends State<AdminResultsCard> {
                                     value: index,
                                     child: Row(
                                       children: [
-                                        index == 0
-                                            ? Text("Excel")
-                                            : Text("Json"),
+                                        if (index == 0)
+                                          Text("Excel")
+                                        else
+                                          Text("Json"),
                                       ],
                                     ),
                                   );
@@ -437,10 +432,10 @@ class _AdminCardState extends State<AdminResultsCard> {
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).primaryColor,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5))),
                                 alignment: Alignment.center,
-                                child: Text(
+                                child: const Text(
                                   'Exportieren',
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -451,29 +446,43 @@ class _AdminCardState extends State<AdminResultsCard> {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   Expanded(
+                    flex: 6,
                     child: Container(
-                      padding: const EdgeInsets.only(left: 50.0),
+                      padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                       child: ListView(
                         children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
                           Container(
-                            height: 1,
-                            color: Colors.grey[300],
+                            color: Colors.grey[200],
+                            child: bureauResultsData(
+                                _myBureauResultsProvider, callType),
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: bureauResultsData(_myBureauResultsProvider,
-                                  this.selectedQueryType)),
                         ],
                       ),
                     ),
                   ),
+                  if (_isLoading == true)
+                    Expanded(
+                      flex: 80,
+                      child: const SizedBox(
+                        height: 60,
+                        child: Center(
+                          child: SizedBox(
+                            height: 40,
+                            width: 40,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
                 ],
               ),
             ),
@@ -484,22 +493,28 @@ class _AdminCardState extends State<AdminResultsCard> {
   }
 
   Widget bureauResultsData(
-      BureauResultsProvider _myBureauResultsProvider, tableType) {
-    if (_isLoading == true) {
-      return CircularProgressIndicator();
-    } else
-      return DataTable(
-        dataRowHeight: 25,
-        sortAscending: isAscending,
-        sortColumnIndex: sortColumnIndex,
-        columns: tableType == 0
-            ? getColumns(columnsStandart, showColumns, tableType)
-            : getColumns(columnsAB, showColumns, tableType),
-        rows: tableType == 0
-            ? getRowsStandart(
-                _myBureauResultsProvider.bureauResults, showColumns)
-            : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
-      );
+      BureauResultsProvider _myBureauResultsProvider, CallType callType) {
+    DataTable dataTable = DataTable(
+      headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
+      headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
+      dataRowHeight: 35,
+      sortAscending: isAscending,
+      sortColumnIndex: sortColumnIndex,
+      columns: callType == CallType.Standart
+          ? getColumns(columnsStandart, showColumns, callType)
+          : getColumns(columnsAB, showColumns, callType),
+      rows: callType == CallType.Standart
+          ? getRowsStandart(_myBureauResultsProvider.bureauResults, showColumns)
+          : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
+    );
+
+    final deviceSize = MediaQuery.of(context).size;
+    if (deviceSize.width < 2850) {
+      return SingleChildScrollView(
+          scrollDirection: Axis.horizontal, child: dataTable);
+    } else {
+      return dataTable;
+    }
   }
 
   void changeVisibilty(int index, List<bool> list) {
@@ -514,14 +529,14 @@ class _AdminCardState extends State<AdminResultsCard> {
   }
 
   List<DataColumn> getColumns(
-      List<String> columns, List<bool> showColumns, int tableType) {
+      List<String> columns, List<bool> showColumns, CallType callType) {
     List<DataColumn> dataColumnResult = [];
     for (int i = 0; i < columns.length; i++) {
       if (showColumns[i] == true) {
         dataColumnResult.add(
           DataColumn(
             label: Text(columns[i]),
-            onSort: tableType == 0 ? onSort : onSortAB,
+            onSort: callType == CallType.Standart ? onSort : onSortAB,
           ),
         );
       }
@@ -535,37 +550,49 @@ class _AdminCardState extends State<AdminResultsCard> {
     for (int i = 0; i < bureauResults.length; i++) {
       final cells = [];
       if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
-      if (showColumns[1])
+      if (showColumns[1]) {
         cells.add(bureauResults[i].bureauStatistics.totalCalls.toString());
-      if (showColumns[2])
+      }
+      if (showColumns[2]) {
         cells.add(
             bureauResults[i].bureauStatistics.totalCallsReached.toString());
-      if (showColumns[3])
+      }
+      if (showColumns[3]) {
         cells.add(bureauResults[i].bureauStatistics.rateSaidOrganization + "%");
-      if (showColumns[4])
+      }
+      if (showColumns[4]) {
         cells.add(bureauResults[i].bureauStatistics.rateSaidBureau + "%");
-      if (showColumns[5])
+      }
+      if (showColumns[5]) {
         cells.add(bureauResults[i].bureauStatistics.rateSaidDepartment + "%");
-      if (showColumns[6])
+      }
+      if (showColumns[6]) {
         cells.add(bureauResults[i].bureauStatistics.rateSaidFirstname + "%");
-      if (showColumns[7])
+      }
+      if (showColumns[7]) {
         cells.add(bureauResults[i].bureauStatistics.rateSaidName + "%");
-      if (showColumns[8])
+      }
+      if (showColumns[8]) {
         cells.add(bureauResults[i].bureauStatistics.rateSaidGreeting + "%");
-      if (showColumns[9])
+      }
+      if (showColumns[9]) {
         cells
             .add(bureauResults[i].bureauStatistics.rateSaidSpecificWords + "%");
-      if (showColumns[10])
+      }
+      if (showColumns[10]) {
         cells.add(bureauResults[i].bureauStatistics.rateReached + "%");
-      if (showColumns[11])
+      }
+      if (showColumns[11]) {
         cells.add(bureauResults[i].bureauStatistics.rateCallCompleted + "%");
+      }
 
-      if (showColumns[12])
+      if (showColumns[12]) {
         cells.add(bureauResults[i].bureauStatistics.meanRingingTime != "-"
             ? double.parse(bureauResults[i].bureauStatistics.meanRingingTime)
                     .toStringAsFixed(2) +
                 " Sekunden"
             : "-");
+      }
       dataRowResult.add(DataRow(cells: getCells(cells)));
     }
     return dataRowResult;
@@ -577,59 +604,73 @@ class _AdminCardState extends State<AdminResultsCard> {
     for (int i = 0; i < bureauResults.length; i++) {
       final cells = [];
       if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
-      if (showColumns[1])
+      if (showColumns[1]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateSaidOrganizationAB +
                 "%");
-      if (showColumns[2])
+      }
+      if (showColumns[2]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateSaidBureauAB + "%");
-      if (showColumns[3])
+      }
+      if (showColumns[3]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateSaidDepartmentAB +
                 "%");
-      if (showColumns[4])
+      }
+      if (showColumns[4]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateSaidFirstnameAB + "%");
-      if (showColumns[5])
+      }
+      if (showColumns[5]) {
         cells
             .add(bureauResults[i].abAndCallbackStatistics.rateSaidNameAB + "%");
-      if (showColumns[6])
+      }
+      if (showColumns[6]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateSaidGreetingAB + "%");
-      if (showColumns[7])
+      }
+      if (showColumns[7]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateSaidSpecificWordsAB +
                 "%");
-      if (showColumns[8])
+      }
+      if (showColumns[8]) {
         cells.add(bureauResults[i]
                 .abAndCallbackStatistics
                 .rateResponderStartedIfNotReached +
             "%");
-      if (showColumns[9])
+      }
+      if (showColumns[9]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateResponderCorrect +
                 "%");
-      if (showColumns[10])
+      }
+      if (showColumns[10]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateCallbackDoneNoAnswer +
                 "%");
-      if (showColumns[11])
+      }
+      if (showColumns[11]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateCallbackDoneResponder +
                 "%");
-      if (showColumns[12])
+      }
+      if (showColumns[12]) {
         cells.add(bureauResults[i]
                 .abAndCallbackStatistics
                 .rateCallbackDoneUnexpected +
             "%");
-      if (showColumns[13])
+      }
+      if (showColumns[13]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateCallbackDoneOverall +
                 "%");
-      if (showColumns[14])
+      }
+      if (showColumns[14]) {
         cells.add(
             bureauResults[i].abAndCallbackStatistics.rateCallbackInTime + "%");
+      }
       dataRowResult.add(DataRow(cells: getCells(cells)));
     }
     return dataRowResult;
@@ -981,95 +1022,4 @@ int compareInteger(bool ascending, int value1, int value2) =>
 
 int compareDouble(bool ascending, double value1, double value2) {
   return ascending ? value1.compareTo(value2) : value2.compareTo(value1);
-}
-
-class AbfrageButton extends StatefulWidget {
-  final bool isLoading;
-  AbfrageButton(this.isLoading);
-
-  @override
-  _AbfrageButtonState createState() => _AbfrageButtonState();
-}
-
-class _AbfrageButtonState extends State<AbfrageButton> {
-  int selectedQueryType = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(right: 50),
-      child: PopupMenuButton(
-        onSelected: (result) {
-          if (widget.isLoading == true) {
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: const Text('Geduld bitte'),
-                content: Text("Die Einträge werden noch geladen."),
-                actions: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: const Text('Schliessen!'),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            if (result == 0) {
-              setState(() {
-                selectedQueryType = 0;
-              });
-            } else if (result == 1) {
-              setState(() {
-                selectedQueryType = 1;
-              });
-            }
-          }
-        },
-        itemBuilder: (context) {
-          return List.generate(
-            2,
-            (index) {
-              return PopupMenuItem(
-                value: index,
-                child: Row(
-                  children: [
-                    index == 0 ? Text("Standart") : Text("Anrufbeantworter"),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-        child: SizedBox(
-          width: 200,
-          height: 30,
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(3))),
-            alignment: Alignment.center,
-            child: DropdownButton(value: this.selectedQueryType, items: [
-              DropdownMenuItem(
-                child: Text(
-                  "Standart",
-                  style: TextStyle(color: Colors.white),
-                ),
-                value: 0,
-              ),
-              DropdownMenuItem(
-                child: Text(
-                  "Anrufbeantworter",
-                  style: TextStyle(color: Colors.white),
-                ),
-                value: 1,
-              )
-            ]),
-          ),
-        ),
-      ),
-    );
-  }
 }

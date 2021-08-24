@@ -9,7 +9,10 @@ class BureauResultsProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
 
   List<BureauResults> _bureauResults = [];
+
   List<Diagram> _diagramResults = [];
+
+  List<String> _bureauNames = [];
 
   List<BureauResults> get bureauResults {
     return _bureauResults;
@@ -17,6 +20,10 @@ class BureauResultsProvider with ChangeNotifier {
 
   List<Diagram> get diagramResults {
     return _diagramResults;
+  }
+
+  List<String> get getBureauNames {
+    return _bureauNames;
   }
 
   Future<List<BureauResults>> getBureauResults(String? token) async {
@@ -93,6 +100,7 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
+      //TODO: Sort alphabetically
       print(response.body);
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<String> _result = [];
@@ -101,6 +109,7 @@ class BureauResultsProvider with ChangeNotifier {
       jsonResponse.forEach((element) {
         _result.add(element);
       });
+      _bureauNames = _result;
       return _result;
     } else {
       throw Exception('Failed to load getAllBureaus');

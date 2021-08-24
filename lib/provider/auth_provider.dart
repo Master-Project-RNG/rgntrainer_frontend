@@ -41,10 +41,14 @@ class AuthProvider with ChangeNotifier {
         currentUser = User.fromJson(responseData);
         UserSimplePreferences.setUser(currentUser);
         UserSimplePreferences.setAbfrageTabOpen(false);
+      } else {
+        const errorMessage = 'Login fehlgeschlagen!';
+        SelfMadeErrorDialog.showErrorDialog(
+            message: errorMessage, context: ctx);
       }
     } catch (error) {
       const errorMessage = 'Login fehlgeschlagen!';
-      SelfMadeErrorDialog().showErrorDialog(errorMessage, ctx);
+      SelfMadeErrorDialog.showErrorDialog(message: errorMessage, context: ctx);
     }
   }
 

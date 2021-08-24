@@ -327,13 +327,17 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       color: Colors.grey[100],
                                     ),
                                     child: InkWell(
-                                      onTap: () => {},
+                                      onTap: () => {
+                                        context.vxNav.push(
+                                          Uri.parse(MyRoutes.adminNumbersRoute),
+                                        )
+                                      },
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "Nummern (inactive)",
+                                            "Nummern",
                                             style: TextStyle(fontSize: 20),
                                           )
                                         ],
