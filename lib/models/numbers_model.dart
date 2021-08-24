@@ -7,6 +7,7 @@ class Number {
   String bureau;
   String department;
   String email;
+  bool isActive;
 
   Number({
     required this.basepool_id,
@@ -17,6 +18,7 @@ class Number {
     required this.bureau,
     required this.department,
     required this.email,
+    required this.isActive,
   });
 
   factory Number.fromJson(Map<String, dynamic> json) => Number(
@@ -28,6 +30,7 @@ class Number {
         bureau: json["bureau"],
         department: json["department"],
         email: json["email"],
+        isActive: json["active"],
       );
 
   @override
@@ -53,17 +56,18 @@ class Number {
     String? bureau,
     String? department,
     String? email,
+    bool? isActive,
   }) =>
       Number(
-        basepool_id: basepool_id ?? this.basepool_id,
-        user_id: user_id ?? this.user_id,
-        number: number ?? this.number,
-        firstname: firstname ?? this.firstname,
-        lastname: lastname ?? this.lastname,
-        bureau: bureau ?? this.bureau,
-        department: department ?? this.department,
-        email: email ?? this.email,
-      );
+          basepool_id: basepool_id ?? this.basepool_id,
+          user_id: user_id ?? this.user_id,
+          number: number ?? this.number,
+          firstname: firstname ?? this.firstname,
+          lastname: lastname ?? this.lastname,
+          bureau: bureau ?? this.bureau,
+          department: department ?? this.department,
+          email: email ?? this.email,
+          isActive: isActive ?? this.isActive);
 
   @override
   int get hashCode =>

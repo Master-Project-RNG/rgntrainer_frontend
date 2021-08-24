@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/numbers_model.dart';
+import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/widgets/error_dialog.dart';
 
 class NumbersProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
 
   List<Number> _nummern = [];
+
+  List<String> _bureauNames = [];
 
   List<Number> get bureauResults {
     return _nummern;
@@ -19,12 +22,11 @@ class NumbersProvider with ChangeNotifier {
   }
 
   ///Create Users!
-
-  ///Read Users!
   Future<void> createUser({
     required String token,
     required String number,
     required String bureau,
+    required List<String> allBureaus,
     required String department,
     required String firstName,
     required String lastName,
@@ -32,7 +34,7 @@ class NumbersProvider with ChangeNotifier {
     required BuildContext ctx,
   }) async {
     final url = Uri.parse('$activeHost/createUser');
-    if (!isBureau()) {
+    if (!allBureaus.contains(bureau)) {
       return SelfMadeErrorDialog.showErrorDialog(
           message: "Dieses Büro gibt es nicht!", context: ctx);
     }
@@ -43,12 +45,12 @@ class NumbersProvider with ChangeNotifier {
       },
       body: json.encode({
         "token": token,
-        "number": "+234234",
-        "bureau": "Hauptamt",
-        "department": "Sport",
-        "firstname": "basdfet",
-        "lastname": "Meier",
-        "email": "hans.huber@sdfsdfg.ch"
+        "number": number,
+        "bureau": bureau,
+        "department": department,
+        "firstname": firstName,
+        "lastname": lastName,
+        "email": email
       }),
     );
     if (response.statusCode == 200) {
@@ -121,8 +123,4 @@ class NumbersProvider with ChangeNotifier {
   }
 
   ///Delete Users! (Out of scope)
-
-  bool isBureau() {
-    return false;
-  }
 }

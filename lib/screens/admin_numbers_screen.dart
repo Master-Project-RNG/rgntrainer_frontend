@@ -9,6 +9,7 @@ import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
+import 'package:rgntrainer_frontend/widgets/add_number_dialog.dart';
 import 'package:rgntrainer_frontend/widgets/error_dialog.dart';
 import 'package:rgntrainer_frontend/widgets/text_dialog_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
@@ -60,18 +61,19 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     _numbers = await Provider.of<NumbersProvider>(context, listen: false)
         .getAllUsersNumbers(_currentUser.token);
     numberPerBureau();
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
-    ///testing
-    /* await Provider.of<NumbersProvider>(context, listen: false).createUser(
-      token: _currentUser.token!,
-      number: "Nummer",
-      bureau: "Büro",
-      department: "Abteilung",
-      firstName: "Vorname",
-      lastName: "Nachname",
-      email: "Email",
-      ctx: context,
-    );*/
+  //Update list of numbers (e.g. after creation of new number)
+  Future _updateNumbers() async {
+    setState(() {
+      _isLoading = true;
+    });
+    _numbers = await Provider.of<NumbersProvider>(context, listen: false)
+        .getAllUsersNumbers(_currentUser.token);
+    numberPerBureau();
     setState(() {
       _isLoading = false;
     });
@@ -142,7 +144,6 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                           "Nummern der Büros für ${_currentUser.username}",
                           style: const TextStyle(fontSize: 34),
                         ),
-                        Container(),
                         _isLoading
                             ? Container()
                             : SizedBox(
@@ -196,7 +197,11 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                                 ),
                               ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () async {
+                            bool isSuccessful = await addNumberDialog(context,
+                                bureauNames: _getBureausNames);
+                            if (isSuccessful) _updateNumbers();
+                          },
                           child: SizedBox(
                             width: 200,
                             height: 40,
@@ -216,21 +221,18 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: 15,
+                  ),
                   Expanded(
                     flex: 6,
                     child: Container(
                       padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                       child: ListView(
                         children: [
-                          const SizedBox(
-                            height: 15,
-                          ),
                           Container(
                             color: Colors.grey[200],
                             child: buildDataTable(),
-                          ),
-                          const SizedBox(
-                            height: 5,
                           ),
                         ],
                       ),
@@ -463,7 +465,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
       dataRowHeight: 35,
       columns: getColumns(columns),
-      rows: getRows(_numberPerBureau),
+      rows: _isLoading ? [] : getRows(_numberPerBureau),
     );
   }
 
