@@ -10,7 +10,8 @@ class SelfMadeErrorDialog {
 
   SelfMadeErrorDialog._internal();
 
-  void showErrorDialog(String message, BuildContext context) {
+  static void showErrorDialog(
+      {required String message, required BuildContext context}) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(

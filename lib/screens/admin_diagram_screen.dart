@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rgntrainer_frontend/models/call_type.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
@@ -86,7 +87,7 @@ class _DiagramScreenState extends State<DiagramScreen> {
                               height: double.infinity,
                               color: Colors.grey[100],
                               child: LineChartWidget(
-                                diagramType: "Standart",
+                                callType: CallType.Standart,
                               ),
                             ),
                           ),
@@ -97,7 +98,7 @@ class _DiagramScreenState extends State<DiagramScreen> {
                               height: double.infinity,
                               color: Colors.grey[100],
                               child: LineChartWidget(
-                                diagramType: "Anrufbeantworter",
+                                callType: CallType.Anrufbeantworter,
                               ),
                             ),
                           ),

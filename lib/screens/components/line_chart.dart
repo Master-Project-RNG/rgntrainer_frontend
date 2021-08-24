@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
+import 'package:rgntrainer_frontend/models/call_type.dart';
 import 'package:rgntrainer_frontend/models/diagram_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
@@ -14,7 +15,7 @@ class MyLineChart extends StatefulWidget {
   final List<Diagram> diagramResults;
   final Map<String, bool> showChartLineStandartStandart;
   final Map<String, bool> showChartLineAB;
-  final String diagramType;
+  final CallType callType;
 
   const MyLineChart({
     required this.isShowingMainData,
@@ -22,7 +23,7 @@ class MyLineChart extends StatefulWidget {
     required this.diagramResults,
     required this.showChartLineStandartStandart,
     required this.showChartLineAB,
-    required this.diagramType,
+    required this.callType,
   });
 
   @override
@@ -30,17 +31,13 @@ class MyLineChart extends StatefulWidget {
 }
 
 class _MyLineChartState extends State<MyLineChart> {
-  late User _currentUser = User.init();
-
   bool _isLoading = false;
   late List<int> _numericScalaTotalCalls = [];
-  late List<String> _getBureausNames = [];
 
   final DateFormat formatter = DateFormat('dd.MM.yy');
 
   @override
   initState() {
-    _currentUser = UserSimplePreferences.getUser();
     getAsyncData();
     super.initState();
   }
@@ -49,9 +46,6 @@ class _MyLineChartState extends State<MyLineChart> {
     setState(() {
       _isLoading = true;
     });
-    _getBureausNames =
-        await Provider.of<BureauResultsProvider>(context, listen: false)
-            .getBureausNames(_currentUser.token);
     _numericScalaTotalCalls = calculateNumericYAxis(widget.diagramResults);
     setState(() {
       _isLoading = false;
@@ -102,7 +96,7 @@ class _MyLineChartState extends State<MyLineChart> {
         ),
         titlesData: titlesDataRateValues,
         borderData: borderData,
-        lineBarsData: widget.diagramType == "Standart"
+        lineBarsData: widget.callType == CallType.Standart
             ? lineBarsDataRateValuesStandart
             : lineBarsDataRateValuesAB,
         minX: 0,
@@ -199,13 +193,13 @@ class _MyLineChartState extends State<MyLineChart> {
         showTitles: true,
         reservedSize: 22,
         margin: 10,
-        getTextStyles: (value) => TextStyle(
+        getTextStyles: (ctx, value) => TextStyle(
           color: Theme.of(context).accentColor,
           fontWeight: FontWeight.bold,
           fontSize: 16,
         ),
         getTitles: (value) {
-          int diagramLength = widget.diagramResults.length;
+          final int diagramLength = widget.diagramResults.length;
           for (int i = 0; i < diagramLength; i = i + 2) {
             if (value == i) {
               return formatter.format(widget.diagramResults[i].date).toString();
@@ -220,7 +214,7 @@ class _MyLineChartState extends State<MyLineChart> {
         showTitles: true,
         margin: 8,
         reservedSize: 30,
-        getTextStyles: (value) => TextStyle(
+        getTextStyles: (ctx, value) => TextStyle(
           color: Theme.of(context).accentColor,
           fontWeight: FontWeight.bold,
           fontSize: 14,
@@ -478,7 +472,7 @@ class _MyLineChartState extends State<MyLineChart> {
         isStrokeCapRound: false,
         dotData: FlDotData(show: true),
         belowBarData: BarAreaData(show: false),
-        spots: widget.diagramType == "Standart"
+        spots: widget.callType == CallType.Standart
             ? getFlSpotsStandart(
                 diagramLength: diagramLength,
                 diagramResults: diagramResults,

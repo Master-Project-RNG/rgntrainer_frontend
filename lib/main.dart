@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rgntrainer_frontend/provider/admin_numbers_provider.dart';
 import 'package:rgntrainer_frontend/screens/admin_diagram_screen.dart';
+import 'package:rgntrainer_frontend/screens/admin_numbers_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:rgntrainer_frontend/provider/admin_calls_provider.dart';
 import 'package:rgntrainer_frontend/provider/answering_machine_provider.dart';
@@ -51,6 +53,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: AnsweringMachineProvider(),
         ),
+        ChangeNotifierProvider.value(
+          value: NumbersProvider(),
+        ),
       ],
       child: MaterialApp.router(
         routeInformationParser: VxInformationParser(),
@@ -77,6 +82,9 @@ class MyApp extends StatelessWidget {
                 ),
             MyRoutes.adminDiagramRoute: (_, __) => MaterialPage(
                   child: DiagramScreen(),
+                ),
+            MyRoutes.adminNumbersRoute: (_, __) => MaterialPage(
+                  child: AdminNumbersScreen(),
                 ),
           },
         ),

@@ -110,7 +110,11 @@ class _NavBarWidgetState extends State<NavBarWidget> {
                     const Color.fromRGBO(25, 177, 237, 1), //cyan
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  context.vxNav.push(
+                    Uri.parse(MyRoutes.adminNumbersRoute),
+                  );
+                },
                 child: Row(
                   children: [
                     const SizedBox(
@@ -120,7 +124,7 @@ class _NavBarWidgetState extends State<NavBarWidget> {
                       ),
                     ),
                     Text(
-                      "Nummern (inactive)",
+                      "Nummern",
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ],
