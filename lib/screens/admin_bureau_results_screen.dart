@@ -450,18 +450,39 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     height: 15,
                   ),
                   Expanded(
+                    flex: 6,
                     child: Container(
-                      padding: const EdgeInsets.only(left: 50.0, right: 50),
+                      padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                       child: ListView(
                         children: [
-                          SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: bureauResultsData(
-                                  _myBureauResultsProvider, callType)),
+                          Container(
+                            color: Colors.grey[200],
+                            child: bureauResultsData(
+                                _myBureauResultsProvider, callType),
+                          ),
                         ],
                       ),
                     ),
                   ),
+                  if (_isLoading == true)
+                    Expanded(
+                      flex: 80,
+                      child: const SizedBox(
+                        height: 60,
+                        child: Center(
+                          child: SizedBox(
+                            height: 40,
+                            width: 40,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
                 ],
               ),
             ),
@@ -473,41 +494,27 @@ class _AdminResultsState extends State<AdminResultsScreen> {
 
   Widget bureauResultsData(
       BureauResultsProvider _myBureauResultsProvider, CallType callType) {
-    return Column(
-      children: [
-        Container(
-          color: Colors.grey[200],
-          child: DataTable(
-            headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
-            headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
-            dataRowHeight: 35,
-            sortAscending: isAscending,
-            sortColumnIndex: sortColumnIndex,
-            columns: callType == CallType.Standart
-                ? getColumns(columnsStandart, showColumns, callType)
-                : getColumns(columnsAB, showColumns, callType),
-            rows: callType == CallType.Standart
-                ? getRowsStandart(
-                    _myBureauResultsProvider.bureauResults, showColumns)
-                : getRowsAB(
-                    _myBureauResultsProvider.bureauResults, showColumns),
-          ),
-        ),
-        if (_isLoading == true)
-          const SizedBox(
-            height: 80,
-            child: Center(
-              child: SizedBox(
-                height: 40,
-                width: 40,
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          )
-        else
-          Container()
-      ],
+    DataTable dataTable = DataTable(
+      headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
+      headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
+      dataRowHeight: 35,
+      sortAscending: isAscending,
+      sortColumnIndex: sortColumnIndex,
+      columns: callType == CallType.Standart
+          ? getColumns(columnsStandart, showColumns, callType)
+          : getColumns(columnsAB, showColumns, callType),
+      rows: callType == CallType.Standart
+          ? getRowsStandart(_myBureauResultsProvider.bureauResults, showColumns)
+          : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
     );
+
+    final deviceSize = MediaQuery.of(context).size;
+    if (deviceSize.width < 2850) {
+      return SingleChildScrollView(
+          scrollDirection: Axis.horizontal, child: dataTable);
+    } else {
+      return dataTable;
+    }
   }
 
   void changeVisibilty(int index, List<bool> list) {

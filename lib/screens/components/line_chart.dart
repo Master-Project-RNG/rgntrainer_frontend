@@ -31,17 +31,13 @@ class MyLineChart extends StatefulWidget {
 }
 
 class _MyLineChartState extends State<MyLineChart> {
-  late User _currentUser = User.init();
-
   bool _isLoading = false;
   late List<int> _numericScalaTotalCalls = [];
-  late List<String> _getBureausNames = [];
 
   final DateFormat formatter = DateFormat('dd.MM.yy');
 
   @override
   initState() {
-    _currentUser = UserSimplePreferences.getUser();
     getAsyncData();
     super.initState();
   }
@@ -50,9 +46,6 @@ class _MyLineChartState extends State<MyLineChart> {
     setState(() {
       _isLoading = true;
     });
-    _getBureausNames =
-        await Provider.of<BureauResultsProvider>(context, listen: false)
-            .getBureausNames(_currentUser.token);
     _numericScalaTotalCalls = calculateNumericYAxis(widget.diagramResults);
     setState(() {
       _isLoading = false;
