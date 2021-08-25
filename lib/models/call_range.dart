@@ -23,6 +23,7 @@ class CallRange {
     required this.maxHoursForCallback,
   });
 
+  /// Factory method to create a dart object out of a json
   factory CallRange.fromJson(Map<String, dynamic> json) => CallRange(
         minCalls: json["minCalls"],
         maxCalls: json["maxCalls"],
@@ -32,6 +33,7 @@ class CallRange {
         secondsBetweenCalls: json["secondsBetweenCalls"],
       );
 
+  /// Factory method to create json out of a dart object
   Map<String, dynamic> toJson(token) => {
         "token": token,
         "minCalls": minCalls,

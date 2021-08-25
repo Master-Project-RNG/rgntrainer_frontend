@@ -237,9 +237,8 @@ class AdminCallsProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
-      ConfigurationSummary test =
+      greetingConfigurationSummary =
           ConfigurationSummary.fromJsonGreeting(responseData);
-      greetingConfigurationSummary = test;
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
       _pickedUserGreeting = greetingConfigurationSummary.users[0];
       _isLoadingGetGreeting = false;
@@ -252,10 +251,8 @@ class AdminCallsProvider with ChangeNotifier {
   Future<void> setGreetingConfiguration(
       String token, ConfigurationSummary _greetingConfiguration) async {
     final url = Uri.parse('$activeHost/setGreetingConfiguration');
-
     final openingJson =
         jsonEncode(_greetingConfiguration.toJsonGreeting(token));
-
     final response = await http.post(
       url,
       headers: {
@@ -270,8 +267,10 @@ class AdminCallsProvider with ChangeNotifier {
     }
   }
 
+  /// Used in [GreetingTabWidget]
   final Map<String, dynamic> _greetingData = {};
 
+  /// Used in [GreetingTabWidget]
   Map<String, dynamic> get getGreetingData {
     return _greetingData;
   }

@@ -21,6 +21,7 @@ class Number {
     required this.isActive,
   });
 
+  /// Factory method to create a dart object out of a json
   factory Number.fromJson(Map<String, dynamic> json) => Number(
         basepool_id: json["basepool_id"],
         user_id: json["user_id"],
@@ -59,15 +60,16 @@ class Number {
     bool? isActive,
   }) =>
       Number(
-          basepool_id: basepool_id ?? this.basepool_id,
-          user_id: user_id ?? this.user_id,
-          number: number ?? this.number,
-          firstname: firstname ?? this.firstname,
-          lastname: lastname ?? this.lastname,
-          bureau: bureau ?? this.bureau,
-          department: department ?? this.department,
-          email: email ?? this.email,
-          isActive: isActive ?? this.isActive);
+        basepool_id: basepool_id ?? this.basepool_id,
+        user_id: user_id ?? this.user_id,
+        number: number ?? this.number,
+        firstname: firstname ?? this.firstname,
+        lastname: lastname ?? this.lastname,
+        bureau: bureau ?? this.bureau,
+        department: department ?? this.department,
+        email: email ?? this.email,
+        isActive: isActive ?? this.isActive,
+      );
 
   @override
   int get hashCode =>
