@@ -47,10 +47,10 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     });
     if (widget.type == 1) {
       await Provider.of<AdminCallsProvider>(context, listen: false)
-          .getGreetingConfiguration(_currentUser.token);
+          .getGreetingConfiguration(_currentUser.token!);
     } else {
       await Provider.of<AnsweringMachineProvider>(context, listen: false)
-          .getAnsweringMachineConfiguration(_currentUser.token);
+          .getAnsweringMachineConfiguration(_currentUser.token!);
     }
     setState(() {
       _isLoading = false;
@@ -483,12 +483,12 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     if (type == 1) {
       await AdminCallsProvider().setGreetingConfiguration(
           _currentUser.token!, _greetingConfiguration);
-      await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
+      await AdminCallsProvider().getGreetingConfiguration(_currentUser.token!);
     } else if (type == 2) {
       await AnsweringMachineProvider().setAnsweringMachineConfiguration(
           _currentUser.token!, _greetingConfiguration);
       await AnsweringMachineProvider()
-          .getAnsweringMachineConfiguration(_currentUser.token);
+          .getAnsweringMachineConfiguration(_currentUser.token!);
     }
     setState(() {
       _isLoading = false;
@@ -520,12 +520,12 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
     if (type == 1) {
       await AdminCallsProvider().setGreetingConfiguration(
           _currentUser.token!, _greetingConfiguration);
-      await AdminCallsProvider().getGreetingConfiguration(_currentUser.token);
+      await AdminCallsProvider().getGreetingConfiguration(_currentUser.token!);
     } else if (type == 2) {
       await AnsweringMachineProvider().setAnsweringMachineConfiguration(
           _currentUser.token!, _greetingConfiguration);
       await AnsweringMachineProvider()
-          .getAnsweringMachineConfiguration(_currentUser.token);
+          .getAnsweringMachineConfiguration(_currentUser.token!);
     }
     setState(() {
       _isLoading = false;

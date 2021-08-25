@@ -17,10 +17,10 @@ class CallRange {
 
   CallRange({
     required this.maxCalls,
+    required this.maxHoursForCallback,
     required this.minCalls,
     required this.minDaysBetweenCallsSingleNumber,
     required this.secondsBetweenCalls,
-    required this.maxHoursForCallback,
   });
 
   /// Factory method to create a dart object out of a json
