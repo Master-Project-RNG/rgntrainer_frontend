@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/numbers_model.dart';
 import 'package:rgntrainer_frontend/widgets/error_dialog.dart';
 
 class NumbersProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
+  static final _log = Logger("NumbersProvider");
 
   List<Number> _nummern = [];
 
@@ -53,8 +55,9 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body);
+      _log.info("Create user successful (API CALL)");
     } else {
+      _log.warning("'Failed to create User! (API CALL)");
       throw Exception('Failed to create User!');
     }
   }
