@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/numbers_model.dart';
-import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/widgets/error_dialog.dart';
 
 class NumbersProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
+  static final _log = Logger("NumbersProvider");
 
   List<Number> _nummern = [];
 
@@ -54,8 +55,9 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body);
+      _log.info("API CALL: createUser statusCode == 200");
     } else {
+      _log.warning("API CALL: createUser failed!");
       throw Exception('Failed to create User!');
     }
   }
@@ -73,7 +75,7 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body);
+      _log.info("API CALL: getAllUsers statusCode == 200");
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<Number> _result = [];
       final List<dynamic> _temp = jsonResponse as List<dynamic>;
@@ -84,6 +86,7 @@ class NumbersProvider with ChangeNotifier {
       _nummern = _result;
       return _result;
     } else {
+      _log.warning("API CALL: getAllUsers failed!");
       throw Exception('Failed to load getTotalResults');
     }
   }
@@ -116,11 +119,36 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body);
+      _log.info("API CALL: updateUser statusCode == 200");
     } else {
+      _log.warning("API CALL: updateUser failed!");
       throw Exception('Failed to update User!');
     }
   }
 
-  ///Delete Users! (Out of scope)
+  ///Set user state (Activate/Deactivate Users)!
+  Future<void> setUserState({
+    required String token,
+    required String basepool_id,
+    required bool userState,
+  }) async {
+    final url = Uri.parse('$activeHost/setUserState');
+    final response = await post(
+      url,
+      headers: {
+        "content-type": "application/json",
+      },
+      body: json.encode({
+        "token": token,
+        "basepool_id": basepool_id,
+        "active": userState,
+      }),
+    );
+    if (response.statusCode == 200) {
+      _log.info("API CALL: setUserState statusCode == 200");
+    } else {
+      _log.warning("API CALL: setUserState failed!");
+      throw Exception('Failed to setUserState!');
+    }
+  }
 }

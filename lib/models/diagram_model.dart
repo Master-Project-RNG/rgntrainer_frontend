@@ -13,6 +13,7 @@ class Diagram {
     required this.abAndCallbackStatistics,
   });
 
+  /// Factory method to create a dart object out of a json
   factory Diagram.fromJson(Map<String, dynamic> json) => Diagram(
         date: DateTime.parse(json["date"]),
         bureau: json["bureau"].toString(),
