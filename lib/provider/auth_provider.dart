@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
-import 'dart:convert';
 import '../widgets/error_dialog.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -67,12 +67,12 @@ class AuthProvider with ChangeNotifier {
       );
       //Logout successful!
     } catch (error) {
-      // Error!
+      rethrow;
     }
   }
 
-  Future<void> changePassword(ctx, token, oldPassword, newPassword) async {
-    // UserSimplePreferences.resetUser(); //Login required after password change or just
+  Future<void> changePassword(BuildContext ctx, String token,
+      String oldPassword, String newPassword) async {
     final url = '$activeHost/changePassword';
     try {
       final response = await http.post(
@@ -93,7 +93,7 @@ class AuthProvider with ChangeNotifier {
           context: ctx,
           builder: (ctx) => AlertDialog(
             title: const Text('Erfolg!'),
-            content: Text("Passwort aktualisiert!"),
+            content: const Text("Passwort aktualisiert!"),
             actions: <Widget>[
               ElevatedButton(
                 onPressed: () {
@@ -109,7 +109,7 @@ class AuthProvider with ChangeNotifier {
           context: ctx,
           builder: (ctx) => AlertDialog(
             title: const Text('Fehler!'),
-            content: Text(
+            content: const Text(
                 "Passwort konnte nicht aktualisiert werden! Wurde das alte Passwort korrekt eingegeben?"),
             actions: <Widget>[
               ElevatedButton(
@@ -122,7 +122,7 @@ class AuthProvider with ChangeNotifier {
           ),
         );
       }
-      debugPrint("changePassword: " + response.toString());
+      debugPrint("changePassword: $response");
     } catch (error) {
       debugPrint(error.toString());
     }

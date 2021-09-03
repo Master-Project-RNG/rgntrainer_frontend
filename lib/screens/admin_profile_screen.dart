@@ -73,7 +73,7 @@ class _AdminCardState extends State<AdminProfileCard> {
       });
       try {
         await Provider.of<AuthProvider>(context, listen: false).changePassword(
-            context, _currentUser.token, oldPassword, newPassword);
+            context, _currentUser.token!, oldPassword, newPassword);
       } catch (error) {
         debugPrint("_submit:" + error.toString());
       }

@@ -37,6 +37,7 @@ class UserResults {
     required this.saidSpecificWords,
   });
 
+  /// Factory method to create a dart object out of a json
   factory UserResults.fromJson(Map<String, dynamic> json) {
     return UserResults(
       bureau: json['bureau'],

@@ -33,7 +33,7 @@ class AdminCallsProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
-      debugPrint("Status: " + response.body);
+      debugPrint("Status: ${response.body}");
       return Status.fromJson(responseData);
     } else {
       throw Exception('Unable to get Status!');
@@ -74,7 +74,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: callRangeJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setCallRange: " + response.toString());
+      debugPrint("setCallRange: $response");
     } else {
       throw Exception('Unable to getCallRange!');
     }
@@ -98,7 +98,7 @@ class AdminCallsProvider with ChangeNotifier {
       debugPrint("startTrainer: ${response.body}");
       return getTrainerStatus(token);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
@@ -120,7 +120,7 @@ class AdminCallsProvider with ChangeNotifier {
       debugPrint("stopTrainer: ${response.body}");
       return getTrainerStatus(token);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
@@ -171,7 +171,7 @@ class AdminCallsProvider with ChangeNotifier {
           json.decode(response.body) as Map<String, dynamic>;
       final ConfigurationSummary result =
           ConfigurationSummary.fromJsonOpeningHours(responseData);
-      debugPrint("getOpeningHours:" + result.toString());
+      debugPrint("getOpeningHours:$result");
       return result;
     } else {
       throw Exception('Unable to get OpeningHours!');
@@ -192,7 +192,7 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setOpeningHours: " + response.toString());
+      debugPrint("setOpeningHours: $response");
     } else {
       throw Exception('Unable to set OpeningHours!');
     }
@@ -221,7 +221,7 @@ class AdminCallsProvider with ChangeNotifier {
     return _pickedUserGreeting = u;
   }
 
-  Future<void> getGreetingConfiguration(token) async {
+  Future<void> getGreetingConfiguration(String token) async {
     _isLoadingGetGreeting = true;
 
     var url = Uri.parse('$activeHost/getGreetingConfiguration');
@@ -237,9 +237,8 @@ class AdminCallsProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
-      ConfigurationSummary test =
+      greetingConfigurationSummary =
           ConfigurationSummary.fromJsonGreeting(responseData);
-      greetingConfigurationSummary = test;
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
       _pickedUserGreeting = greetingConfigurationSummary.users[0];
       _isLoadingGetGreeting = false;
@@ -252,10 +251,8 @@ class AdminCallsProvider with ChangeNotifier {
   Future<void> setGreetingConfiguration(
       String token, ConfigurationSummary _greetingConfiguration) async {
     final url = Uri.parse('$activeHost/setGreetingConfiguration');
-
     final openingJson =
         jsonEncode(_greetingConfiguration.toJsonGreeting(token));
-
     final response = await http.post(
       url,
       headers: {
@@ -264,14 +261,16 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setGreetingConfiguration: " + response.toString());
+      debugPrint("setGreetingConfiguration: $response");
     } else {
       throw Exception('Unable to set GreetingConfiguration!');
     }
   }
 
+  /// Used in [GreetingTabWidget]
   final Map<String, dynamic> _greetingData = {};
 
+  /// Used in [GreetingTabWidget]
   Map<String, dynamic> get getGreetingData {
     return _greetingData;
   }

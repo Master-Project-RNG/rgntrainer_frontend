@@ -34,13 +34,13 @@ class User {
     this.greetingConfiguration,
   });
 
+  /// Factory method to create a dart object out of a json
   factory User.fromJson(Map<String, dynamic> json) {
     List<OpeningHours> openingHoursList = [];
     if (json['openingHours'] != null) {
       var list = json['openingHours'] as List;
       openingHoursList = list.map((i) => OpeningHours.fromJson(i)).toList();
     }
-
     return User(
       username: json['username'],
       token: json['token'],
@@ -52,19 +52,6 @@ class User {
       greetingConfiguration: json["greetingConfiguration"] != null
           ? GreetingConfiguration.fromJson(json["greetingConfiguration"])
           : null,
-    );
-  }
-
-  factory User.fromMockup() {
-    return User(
-      username: "Raphael",
-      token: "ea6b7552-c235-41d2-9a86-5115dac89bb5",
-      usertype: "admin",
-      activeOpeningHours: false,
-      organization: "Rothenburg",
-      openingHours: [],
-      activeGreetingConfiguration: false,
-      greetingConfiguration: null,
     );
   }
 

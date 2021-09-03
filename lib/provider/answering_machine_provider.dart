@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
@@ -7,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:rgntrainer_frontend/models/user_model.dart';
 
 class AnsweringMachineProvider with ChangeNotifier {
-  var activeHost = Host().getActiveHost();
+  String activeHost = Host().getActiveHost();
 
   ConfigurationSummary greetingConfigurationSummary =
       ConfigurationSummary.init();
@@ -39,10 +38,9 @@ class AnsweringMachineProvider with ChangeNotifier {
     return _pickedUserGreeting = u;
   }
 
-  Future<void> getAnsweringMachineConfiguration(token) async {
+  Future<void> getAnsweringMachineConfiguration(String token) async {
     _isLoadingGetGreeting = true;
-
-    var url = Uri.parse('${activeHost}/getResponderConfiguration');
+    final url = Uri.parse('$activeHost/getResponderConfiguration');
     final response = await http.post(
       url,
       headers: {
@@ -53,17 +51,13 @@ class AnsweringMachineProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      ConfigurationSummary test =
+      final Map<String, dynamic> responseData =
+          json.decode(response.body) as Map<String, dynamic>;
+      debugPrint("getAnsweringMachineConfiguration:$response.body");
+      greetingConfigurationSummary =
           ConfigurationSummary.fromJsonGreeting(responseData);
-      debugPrint("getAnsweringMachineConfiguration:" + test.toString());
-      greetingConfigurationSummary = test;
-      //  if (_pickedBureauGreeting == null) {
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
-      //}
-      //if (_pickedUserGreeting == null) {
       _pickedUserGreeting = greetingConfigurationSummary.users[0];
-      // }
       _isLoadingGetGreeting = false;
       notifyListeners();
     } else {
@@ -73,8 +67,7 @@ class AnsweringMachineProvider with ChangeNotifier {
 
   Future<void> setAnsweringMachineConfiguration(
       String token, ConfigurationSummary _greetingConfiguration) async {
-    var url = Uri.parse('${activeHost}/setResponderConfiguration');
-
+    final url = Uri.parse('$activeHost/setResponderConfiguration');
     final openingJson =
         jsonEncode(_greetingConfiguration.toJsonGreeting(token));
 
@@ -86,7 +79,7 @@ class AnsweringMachineProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setAnsweringMachineConfiguration: " + response.toString());
+      debugPrint("setAnsweringMachineConfiguration: $response");
     } else {
       throw Exception('Unable to set GreetingConfiguration!');
     }

@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 import 'package:rgntrainer_frontend/models/diagram_model.dart';
 
 class BureauResultsProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
+  static final _log = Logger("BureauResultsProvider");
 
   List<BureauResults> _bureauResults = [];
 
@@ -38,7 +40,7 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body);
+      _log.info("API CALL: getTotalResults statusCode == 200");
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<BureauResults> _result = [];
       final List<dynamic> _temp = jsonResponse as List<dynamic>;
@@ -51,6 +53,7 @@ class BureauResultsProvider with ChangeNotifier {
       _bureauResults = _result;
       return _result;
     } else {
+      _log.warning("API CALL: getTotalResults failed!");
       throw Exception('Failed to load getTotalResults');
     }
   }
@@ -70,7 +73,8 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.body);
+      _log.info("API CALL: getTotalResultsWeekly statusCode == 200");
+      // print(response.body);
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<Diagram> _result = [];
       final List<dynamic> _temp = jsonResponse as List<dynamic>;
@@ -83,6 +87,7 @@ class BureauResultsProvider with ChangeNotifier {
       _diagramResults = _result;
       return _result;
     } else {
+      _log.warning("API CALL: getTotalResultsWeekly failed!");
       throw Exception('Failed to load getTotalResultsWeekly');
     }
   }
@@ -100,6 +105,7 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: getAllBureaus statusCode == 200");
       //TODO: Sort alphabetically
       print(response.body);
       final dynamic jsonResponse = jsonDecode(response.body);
@@ -112,6 +118,7 @@ class BureauResultsProvider with ChangeNotifier {
       _bureauNames = _result;
       return _result;
     } else {
+      _log.warning("API CALL: getAllBureaus failed!");
       throw Exception('Failed to load getAllBureaus');
     }
   }

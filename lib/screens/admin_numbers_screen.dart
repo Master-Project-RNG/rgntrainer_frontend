@@ -460,13 +460,21 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   Widget buildDataTable() {
-    return DataTable(
+    DataTable dataTable = DataTable(
       headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
       headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
       dataRowHeight: 35,
       columns: getColumns(columns),
       rows: _isLoading ? [] : getRows(_numberPerBureau),
     );
+
+    final deviceSize = MediaQuery.of(context).size;
+    if (deviceSize.width < 1500) {
+      return SingleChildScrollView(
+          scrollDirection: Axis.horizontal, child: dataTable);
+    } else {
+      return dataTable;
+    }
   }
 
   static List<T> modelBuilder<M, T>(
