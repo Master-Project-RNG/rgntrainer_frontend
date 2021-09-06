@@ -77,7 +77,6 @@ class BureauResultsProvider with ChangeNotifier {
       // print(response.body);
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<Diagram> _result = [];
-      final List<dynamic> _temp = jsonResponse as List<dynamic>;
       // ignore: avoid_function_literals_in_foreach_calls
       jsonResponse.forEach((element) {
         final Diagram diagramResults =
@@ -107,13 +106,11 @@ class BureauResultsProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       _log.info("API CALL: getAllBureaus statusCode == 200");
       //TODO: Sort alphabetically
-      print(response.body);
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<String> _result = [];
-      final List<dynamic> _temp = jsonResponse as List<dynamic>;
       // ignore: avoid_function_literals_in_foreach_calls
       jsonResponse.forEach((element) {
-        _result.add(element);
+        _result.add(element as String);
       });
       _bureauNames = _result;
       return _result;
