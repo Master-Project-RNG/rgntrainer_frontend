@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/provider/admin_numbers_provider.dart';
 import 'package:rgntrainer_frontend/screens/admin_diagram_screen.dart';
@@ -22,6 +23,11 @@ import 'package:rgntrainer_frontend/screens/login_screen.dart';
 // main function
 // ignore: avoid_void_async
 void main() async {
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    print(
+        '[${record.loggerName}] ${record.level.name}: ${record.time}: ${record.message}');
+  });
   WidgetsFlutterBinding.ensureInitialized();
   await UserSimplePreferences.init();
   runApp(

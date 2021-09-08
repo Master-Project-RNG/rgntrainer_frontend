@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/models/call_range.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:rgntrainer_frontend/models/status_model.dart';
@@ -10,6 +11,7 @@ import '../host.dart';
 
 class AdminCallsProvider with ChangeNotifier {
   final String activeHost = Host().getActiveHost();
+  static final _log = Logger("AdminCallsProvider");
 
   ConfigurationSummary greetingConfigurationSummary =
       ConfigurationSummary.init();
@@ -33,9 +35,12 @@ class AdminCallsProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
-      debugPrint("Status: ${response.body}");
+      _log.info(
+          "API CALL: status == ${Status.fromJson(responseData)}, statusCode == 200");
       return Status.fromJson(responseData);
     } else {
+      _log.warning("API CALL: createUser failed!");
+
       throw Exception('Unable to get Status!');
     }
   }
