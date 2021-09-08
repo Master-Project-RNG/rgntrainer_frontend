@@ -36,11 +36,10 @@ class AdminCallsProvider with ChangeNotifier {
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
       _log.info(
-          "API CALL: status == ${Status.fromJson(responseData)}, statusCode == 200");
+          "API CALL: /status == ${Status.fromJson(responseData).status}, statusCode == 200");
       return Status.fromJson(responseData);
     } else {
-      _log.warning("API CALL: createUser failed!");
-
+      _log.warning("API CALL: /status failed!");
       throw Exception('Unable to get Status!');
     }
   }
@@ -58,18 +57,19 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: /getCallRange, statusCode == 200");
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
       return CallRange.fromJson(responseData);
     } else {
+      _log.warning("API CALL: /getCallRange failed!");
       throw Exception('Unable to getCallRange!');
     }
   }
 
-  //getCallRange
+  //setCallRange
   Future<void> setCallRange(String token, CallRange callRange) async {
     final url = Uri.parse('$activeHost/setCallRange');
-
     final callRangeJson = jsonEncode(callRange.toJson(token));
     final response = await http.post(
       url,
@@ -79,9 +79,10 @@ class AdminCallsProvider with ChangeNotifier {
       body: callRangeJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setCallRange: $response");
+      _log.info("API CALL: /setCallRange, statusCode == 200");
     } else {
-      throw Exception('Unable to getCallRange!');
+      _log.warning("API CALL: /setCallRange failed!");
+      throw Exception('Unable to setCallRange!');
     }
   }
 
@@ -100,9 +101,10 @@ class AdminCallsProvider with ChangeNotifier {
           },
         ),
       );
-      debugPrint("startTrainer: ${response.body}");
+      _log.info("API CALL: /start, statusCode == 200");
       return getTrainerStatus(token);
     } catch (error) {
+      _log.warning("API CALL: /start failed!");
       rethrow;
     }
   }
@@ -122,9 +124,10 @@ class AdminCallsProvider with ChangeNotifier {
           },
         ),
       );
-      debugPrint("stopTrainer: ${response.body}");
+      _log.info("API CALL: /stop, statusCode == 200");
       return getTrainerStatus(token);
     } catch (error) {
+      _log.warning("API CALL: /stop failed!");
       rethrow;
     }
   }
@@ -144,6 +147,7 @@ class AdminCallsProvider with ChangeNotifier {
       ),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: /downloadResults, statusCode == 200");
       final blob = Blob([response.bodyBytes],
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       final url = Url.createObjectUrlFromBlob(blob);
@@ -156,6 +160,7 @@ class AdminCallsProvider with ChangeNotifier {
       anchor.click();
       anchor.remove();
     } else {
+      _log.warning("API CALL: /downloadResults failed!");
       throw Exception('Unable to download results!');
     }
   }
@@ -172,13 +177,14 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: /getOpeningHours, statusCode == 200");
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
       final ConfigurationSummary result =
           ConfigurationSummary.fromJsonOpeningHours(responseData);
-      debugPrint("getOpeningHours:$result");
       return result;
     } else {
+      _log.warning("API CALL: /getOpeningHours failed!");
       throw Exception('Unable to get OpeningHours!');
     }
   }
@@ -186,9 +192,7 @@ class AdminCallsProvider with ChangeNotifier {
   Future<void> setOpeningHours(
       String token, ConfigurationSummary _openingHours) async {
     var url = Uri.parse('$activeHost/setOpeningHours');
-
     final openingJson = jsonEncode(_openingHours.toJsonOpeningHours(token));
-
     final response = await http.post(
       url,
       headers: {
@@ -197,8 +201,9 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setOpeningHours: $response");
+      _log.info("API CALL: /setOpeningHours, statusCode == 200");
     } else {
+      _log.warning("API CALL: /setOpeningHours failed!");
       throw Exception('Unable to set OpeningHours!');
     }
   }
@@ -240,6 +245,7 @@ class AdminCallsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: /getGreetingConfiguration, statusCode == 200");
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
       greetingConfigurationSummary =
@@ -249,6 +255,7 @@ class AdminCallsProvider with ChangeNotifier {
       _isLoadingGetGreeting = false;
       notifyListeners();
     } else {
+      _log.warning("API CALL: /getGreetingConfiguration failed!");
       throw Exception('Unable to get GreetingConfiguration!');
     }
   }
@@ -266,8 +273,9 @@ class AdminCallsProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setGreetingConfiguration: $response");
+      _log.info("API CALL: /setGreetingConfiguration, statusCode == 200");
     } else {
+      _log.warning("API CALL: /setGreetingConfiguration failed!");
       throw Exception('Unable to set GreetingConfiguration!');
     }
   }
