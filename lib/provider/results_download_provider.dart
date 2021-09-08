@@ -4,11 +4,13 @@ import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 
 class DownloadResultsProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
+  static final _log = Logger("ResultsDownloadProvider");
 
   //download
   Future<void> getExcelResults(String? token) async {
@@ -25,6 +27,7 @@ class DownloadResultsProvider with ChangeNotifier {
       ),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: /downloadResults, statusCode == 200");
       final blob = Blob([response.bodyBytes],
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       final url = Url.createObjectUrlFromBlob(blob);
@@ -37,6 +40,7 @@ class DownloadResultsProvider with ChangeNotifier {
       anchor.click();
       anchor.remove();
     } else {
+      _log.warning("API CALL: /downloadResults failed!");
       throw Exception('Unable to download results!');
     }
   }

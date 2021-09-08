@@ -74,7 +74,6 @@ class BureauResultsProvider with ChangeNotifier {
     );
     if (response.statusCode == 200) {
       _log.info("API CALL: /getTotalResultsWeekly, statusCode == 200");
-      // print(response.body);
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<Diagram> _result = [];
       // ignore: avoid_function_literals_in_foreach_calls

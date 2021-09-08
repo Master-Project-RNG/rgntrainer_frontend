@@ -53,7 +53,7 @@ class AnsweringMachineProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: getResponderConfiguration, statusCode == 200");
+      _log.info("API CALL: /getResponderConfiguration, statusCode == 200");
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
       greetingConfigurationSummary =
@@ -63,7 +63,7 @@ class AnsweringMachineProvider with ChangeNotifier {
       _isLoadingGetGreeting = false;
       notifyListeners();
     } else {
-      _log.warning("API CALL: getResponderConfiguration failed!");
+      _log.warning("API CALL: /getResponderConfiguration failed!");
       throw Exception('Unable to get ResponderConfiguration!');
     }
   }
@@ -82,9 +82,9 @@ class AnsweringMachineProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: setResponderConfiguration, statusCode == 200");
+      _log.info("API CALL: /setResponderConfiguration, statusCode == 200");
     } else {
-      _log.warning("API CALL: setResponderConfiguration failed!");
+      _log.warning("API CALL: /setResponderConfiguration failed!");
       throw Exception('Unable to set GreetingConfiguration!');
     }
   }

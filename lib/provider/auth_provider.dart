@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
@@ -8,6 +9,8 @@ import '../widgets/error_dialog.dart';
 
 class AuthProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
+  static final _log = Logger("AuthProvider");
+
   late User currentUser;
 
   User get loggedInUser {
@@ -41,12 +44,16 @@ class AuthProvider with ChangeNotifier {
         currentUser = User.fromJson(responseData);
         UserSimplePreferences.setUser(currentUser);
         UserSimplePreferences.setAbfrageTabOpen(false);
+        _log.info(
+            "API CALL: /login, token:${currentUser.token}, statusCode == 200");
       } else {
+        _log.warning("API CALL: /login failed!");
         const errorMessage = 'Login fehlgeschlagen!';
         SelfMadeErrorDialog.showErrorDialog(
             message: errorMessage, context: ctx);
       }
     } catch (error) {
+      _log.warning("API CALL: /login failed!");
       const errorMessage = 'Login fehlgeschlagen!';
       SelfMadeErrorDialog.showErrorDialog(message: errorMessage, context: ctx);
     }
@@ -65,8 +72,9 @@ class AuthProvider with ChangeNotifier {
           'token': token,
         }),
       );
-      //Logout successful!
+      _log.info("API CALL: /logout, statusCode == 200");
     } catch (error) {
+      _log.warning("API CALL: /logout failed!");
       rethrow;
     }
   }
@@ -89,6 +97,7 @@ class AuthProvider with ChangeNotifier {
         ),
       );
       if (response.statusCode == 200) {
+        _log.info("API CALL: /changePassword, statusCode == 200");
         showDialog(
           context: ctx,
           builder: (ctx) => AlertDialog(
@@ -105,6 +114,7 @@ class AuthProvider with ChangeNotifier {
           ),
         );
       } else {
+        _log.warning("API CALL: /changePassword failed!");
         showDialog(
           context: ctx,
           builder: (ctx) => AlertDialog(
@@ -122,9 +132,8 @@ class AuthProvider with ChangeNotifier {
           ),
         );
       }
-      debugPrint("changePassword: $response");
     } catch (error) {
-      debugPrint(error.toString());
+      _log.warning("API CALL: /changePassword failed!");
     }
   }
 }
