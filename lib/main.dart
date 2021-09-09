@@ -99,7 +99,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: const Color.fromRGBO(25, 177, 237, 1), //cyan
           accentColor: const Color.fromRGBO(237, 85, 25, 1), //orange
-          buttonColor: const Color.fromRGBO(25, 177, 237, 1), //cyan
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(
@@ -111,7 +110,11 @@ class MyApp extends StatelessWidget {
             bodyText1: TextStyle(color: Colors.white),
             headline1: TextStyle(color: Colors.white),
           ),
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: const Color.fromRGBO(25, 177, 237, 1), //cyan
+          ),
         ),
+        //debugShowCheckedModeBanner: false,
       ),
     );
   }
