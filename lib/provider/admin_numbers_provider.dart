@@ -102,7 +102,6 @@ class NumbersProvider with ChangeNotifier {
     required String firstName,
     required String lastName,
     required String email,
-    required BuildContext ctx,
   }) async {
     final url = Uri.parse('$activeHost/updateUser');
     final response = await post(
