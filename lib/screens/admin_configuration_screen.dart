@@ -17,7 +17,7 @@ import 'package:intl/date_symbol_data_local.dart';
 class AdminConfigurationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AdminCard();
+    return const AdminCard();
   }
 }
 
@@ -31,7 +31,7 @@ class AdminCard extends StatefulWidget {
 }
 
 class _AdminCardState extends State<AdminCard> {
-  var statusText = "init";
+  String statusText = "init";
   late User _currentUser = User.init();
 
   @override
@@ -59,7 +59,7 @@ class _AdminCardState extends State<AdminCard> {
                 title: CalendarWidget(),
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.account_circle,
                       color: Colors.white,
                     ),
@@ -70,7 +70,7 @@ class _AdminCardState extends State<AdminCard> {
                     },
                   ),
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.logout,
                       color: Colors.white,
                     ),
@@ -103,9 +103,9 @@ class _AdminCardState extends State<AdminCard> {
     }
   }
 
-  Widget normalWidth(deviceSize) {
+  Widget normalWidth(Size deviceSize) {
     return Container(
-      margin: EdgeInsets.all(50.0),
+      margin: const EdgeInsets.all(50.0),
       child: Center(
         child: Column(
           children: [
@@ -115,7 +115,7 @@ class _AdminCardState extends State<AdminCard> {
                 Expanded(
                   child: TrainerConfiguration(deviceSize),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 50,
                 ),
                 Expanded(
@@ -123,7 +123,7 @@ class _AdminCardState extends State<AdminCard> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             Row(
@@ -132,7 +132,7 @@ class _AdminCardState extends State<AdminCard> {
                 Expanded(
                   child: CallTimeConfiguration(deviceSize, _currentUser),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 50,
                 ),
                 Expanded(
@@ -146,22 +146,22 @@ class _AdminCardState extends State<AdminCard> {
     );
   }
 
-  Widget smallWidth(deviceSize) {
+  Widget smallWidth(Size deviceSize) {
     return Container(
-      margin: EdgeInsets.all(50.0),
+      margin: const EdgeInsets.all(50.0),
       child: Center(
         child: Column(
           children: [
             TrainerConfiguration(deviceSize),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             GreetingConfigurationWidget(deviceSize, type: 1),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             CallTimeConfiguration(deviceSize, _currentUser),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             GreetingConfigurationWidget(deviceSize, type: 2),

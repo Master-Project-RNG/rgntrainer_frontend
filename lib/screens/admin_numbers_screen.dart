@@ -144,63 +144,65 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                           "Nummern der Büros für ${_currentUser.username}",
                           style: const TextStyle(fontSize: 34),
                         ),
-                        _isLoading
-                            ? Container()
-                            : SizedBox(
-                                child: PopupMenuButton(
-                                  onSelected: (result) {
-                                    setState(() {
-                                      selectedQueryType = result as int;
-                                      pickedBureau = _getBureausNames[result];
-                                      numberPerBureau();
-                                    });
-                                  },
-                                  itemBuilder: (context) {
-                                    return List.generate(
-                                      _getBureausNames.length,
-                                      (index) {
-                                        return PopupMenuItem(
-                                          value: index,
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.centerLeft,
-                                                width: 240,
-                                                child: FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    _getBureausNames[index]
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      },
+                        if (_isLoading)
+                          Container()
+                        else
+                          SizedBox(
+                            child: PopupMenuButton(
+                              onSelected: (result) {
+                                setState(() {
+                                  selectedQueryType = result as int;
+                                  pickedBureau = _getBureausNames[result];
+                                  numberPerBureau();
+                                });
+                              },
+                              itemBuilder: (context) {
+                                return List.generate(
+                                  _getBureausNames.length,
+                                  (index) {
+                                    return PopupMenuItem(
+                                      value: index,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            width: 240,
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                _getBureausNames[index]
+                                                    .toString(),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     );
                                   },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: DropdownButton(
-                                      value: this.selectedQueryType,
-                                      items: getDropdownMenuItemList(
-                                          _getBureausNames),
-                                    ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8),
                                   ),
                                 ),
+                                alignment: Alignment.center,
+                                child: DropdownButton(
+                                  value: selectedQueryType,
+                                  items:
+                                      getDropdownMenuItemList(_getBureausNames),
+                                ),
                               ),
+                            ),
+                          ),
                         InkWell(
                           onTap: () async {
-                            bool isSuccessful = await addNumberDialog(context,
+                            final bool? isSuccessful = await addNumberDialog(
+                                context,
                                 bureauNames: _getBureausNames);
-                            if (isSuccessful) _updateNumbers();
+                            if (isSuccessful!) _updateNumbers();
                           },
                           child: SizedBox(
                             width: 200,
@@ -221,7 +223,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Expanded(
@@ -239,9 +241,9 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                     ),
                   ),
                   if (_isLoading == true)
-                    Expanded(
+                    const Expanded(
                       flex: 80,
-                      child: const SizedBox(
+                      child: SizedBox(
                         height: 60,
                         child: Center(
                           child: SizedBox(
