@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/user_results_model.dart';
 
 class UserResultsProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
+  static final _log = Logger("UserResultsProvider");
 
   List<UserResults> _userResults = [];
 
@@ -25,6 +27,7 @@ class UserResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: /getUserResults, statusCode == 200");
       final jsonResponse = jsonDecode(response.body);
       debugPrint("getUserResults: $jsonResponse");
       final List<UserResults> _result = [];
@@ -36,6 +39,7 @@ class UserResultsProvider with ChangeNotifier {
       });
       _userResults = _result;
     } else {
+      _log.warning("API CALL: /getUserResults failed!");
       throw Exception('Failed to load user results');
     }
   }

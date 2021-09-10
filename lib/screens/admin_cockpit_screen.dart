@@ -498,6 +498,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                   ),
                                 ),
                                 Expanded(
+                                  /*
                                   child: Container(
                                     margin: const EdgeInsets.all(20),
                                     height: 200,
@@ -514,7 +515,8 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       ],
                                       color: Colors.grey[300],
                                     ),
-                                  ),
+                                    */
+                                  child: Container(),
                                 ),
                               ],
                             )

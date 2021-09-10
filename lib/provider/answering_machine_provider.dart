@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:rgntrainer_frontend/host.dart';
 import 'package:rgntrainer_frontend/models/configuration_model.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +8,7 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 
 class AnsweringMachineProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
+  static final _log = Logger("AnsweringMachineProvider");
 
   ConfigurationSummary greetingConfigurationSummary =
       ConfigurationSummary.init();
@@ -51,9 +53,9 @@ class AnsweringMachineProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
+      _log.info("API CALL: /getResponderConfiguration, statusCode == 200");
       final Map<String, dynamic> responseData =
           json.decode(response.body) as Map<String, dynamic>;
-      debugPrint("getAnsweringMachineConfiguration:$response.body");
       greetingConfigurationSummary =
           ConfigurationSummary.fromJsonGreeting(responseData);
       _pickedBureauGreeting = greetingConfigurationSummary.bureaus![0];
@@ -61,6 +63,7 @@ class AnsweringMachineProvider with ChangeNotifier {
       _isLoadingGetGreeting = false;
       notifyListeners();
     } else {
+      _log.warning("API CALL: /getResponderConfiguration failed!");
       throw Exception('Unable to get ResponderConfiguration!');
     }
   }
@@ -79,8 +82,9 @@ class AnsweringMachineProvider with ChangeNotifier {
       body: openingJson,
     );
     if (response.statusCode == 200) {
-      debugPrint("setAnsweringMachineConfiguration: $response");
+      _log.info("API CALL: /setResponderConfiguration, statusCode == 200");
     } else {
+      _log.warning("API CALL: /setResponderConfiguration failed!");
       throw Exception('Unable to set GreetingConfiguration!');
     }
   }

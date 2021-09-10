@@ -11,6 +11,7 @@ import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/add_number_dialog.dart';
 import 'package:rgntrainer_frontend/widgets/error_dialog.dart';
+import 'package:rgntrainer_frontend/widgets/status_dialog_widget.dart';
 import 'package:rgntrainer_frontend/widgets/text_dialog_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
@@ -144,63 +145,65 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                           "Nummern der Büros für ${_currentUser.username}",
                           style: const TextStyle(fontSize: 34),
                         ),
-                        _isLoading
-                            ? Container()
-                            : SizedBox(
-                                child: PopupMenuButton(
-                                  onSelected: (result) {
-                                    setState(() {
-                                      selectedQueryType = result as int;
-                                      pickedBureau = _getBureausNames[result];
-                                      numberPerBureau();
-                                    });
-                                  },
-                                  itemBuilder: (context) {
-                                    return List.generate(
-                                      _getBureausNames.length,
-                                      (index) {
-                                        return PopupMenuItem(
-                                          value: index,
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.centerLeft,
-                                                width: 240,
-                                                child: FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    _getBureausNames[index]
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      },
+                        if (_isLoading)
+                          Container()
+                        else
+                          SizedBox(
+                            child: PopupMenuButton(
+                              onSelected: (result) {
+                                setState(() {
+                                  selectedQueryType = result as int;
+                                  pickedBureau = _getBureausNames[result];
+                                  numberPerBureau();
+                                });
+                              },
+                              itemBuilder: (context) {
+                                return List.generate(
+                                  _getBureausNames.length,
+                                  (index) {
+                                    return PopupMenuItem(
+                                      value: index,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            width: 240,
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                _getBureausNames[index]
+                                                    .toString(),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     );
                                   },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: DropdownButton(
-                                      value: this.selectedQueryType,
-                                      items: getDropdownMenuItemList(
-                                          _getBureausNames),
-                                    ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8),
                                   ),
                                 ),
+                                alignment: Alignment.center,
+                                child: DropdownButton(
+                                  value: selectedQueryType,
+                                  items:
+                                      getDropdownMenuItemList(_getBureausNames),
+                                ),
                               ),
+                            ),
+                          ),
                         InkWell(
                           onTap: () async {
-                            bool isSuccessful = await addNumberDialog(context,
+                            final bool? isSuccessful = await addNumberDialog(
+                                context,
                                 bureauNames: _getBureausNames);
-                            if (isSuccessful) _updateNumbers();
+                            if (isSuccessful!) _updateNumbers();
                           },
                           child: SizedBox(
                             width: 200,
@@ -221,7 +224,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Expanded(
@@ -239,9 +242,9 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                     ),
                   ),
                   if (_isLoading == true)
-                    Expanded(
+                    const Expanded(
                       flex: 80,
-                      child: const SizedBox(
+                      child: SizedBox(
                         height: 60,
                         child: Center(
                           child: SizedBox(
@@ -273,6 +276,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     "Vorname",
     "Nachname",
     "Email",
+    "Status",
   ];
 
   List<DataColumn> getColumns(List<String> columns) {
@@ -288,15 +292,19 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
           number.department,
           number.firstname,
           number.lastname,
-          number.email
+          number.email,
+          number.isActive,
         ];
 
         return DataRow(
           cells: modelBuilder(cells, (index, cell) {
-            final showEditIcon =
-                index == 2 || index == 3 || index == 4 || index == 5;
+            final showEditIcon = index == 2 ||
+                index == 3 ||
+                index == 4 ||
+                index == 5 ||
+                index == 6;
             return DataCell(
-              Text('$cell'),
+              dataCellWidget(number, index, cell),
               showEditIcon: showEditIcon,
               onTap: () {
                 switch (index) {
@@ -312,12 +320,33 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                   case 5:
                     editEmail(number);
                     break;
+                  case 6:
+                    editStatus(number);
+                    break;
                 }
               },
             );
           }),
         );
       }).toList();
+
+  Widget dataCellWidget(number, index, cell) {
+    if (index != 6) {
+      return Text('$cell');
+    } else {
+      if (number.isActive == true) {
+        return Icon(
+          Icons.check,
+          color: Colors.green,
+        );
+      } else {
+        return Icon(
+          Icons.clear,
+          color: Colors.red,
+        );
+      }
+    }
+  }
 
   Future editDepartment(Number editUser) async {
     final department = await showTextDialog(
@@ -328,14 +357,14 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     if (department != null) {
       try {
         await Provider.of<NumbersProvider>(context, listen: false).updateUser(
-            token: _currentUser.token!,
-            basepool_id: editUser.basepool_id,
-            user_id: editUser.user_id,
-            department: department, //To be changed!
-            firstName: editUser.firstname,
-            lastName: editUser.lastname,
-            email: editUser.email,
-            ctx: context);
+          token: _currentUser.token!,
+          basepool_id: editUser.basepool_id,
+          user_id: editUser.user_id,
+          department: department, //To be changed!
+          firstName: editUser.firstname,
+          lastName: editUser.lastname,
+          email: editUser.email,
+        );
         // update hole list
         _numbers = _numbers.map((user) {
           final isEditedUser = user == editUser;
@@ -363,14 +392,14 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     if (firstName != null) {
       try {
         await Provider.of<NumbersProvider>(context, listen: false).updateUser(
-            token: _currentUser.token!,
-            basepool_id: editUser.basepool_id,
-            user_id: editUser.user_id,
-            department: editUser.department,
-            firstName: firstName, //To be changed!
-            lastName: editUser.lastname,
-            email: editUser.email,
-            ctx: context);
+          token: _currentUser.token!,
+          basepool_id: editUser.basepool_id,
+          user_id: editUser.user_id,
+          department: editUser.department,
+          firstName: firstName, //To be changed!
+          lastName: editUser.lastname,
+          email: editUser.email,
+        );
         // update hole list
         _numbers = _numbers.map((user) {
           final isEditedUser = user == editUser;
@@ -398,14 +427,14 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     if (lastName != null) {
       try {
         await Provider.of<NumbersProvider>(context, listen: false).updateUser(
-            token: _currentUser.token!,
-            basepool_id: editUser.basepool_id,
-            user_id: editUser.user_id,
-            department: editUser.department,
-            firstName: editUser.firstname,
-            lastName: lastName, //To be changed!
-            email: editUser.email,
-            ctx: context);
+          token: _currentUser.token!,
+          basepool_id: editUser.basepool_id,
+          user_id: editUser.user_id,
+          department: editUser.department,
+          firstName: editUser.firstname,
+          lastName: lastName, //To be changed!
+          email: editUser.email,
+        );
         //update hole list
         _numbers = _numbers.map((user) {
           final isEditedUser = user == editUser;
@@ -433,14 +462,14 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
     if (eMail != null) {
       try {
         await Provider.of<NumbersProvider>(context, listen: false).updateUser(
-            token: _currentUser.token!,
-            basepool_id: editUser.basepool_id,
-            user_id: editUser.user_id,
-            department: editUser.department,
-            firstName: editUser.firstname,
-            lastName: editUser.lastname,
-            email: eMail, //To be changed!
-            ctx: context);
+          token: _currentUser.token!,
+          basepool_id: editUser.basepool_id,
+          user_id: editUser.user_id,
+          department: editUser.department,
+          firstName: editUser.firstname,
+          lastName: editUser.lastname,
+          email: eMail, //To be changed!
+        );
         //update hole list
         _numbers = _numbers.map((user) {
           final isEditedUser = user == editUser;
@@ -454,6 +483,37 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       } catch (error) {
         SelfMadeErrorDialog.showErrorDialog(
             message: "Die neue Email konnte nicht abgespeichert werden!",
+            context: context);
+      }
+    }
+  }
+
+  Future editStatus(Number editUser) async {
+    final isActive = await showStatusTextDialog(
+      context,
+      title: 'Status aktualisieren',
+      value: editUser.isActive,
+    );
+    if (isActive != null) {
+      try {
+        await Provider.of<NumbersProvider>(context, listen: false).setUserState(
+          token: _currentUser.token!,
+          basepool_id: editUser.basepool_id,
+          userState: isActive, //To be changed!
+        );
+        //update hole list
+        _numbers = _numbers.map((user) {
+          final isEditedUser = user == editUser;
+          return isEditedUser ? user.copy(isActive: isActive) : user;
+        }).toList();
+        // Also apply to current selection
+        setState(() => _numberPerBureau = _numberPerBureau.map((user) {
+              final isEditedUser = user == editUser;
+              return isEditedUser ? user.copy(isActive: isActive) : user;
+            }).toList());
+      } catch (error) {
+        SelfMadeErrorDialog.showErrorDialog(
+            message: "Der neue Status konnte nicht abgespeichert werden!",
             context: context);
       }
     }
