@@ -55,9 +55,11 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: createUser statusCode == 200");
+      _log.info("API CALL: /createUser, statusCode == 200");
     } else {
-      _log.warning("API CALL: createUser failed!");
+      SelfMadeErrorDialog.showErrorDialog(
+          message: response.body.toString(), context: ctx);
+      _log.warning("API CALL: /createUser failed!");
       throw Exception('Failed to create User!');
     }
   }
@@ -75,7 +77,7 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: getAllUsers statusCode == 200");
+      _log.info("API CALL: /getAllUsers, statusCode == 200");
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<Number> _result = [];
       final List<dynamic> _temp = jsonResponse as List<dynamic>;
@@ -86,7 +88,7 @@ class NumbersProvider with ChangeNotifier {
       _nummern = _result;
       return _result;
     } else {
-      _log.warning("API CALL: getAllUsers failed!");
+      _log.warning("API CALL: /getAllUsers, failed!");
       throw Exception('Failed to load getTotalResults');
     }
   }
@@ -100,7 +102,6 @@ class NumbersProvider with ChangeNotifier {
     required String firstName,
     required String lastName,
     required String email,
-    required BuildContext ctx,
   }) async {
     final url = Uri.parse('$activeHost/updateUser');
     final response = await post(
@@ -119,9 +120,9 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: updateUser statusCode == 200");
+      _log.info("API CALL: /updateUser, statusCode == 200");
     } else {
-      _log.warning("API CALL: updateUser failed!");
+      _log.warning("API CALL: /updateUser failed!");
       throw Exception('Failed to update User!');
     }
   }
@@ -145,9 +146,9 @@ class NumbersProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: setUserState statusCode == 200");
+      _log.info("API CALL: /setUserState, statusCode == 200");
     } else {
-      _log.warning("API CALL: setUserState failed!");
+      _log.warning("API CALL: /setUserState failed!");
       throw Exception('Failed to setUserState!');
     }
   }

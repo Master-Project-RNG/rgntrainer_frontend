@@ -207,7 +207,7 @@ class _NavBarWidgetState extends State<NavBarWidget> {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     const SizedBox(
-                      width: 40,
+                      width: 30,
                     ),
                     SizedBox(
                       width: 30,

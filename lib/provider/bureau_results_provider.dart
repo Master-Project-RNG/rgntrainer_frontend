@@ -40,7 +40,7 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: getTotalResults statusCode == 200");
+      _log.info("API CALL: /getTotalResults, statusCode == 200");
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<BureauResults> _result = [];
       final List<dynamic> _temp = jsonResponse as List<dynamic>;
@@ -53,7 +53,7 @@ class BureauResultsProvider with ChangeNotifier {
       _bureauResults = _result;
       return _result;
     } else {
-      _log.warning("API CALL: getTotalResults failed!");
+      _log.warning("API CALL: /getTotalResults failed!");
       throw Exception('Failed to load getTotalResults');
     }
   }
@@ -73,8 +73,7 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: getTotalResultsWeekly statusCode == 200");
-      // print(response.body);
+      _log.info("API CALL: /getTotalResultsWeekly, statusCode == 200");
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<Diagram> _result = [];
       // ignore: avoid_function_literals_in_foreach_calls
@@ -86,7 +85,7 @@ class BureauResultsProvider with ChangeNotifier {
       _diagramResults = _result;
       return _result;
     } else {
-      _log.warning("API CALL: getTotalResultsWeekly failed!");
+      _log.warning("API CALL: /getTotalResultsWeekly failed!");
       throw Exception('Failed to load getTotalResultsWeekly');
     }
   }
@@ -104,7 +103,7 @@ class BureauResultsProvider with ChangeNotifier {
       }),
     );
     if (response.statusCode == 200) {
-      _log.info("API CALL: getAllBureaus statusCode == 200");
+      _log.info("API CALL: /getAllBureaus, statusCode == 200");
       //TODO: Sort alphabetically
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<String> _result = [];
@@ -115,7 +114,7 @@ class BureauResultsProvider with ChangeNotifier {
       _bureauNames = _result;
       return _result;
     } else {
-      _log.warning("API CALL: getAllBureaus failed!");
+      _log.warning("API CALL: /getAllBureaus failed!");
       throw Exception('Failed to load getAllBureaus');
     }
   }
