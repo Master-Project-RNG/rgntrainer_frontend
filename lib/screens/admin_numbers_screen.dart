@@ -7,6 +7,7 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_numbers_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
+import 'package:rgntrainer_frontend/screens/configuration/MyCustomScrollBehavior.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/add_number_dialog.dart';
@@ -530,10 +531,17 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       rows: _isLoading ? [] : getRows(_numberPerBureau),
     );
 
+    final ScrollController controller = ScrollController();
+
     final deviceSize = MediaQuery.of(context).size;
     if (deviceSize.width < 1500) {
-      return SingleChildScrollView(
-          scrollDirection: Axis.horizontal, child: dataTable);
+      return ScrollConfiguration(
+        behavior: MyCustomScrollBehavior(),
+        child: SingleChildScrollView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            child: dataTable),
+      );
     } else {
       return dataTable;
     }

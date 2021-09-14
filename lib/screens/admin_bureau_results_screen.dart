@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 import 'package:rgntrainer_frontend/models/call_type.dart';
@@ -8,6 +9,7 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
+import 'package:rgntrainer_frontend/screens/configuration/MyCustomScrollBehavior.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
@@ -325,9 +327,11 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                             height: 40,
                             child: Container(
                               decoration: const BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
+                                color: Colors.black,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                              ),
                               alignment: Alignment.center,
                               child: DropdownButton(
                                 value: callType == CallType.Standart ? 0 : 1,
@@ -449,21 +453,24 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                   const SizedBox(
                     height: 15,
                   ),
-                  Expanded(
-                    flex: 6,
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-                      child: ListView(
-                        children: [
-                          Container(
-                            color: Colors.grey[200],
-                            child: bureauResultsData(
-                                _myBureauResultsProvider, callType),
-                          ),
-                        ],
+                  //Expanded(
+                  //  flex: 6,
+                  /* child: */ Container(
+                    padding: const EdgeInsets.only(left: 50.0, right: 50.0),
+                    child: //ListView(
+                        // children: [
+                        SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                        color: Colors.grey[200],
+                        child: bureauResultsData(
+                            _myBureauResultsProvider, callType),
+                        // ),
+                        // ],
                       ),
                     ),
                   ),
+                  //  ),
                   if (_isLoading == true)
                     Expanded(
                       flex: 80,
@@ -508,10 +515,17 @@ class _AdminResultsState extends State<AdminResultsScreen> {
           : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
     );
 
+    final ScrollController controller = ScrollController();
     final deviceSize = MediaQuery.of(context).size;
     if (deviceSize.width < 2850) {
-      return SingleChildScrollView(
-          scrollDirection: Axis.horizontal, child: dataTable);
+      return ScrollConfiguration(
+        behavior: MyCustomScrollBehavior(),
+        child: SingleChildScrollView(
+          controller: controller,
+          scrollDirection: Axis.horizontal,
+          child: dataTable,
+        ),
+      );
     } else {
       return dataTable;
     }
