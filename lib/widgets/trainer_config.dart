@@ -63,7 +63,7 @@ class _TrainerConfigurationState extends State<TrainerConfiguration> {
                   ),
                 ),
                 title: const Text(
-                  "Trainer starten",
+                  "Allgemeine Einstellungen",
                   style: TextStyle(color: Colors.white),
                 ),
                 centerTitle: true,

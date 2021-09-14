@@ -7,6 +7,7 @@ import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/provider/admin_numbers_provider.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
+import 'package:rgntrainer_frontend/screens/configuration/MyCustomScrollBehavior.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
 import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:rgntrainer_frontend/widgets/add_number_dialog.dart';
@@ -149,47 +150,49 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                           Container()
                         else
                           SizedBox(
-                            child: PopupMenuButton(
-                              onSelected: (result) {
-                                setState(() {
-                                  selectedQueryType = result as int;
-                                  pickedBureau = _getBureausNames[result];
-                                  numberPerBureau();
-                                });
-                              },
-                              itemBuilder: (context) {
-                                return List.generate(
-                                  _getBureausNames.length,
-                                  (index) {
-                                    return PopupMenuItem(
-                                      value: index,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            alignment: Alignment.centerLeft,
-                                            width: 240,
-                                            child: FittedBox(
-                                              fit: BoxFit.scaleDown,
-                                              child: Text(
-                                                _getBureausNames[index]
-                                                    .toString(),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[100],
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(8),
-                                  ),
+                            width: 260,
+                            height: 40,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
                                 ),
-                                alignment: Alignment.center,
+                              ),
+                              alignment: Alignment.center,
+                              child: PopupMenuButton(
+                                onSelected: (result) {
+                                  setState(() {
+                                    selectedQueryType = result as int;
+                                    pickedBureau = _getBureausNames[result];
+                                    numberPerBureau();
+                                  });
+                                },
+                                itemBuilder: (context) {
+                                  return List.generate(
+                                    _getBureausNames.length,
+                                    (index) {
+                                      return PopupMenuItem(
+                                        value: index,
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              width: 240,
+                                              child: FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                child: Text(
+                                                  _getBureausNames[index]
+                                                      .toString(),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
                                 child: DropdownButton(
                                   value: selectedQueryType,
                                   items:
@@ -335,12 +338,12 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       return Text('$cell');
     } else {
       if (number.isActive == true) {
-        return Icon(
+        return const Icon(
           Icons.check,
           color: Colors.green,
         );
       } else {
-        return Icon(
+        return const Icon(
           Icons.clear,
           color: Colors.red,
         );
@@ -349,7 +352,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   Future editDepartment(Number editUser) async {
-    final department = await showTextDialog(
+    final String? department = await showTextDialog(
       context,
       title: 'Abteilung aktualisieren',
       value: editUser.department,
@@ -384,7 +387,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   Future editFirstName(Number editUser) async {
-    final firstName = await showTextDialog(
+    final String? firstName = await showTextDialog(
       context,
       title: 'Vorname aktualisieren',
       value: editUser.firstname,
@@ -419,7 +422,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   Future editLastName(Number editUser) async {
-    final lastName = await showTextDialog(
+    final String? lastName = await showTextDialog(
       context,
       title: 'Nachname aktualisieren',
       value: editUser.lastname,
@@ -454,7 +457,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   Future editEmail(Number editUser) async {
-    final eMail = await showTextDialog(
+    final String? eMail = await showTextDialog(
       context,
       title: 'Email aktualisieren',
       value: editUser.email,
@@ -489,7 +492,7 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   Future editStatus(Number editUser) async {
-    final isActive = await showStatusTextDialog(
+    final bool? isActive = await showStatusTextDialog(
       context,
       title: 'Status aktualisieren',
       value: editUser.isActive,
@@ -520,18 +523,25 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
   }
 
   Widget buildDataTable() {
-    DataTable dataTable = DataTable(
+    final DataTable dataTable = DataTable(
       headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
-      headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
+      headingTextStyle: const TextStyle(fontWeight: FontWeight.bold),
       dataRowHeight: 35,
       columns: getColumns(columns),
       rows: _isLoading ? [] : getRows(_numberPerBureau),
     );
 
+    final ScrollController controller = ScrollController();
+
     final deviceSize = MediaQuery.of(context).size;
     if (deviceSize.width < 1500) {
-      return SingleChildScrollView(
-          scrollDirection: Axis.horizontal, child: dataTable);
+      return ScrollConfiguration(
+        behavior: MyCustomScrollBehavior(),
+        child: SingleChildScrollView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            child: dataTable),
+      );
     } else {
       return dataTable;
     }
@@ -546,10 +556,11 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
           .toList();
 
   List<DropdownMenuItem> getDropdownMenuItemList(List<String> bureauNames) {
-    List<DropdownMenuItem> result = [];
+    final List<DropdownMenuItem> result = [];
     for (int i = 0; i < bureauNames.length; i++) {
       result.add(
         DropdownMenuItem(
+          value: i,
           child: Container(
             alignment: Alignment.centerLeft,
             width: 210,
@@ -558,16 +569,14 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                 fit: BoxFit.scaleDown,
                 child: Text(
                   _getBureausNames[i],
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 30,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
           ),
-          value: i,
         ),
       );
     }
