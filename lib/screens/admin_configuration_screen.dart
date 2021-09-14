@@ -105,7 +105,7 @@ class _AdminCardState extends State<AdminCard> {
 
   Widget normalWidth(Size deviceSize) {
     return Container(
-      margin: const EdgeInsets.all(50.0),
+      margin: const EdgeInsets.only(right: 50.0, left: 50.0, top: 20),
       child: Center(
         child: Column(
           children: [
