@@ -74,38 +74,61 @@ class _DiagramScreenState extends State<DiagramScreen> {
               body: Column(
                 children: [
                   TitleWidget("Diagram"),
-                  Expanded(
-                    child: Container(
-                      constraints: BoxConstraints(minHeight: 800),
-                      color: Colors.grey[100],
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              constraints: BoxConstraints(minHeight: 800),
-                              padding: EdgeInsets.all(100),
-                              height: double.infinity,
-                              color: Colors.grey[100],
-                              child: LineChartWidget(
-                                callType: CallType.Standart,
-                              ),
+                  MediaQuery.of(context).size.width > 1500
+                      ? Expanded(
+                          child: Container(
+                            constraints: BoxConstraints(minHeight: 800),
+                            color: Colors.grey[100],
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    constraints: BoxConstraints(minHeight: 800),
+                                    padding: EdgeInsets.all(100),
+                                    height: double.infinity,
+                                    color: Colors.grey[100],
+                                    child: LineChartWidget(
+                                      callType: CallType.Standart,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    constraints: BoxConstraints(minHeight: 800),
+                                    padding: EdgeInsets.all(100),
+                                    height: double.infinity,
+                                    color: Colors.grey[100],
+                                    child: LineChartWidget(
+                                      callType: CallType.Anrufbeantworter,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              constraints: BoxConstraints(minHeight: 800),
-                              padding: EdgeInsets.all(100),
-                              height: double.infinity,
-                              color: Colors.grey[100],
-                              child: LineChartWidget(
-                                callType: CallType.Anrufbeantworter,
+                        )
+                      : Expanded(
+                          child: ListView(
+                            children: [
+                              Container(
+                                height: 800,
+                                padding: EdgeInsets.all(50),
+                                color: Colors.grey[100],
+                                child: LineChartWidget(
+                                  callType: CallType.Standart,
+                                ),
                               ),
-                            ),
+                              Container(
+                                height: 800,
+                                padding: EdgeInsets.all(50),
+                                color: Colors.grey[100],
+                                child: LineChartWidget(
+                                  callType: CallType.Anrufbeantworter,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
                 ],
               ),
             ),
