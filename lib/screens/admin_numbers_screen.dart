@@ -93,6 +93,86 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget BureauButton() {
+      if (_isLoading)
+        return Container();
+      else
+        return SizedBox(
+          width: 260,
+          height: 40,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+            ),
+            alignment: Alignment.center,
+            child: PopupMenuButton(
+              onSelected: (result) {
+                setState(() {
+                  selectedQueryType = result as int;
+                  pickedBureau = _getBureausNames[result];
+                  numberPerBureau();
+                });
+              },
+              itemBuilder: (context) {
+                return List.generate(
+                  _getBureausNames.length,
+                  (index) {
+                    return PopupMenuItem(
+                      value: index,
+                      child: Row(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            width: 240,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                _getBureausNames[index].toString(),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: DropdownButton(
+                value: selectedQueryType,
+                items: getDropdownMenuItemList(_getBureausNames),
+              ),
+            ),
+          ),
+        );
+    }
+
+    Widget AddNumberButton() {
+      return InkWell(
+        onTap: () async {
+          final bool? isSuccessful =
+              await addNumberDialog(context, bureauNames: _getBureausNames);
+          if (isSuccessful!) _updateNumbers();
+        },
+        child: SizedBox(
+          width: 200,
+          height: 40,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: const BorderRadius.all(Radius.circular(5))),
+            alignment: Alignment.center,
+            child: const Text(
+              'Nummer hinzufügen',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    }
+
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
@@ -139,93 +219,34 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
                   Container(
                     padding:
                         const EdgeInsets.only(left: 50, top: 50, right: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Nummern der Büros für ${_currentUser.username}",
-                          style: const TextStyle(fontSize: 34),
-                        ),
-                        if (_isLoading)
-                          Container()
-                        else
-                          SizedBox(
-                            width: 260,
-                            height: 40,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
+                    child: MediaQuery.of(context).size.width > 1600
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Nummern der Büros für ${_currentUser.username}",
+                                style: const TextStyle(fontSize: 34),
                               ),
-                              alignment: Alignment.center,
-                              child: PopupMenuButton(
-                                onSelected: (result) {
-                                  setState(() {
-                                    selectedQueryType = result as int;
-                                    pickedBureau = _getBureausNames[result];
-                                    numberPerBureau();
-                                  });
-                                },
-                                itemBuilder: (context) {
-                                  return List.generate(
-                                    _getBureausNames.length,
-                                    (index) {
-                                      return PopupMenuItem(
-                                        value: index,
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              alignment: Alignment.centerLeft,
-                                              width: 240,
-                                              child: FittedBox(
-                                                fit: BoxFit.scaleDown,
-                                                child: Text(
-                                                  _getBureausNames[index]
-                                                      .toString(),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: DropdownButton(
-                                  value: selectedQueryType,
-                                  items:
-                                      getDropdownMenuItemList(_getBureausNames),
-                                ),
+                              BureauButton(),
+                              AddNumberButton(),
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              Text(
+                                "Nummern der Büros für ${_currentUser.username}",
+                                style: const TextStyle(fontSize: 34),
                               ),
-                            ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              BureauButton(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              AddNumberButton(),
+                            ],
                           ),
-                        InkWell(
-                          onTap: () async {
-                            final bool? isSuccessful = await addNumberDialog(
-                                context,
-                                bureauNames: _getBureausNames);
-                            if (isSuccessful!) _updateNumbers();
-                          },
-                          child: SizedBox(
-                            width: 200,
-                            height: 40,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(5))),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                'Nummer hinzufügen',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(
                     height: 15,
