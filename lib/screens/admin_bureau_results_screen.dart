@@ -237,12 +237,165 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       },
     );
 
+    Widget ResultTypeButton() {
+      return PopupMenuButton(
+        onSelected: (result) {
+          if (result == 0) {
+            setState(() {
+              this.callType = CallType.Standart;
+            });
+          } else if (result == 1) {
+            setState(() {
+              this.callType = CallType.Anrufbeantworter;
+            });
+          }
+        },
+        itemBuilder: (context) {
+          return List.generate(
+            2,
+            (index) {
+              return PopupMenuItem(
+                value: index,
+                child: Row(
+                  children: [
+                    if (index == 0)
+                      Text("Standart")
+                    else
+                      Text("Anrufbeantworter"),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: SizedBox(
+          width: 200,
+          height: 40,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+            ),
+            alignment: Alignment.center,
+            child: DropdownButton(
+              value: callType == CallType.Standart ? 0 : 1,
+              items: [
+                const DropdownMenuItem(
+                  value: 0,
+                  child: Text(
+                    "Standart",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const DropdownMenuItem(
+                  value: 1,
+                  child: Text(
+                    "Anrufbeantworter",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget HideColumnsButton() {
+      return PopupMenuButton(
+        itemBuilder: (context) {
+          return callType == CallType.Standart
+              ? popupMenuEntry_StandartList
+              : popupMenuEntry_ABList;
+        },
+        child: SizedBox(
+          width: 200,
+          height: 40,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: const BorderRadius.all(Radius.circular(5))),
+            alignment: Alignment.center,
+            child: const Text(
+              'Spalten ein-/ausblenden',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget ExportResultsButton() {
+      final _myDownloadResultsProvider =
+          context.watch<DownloadResultsProvider>();
+      final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
+      return Container(
+        child: PopupMenuButton(
+          onSelected: (result) {
+            if (_isLoading == true) {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Geduld bitte'),
+                  content: Text("Die Einträge werden noch geladen."),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      child: const Text('Schliessen!'),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              if (result == 0) {
+                _myDownloadResultsProvider.getExcelResults(_currentUser.token);
+              } else if (result == 1) {
+                _myDownloadResultsProvider.getJsonResults(
+                    _currentUser.token, _myBureauResultsProvider.bureauResults);
+              }
+            }
+          },
+          itemBuilder: (context) {
+            return List.generate(
+              2,
+              (index) {
+                return PopupMenuItem(
+                  value: index,
+                  child: Row(
+                    children: [
+                      if (index == 0) Text("Excel") else Text("Json"),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+          child: SizedBox(
+            width: 200,
+            height: 40,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(5))),
+              alignment: Alignment.center,
+              child: const Text(
+                'Exportieren',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
-      final _myDownloadResultsProvider =
-          context.watch<DownloadResultsProvider>();
       return Row(
         children: [
           NavBarWidget(_currentUser),
@@ -284,193 +437,64 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 children: [
                   TitleWidget("Abfragen"),
                   Container(
-                    padding: const EdgeInsets.only(left: 50, top: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Resultate der Büros für ${_currentUser.username}",
-                          style: const TextStyle(fontSize: 34),
-                        ),
-                        PopupMenuButton(
-                          onSelected: (result) {
-                            if (result == 0) {
-                              setState(() {
-                                this.callType = CallType.Standart;
-                              });
-                            } else if (result == 1) {
-                              setState(() {
-                                this.callType = CallType.Anrufbeantworter;
-                              });
-                            }
-                          },
-                          itemBuilder: (context) {
-                            return List.generate(
-                              2,
-                              (index) {
-                                return PopupMenuItem(
-                                  value: index,
-                                  child: Row(
-                                    children: [
-                                      if (index == 0)
-                                        Text("Standart")
-                                      else
-                                        Text("Anrufbeantworter"),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: SizedBox(
-                            width: 200,
-                            height: 40,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
+                    padding:
+                        const EdgeInsets.only(left: 50, top: 50, right: 50),
+                    child: MediaQuery.of(context).size.width > 1600
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Resultate der Büros für ${_currentUser.username}",
+                                style: const TextStyle(fontSize: 34),
                               ),
-                              alignment: Alignment.center,
-                              child: DropdownButton(
-                                value: callType == CallType.Standart ? 0 : 1,
-                                items: [
-                                  const DropdownMenuItem(
-                                    value: 0,
-                                    child: Text(
-                                      "Standart",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                  const DropdownMenuItem(
-                                    value: 1,
-                                    child: Text(
-                                      "Anrufbeantworter",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                ],
+                              ResultTypeButton(),
+                              HideColumnsButton(),
+                              ExportResultsButton(),
+                            ],
+                          )
+                        : Column(
+                            //mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Resultate der Büros für ${_currentUser.username}",
+                                style: const TextStyle(fontSize: 34),
                               ),
-                            ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              ResultTypeButton(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              HideColumnsButton(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              ExportResultsButton(),
+                            ],
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: PopupMenuButton(
-                            itemBuilder: (context) {
-                              return callType == CallType.Standart
-                                  ? popupMenuEntry_StandartList
-                                  : popupMenuEntry_ABList;
-                            },
-                            child: SizedBox(
-                              width: 200,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(5))),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'Spalten ein-/ausblenden',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(right: 50),
-                          child: PopupMenuButton(
-                            onSelected: (result) {
-                              if (_isLoading == true) {
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: const Text('Geduld bitte'),
-                                    content: Text(
-                                        "Die Einträge werden noch geladen."),
-                                    actions: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child: const Text('Schliessen!'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                if (result == 0) {
-                                  _myDownloadResultsProvider
-                                      .getExcelResults(_currentUser.token);
-                                } else if (result == 1) {
-                                  _myDownloadResultsProvider.getJsonResults(
-                                      _currentUser.token,
-                                      _myBureauResultsProvider.bureauResults);
-                                }
-                              }
-                            },
-                            itemBuilder: (context) {
-                              return List.generate(
-                                2,
-                                (index) {
-                                  return PopupMenuItem(
-                                    value: index,
-                                    child: Row(
-                                      children: [
-                                        if (index == 0)
-                                          Text("Excel")
-                                        else
-                                          Text("Json"),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: SizedBox(
-                              width: 200,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(5))),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'Exportieren',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  //Expanded(
-                  //  flex: 6,
-                  /* child: */ Container(
-                    padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-                    child: //ListView(
-                        // children: [
-                        SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Container(
-                        color: Colors.grey[200],
-                        child: bureauResultsData(
-                            _myBureauResultsProvider, callType),
-                        // ),
-                        // ],
+                  Expanded(
+                    flex: 6,
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 50.0, right: 50.0),
+                      child: ListView(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Container(
+                              color: Colors.grey[200],
+                              child: bureauResultsData(
+                                  _myBureauResultsProvider, callType),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  //  ),
                   if (_isLoading == true)
                     Expanded(
                       flex: 80,
