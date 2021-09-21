@@ -122,9 +122,10 @@ class LineChartWidgetState extends State<LineChartWidget> {
                   widget.callType == CallType.Standart
                       ? IconButton(
                           icon: Icon(
-                            Icons.refresh,
+                            Icons.change_circle,
                             color: Colors.black
                                 .withOpacity(isShowingMainData ? 1.0 : 0.5),
+                            size: 40,
                           ),
                           onPressed: () {
                             setState(() {
