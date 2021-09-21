@@ -36,7 +36,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
   int? sortColumnIndex; //Reflects the column that is currently sorted!
   bool isAscending = false;
 
-  List<bool> showColumns = [
+  List<bool> showColumnsStandart = [
+    true, //0
     true,
     true,
     true,
@@ -46,6 +47,13 @@ class _AdminResultsState extends State<AdminResultsScreen> {
     true,
     true,
     true,
+    true, //10
+    true,
+    true, //12
+  ];
+
+  List<bool> showColumnsAB = [
+    true, //0
     true,
     true,
     true,
@@ -55,6 +63,11 @@ class _AdminResultsState extends State<AdminResultsScreen> {
     true,
     true,
     true,
+    true, //10
+    true,
+    true,
+    true,
+    true, //14
   ];
 
   final columnsStandart = [
@@ -141,11 +154,11 @@ class _AdminResultsState extends State<AdminResultsScreen> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if (isVisible(index, showColumns))
+                  if (isVisible(index, showColumnsStandart))
                     IconButton(
                       onPressed: () {
                         setState2(() {
-                          changeVisibilty(index, showColumns);
+                          changeVisibilty(index, showColumnsStandart);
                         });
                         setState(() {
                           _isLoading = false;
@@ -160,7 +173,7 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     IconButton(
                       onPressed: () {
                         setState2(() {
-                          changeVisibilty(index, showColumns);
+                          changeVisibilty(index, showColumnsStandart);
                         });
                         setState(() {
                           _isLoading = false;
@@ -189,11 +202,11 @@ class _AdminResultsState extends State<AdminResultsScreen> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if (isVisible(index, showColumns))
+                  if (isVisible(index, showColumnsAB))
                     IconButton(
                       onPressed: () {
                         setState2(() {
-                          changeVisibilty(index, showColumns);
+                          changeVisibilty(index, showColumnsAB);
                         });
                         setState(() {
                           _isLoading = false;
@@ -208,7 +221,7 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     IconButton(
                       onPressed: () {
                         setState2(() {
-                          changeVisibilty(index, showColumns);
+                          changeVisibilty(index, showColumnsAB);
                         });
                         setState(() {
                           _isLoading = false;
@@ -237,12 +250,169 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       },
     );
 
+    Widget ResultTypeButton() {
+      return PopupMenuButton(
+        onSelected: (result) {
+          if (result == 0) {
+            setState(() {
+              this.callType = CallType.Standart;
+            });
+          } else if (result == 1) {
+            setState(() {
+              this.callType = CallType.Anrufbeantworter;
+            });
+          }
+        },
+        itemBuilder: (context) {
+          return List.generate(
+            2,
+            (index) {
+              return PopupMenuItem(
+                value: index,
+                child: Row(
+                  children: [
+                    if (index == 0)
+                      Text("Standart")
+                    else
+                      Text("Anrufbeantworter"),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: SizedBox(
+          width: 200,
+          height: 40,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+            ),
+            alignment: Alignment.center,
+            child: DropdownButton(
+              value: callType == CallType.Standart ? 0 : 1,
+              items: [
+                const DropdownMenuItem(
+                  value: 0,
+                  child: Text(
+                    "Standart",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const DropdownMenuItem(
+                  value: 1,
+                  child: Text(
+                    "Anrufbeantworter",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget HideColumnsButton() {
+      return PopupMenuButton(
+        itemBuilder: (context) {
+          return callType == CallType.Standart
+              ? popupMenuEntry_StandartList
+              : popupMenuEntry_ABList;
+        },
+        child: SizedBox(
+          width: 200,
+          height: 40,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: const BorderRadius.all(Radius.circular(5))),
+            alignment: Alignment.center,
+            child: const Text(
+              'Spalten ein-/ausblenden',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget ExportResultsButton() {
+      final _myDownloadResultsProvider =
+          context.watch<DownloadResultsProvider>();
+      final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
+      return Container(
+        child: PopupMenuButton(
+          onSelected: (result) {
+            if (_isLoading == true) {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Geduld bitte'),
+                  content: Text("Die Einträge werden noch geladen."),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      child: const Text('Schliessen!'),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              if (result == 0) {
+                _myDownloadResultsProvider.getExcelResults(_currentUser.token);
+              } else if (result == 1) {
+                _myDownloadResultsProvider.getJsonResults(
+                    _currentUser.token, _myBureauResultsProvider.bureauResults);
+              }
+            }
+          },
+          itemBuilder: (context) {
+            return List.generate(
+              2,
+              (index) {
+                return PopupMenuItem(
+                  value: index,
+                  child: Row(
+                    children: [
+                      if (index == 0) Text("Excel") else Text("Json"),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+          child: SizedBox(
+            width: 200,
+            height: 40,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(5))),
+              alignment: Alignment.center,
+              child: const Text(
+                'Exportieren',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
+      var visibleColumnsStandartCount =
+          showColumnsStandart.where((item) => item == true).length;
+      var visibleColumnsABCount =
+          showColumnsAB.where((item) => item == true).length;
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
-      final _myDownloadResultsProvider =
-          context.watch<DownloadResultsProvider>();
       return Row(
         children: [
           NavBarWidget(_currentUser),
@@ -284,193 +454,69 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 children: [
                   TitleWidget("Abfragen"),
                   Container(
-                    padding: const EdgeInsets.only(left: 50, top: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Resultate der Büros für ${_currentUser.username}",
-                          style: const TextStyle(fontSize: 34),
-                        ),
-                        PopupMenuButton(
-                          onSelected: (result) {
-                            if (result == 0) {
-                              setState(() {
-                                this.callType = CallType.Standart;
-                              });
-                            } else if (result == 1) {
-                              setState(() {
-                                this.callType = CallType.Anrufbeantworter;
-                              });
-                            }
-                          },
-                          itemBuilder: (context) {
-                            return List.generate(
-                              2,
-                              (index) {
-                                return PopupMenuItem(
-                                  value: index,
-                                  child: Row(
-                                    children: [
-                                      if (index == 0)
-                                        Text("Standart")
-                                      else
-                                        Text("Anrufbeantworter"),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: SizedBox(
-                            width: 200,
-                            height: 40,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
+                    padding:
+                        const EdgeInsets.only(left: 50, top: 50, right: 50),
+                    child: MediaQuery.of(context).size.width > 1600
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Resultate der Büros für ${_currentUser.username}",
+                                style: const TextStyle(fontSize: 34),
                               ),
-                              alignment: Alignment.center,
-                              child: DropdownButton(
-                                value: callType == CallType.Standart ? 0 : 1,
-                                items: [
-                                  const DropdownMenuItem(
-                                    value: 0,
-                                    child: Text(
-                                      "Standart",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                  const DropdownMenuItem(
-                                    value: 1,
-                                    child: Text(
-                                      "Anrufbeantworter",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                ],
+                              ResultTypeButton(),
+                              HideColumnsButton(),
+                              ExportResultsButton(),
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              Text(
+                                "Resultate der Büros für ${_currentUser.username}",
+                                style: const TextStyle(fontSize: 34),
                               ),
-                            ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              ResultTypeButton(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              HideColumnsButton(),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              ExportResultsButton(),
+                            ],
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: PopupMenuButton(
-                            itemBuilder: (context) {
-                              return callType == CallType.Standart
-                                  ? popupMenuEntry_StandartList
-                                  : popupMenuEntry_ABList;
-                            },
-                            child: SizedBox(
-                              width: 200,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(5))),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'Spalten ein-/ausblenden',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(right: 50),
-                          child: PopupMenuButton(
-                            onSelected: (result) {
-                              if (_isLoading == true) {
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: const Text('Geduld bitte'),
-                                    content: Text(
-                                        "Die Einträge werden noch geladen."),
-                                    actions: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child: const Text('Schliessen!'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                if (result == 0) {
-                                  _myDownloadResultsProvider
-                                      .getExcelResults(_currentUser.token);
-                                } else if (result == 1) {
-                                  _myDownloadResultsProvider.getJsonResults(
-                                      _currentUser.token,
-                                      _myBureauResultsProvider.bureauResults);
-                                }
-                              }
-                            },
-                            itemBuilder: (context) {
-                              return List.generate(
-                                2,
-                                (index) {
-                                  return PopupMenuItem(
-                                    value: index,
-                                    child: Row(
-                                      children: [
-                                        if (index == 0)
-                                          Text("Excel")
-                                        else
-                                          Text("Json"),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: SizedBox(
-                              width: 200,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(5))),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'Exportieren',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  //Expanded(
-                  //  flex: 6,
-                  /* child: */ Container(
-                    padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-                    child: //ListView(
-                        // children: [
-                        SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Container(
-                        color: Colors.grey[200],
-                        child: bureauResultsData(
-                            _myBureauResultsProvider, callType),
-                        // ),
-                        // ],
+                  Expanded(
+                    flex: 6,
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 50.0, right: 50.0),
+                      child: ListView(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Container(
+                              color: Colors.grey[200],
+                              child: (((visibleColumnsStandartCount > 0 &&
+                                          callType == CallType.Standart) ||
+                                      (visibleColumnsABCount > 0 &&
+                                          callType ==
+                                              CallType.Anrufbeantworter))
+                                  ? bureauResultsData(
+                                      _myBureauResultsProvider, callType)
+                                  : Container()),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  //  ),
                   if (_isLoading == true)
                     Expanded(
                       flex: 80,
@@ -508,11 +554,12 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       sortAscending: isAscending,
       sortColumnIndex: sortColumnIndex,
       columns: callType == CallType.Standart
-          ? getColumns(columnsStandart, showColumns, callType)
-          : getColumns(columnsAB, showColumns, callType),
+          ? getColumns(columnsStandart, showColumnsStandart, callType)
+          : getColumns(columnsAB, showColumnsAB, callType),
       rows: callType == CallType.Standart
-          ? getRowsStandart(_myBureauResultsProvider.bureauResults, showColumns)
-          : getRowsAB(_myBureauResultsProvider.bureauResults, showColumns),
+          ? getRowsStandart(
+              _myBureauResultsProvider.bureauResults, showColumnsStandart)
+          : getRowsAB(_myBureauResultsProvider.bureauResults, showColumnsAB),
     );
 
     final ScrollController controller = ScrollController();
@@ -704,26 +751,26 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       cells.map((data) => DataCell(Text('$data'))).toList();
 
   void onSort(int columnIndex, bool ascending) {
-    if (columnIndex == (0 - getHiddenCount(0, showColumns)) &&
-        showColumns[0] == true) {
+    if (columnIndex == (0 - getHiddenCount(0, showColumnsStandart)) &&
+        showColumnsStandart[0] == true) {
       bureauResults.sort((user1, user2) =>
           compareString(ascending, user1.bureau, user2.bureau));
-    } else if (columnIndex == (1 - getHiddenCount(1, showColumns)) &&
-        showColumns[1] == true) {
+    } else if (columnIndex == (1 - getHiddenCount(1, showColumnsStandart)) &&
+        showColumnsStandart[1] == true) {
       bureauResults.sort((user1, user2) => compareInteger(
             ascending,
             int.parse(user1.bureauStatistics.totalCalls),
             int.parse(user2.bureauStatistics.totalCalls),
           ));
-    } else if (columnIndex == (2 - getHiddenCount(2, showColumns)) &&
-        showColumns[2] == true) {
+    } else if (columnIndex == (2 - getHiddenCount(2, showColumnsStandart)) &&
+        showColumnsStandart[2] == true) {
       bureauResults.sort((user1, user2) => compareInteger(
             ascending,
             int.parse(user1.bureauStatistics.totalCallsReached),
             int.parse(user2.bureauStatistics.totalCallsReached),
           ));
-    } else if (columnIndex == (3 - getHiddenCount(3, showColumns)) &&
-        showColumns[3] == true) {
+    } else if (columnIndex == (3 - getHiddenCount(3, showColumnsStandart)) &&
+        showColumnsStandart[3] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidOrganization != "-"
@@ -733,8 +780,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateSaidOrganization)
                 : -1.0,
           ));
-    } else if (columnIndex == (4 - getHiddenCount(4, showColumns)) &&
-        showColumns[4] == true) {
+    } else if (columnIndex == (4 - getHiddenCount(4, showColumnsStandart)) &&
+        showColumnsStandart[4] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidBureau != "-"
@@ -744,8 +791,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateSaidBureau)
                 : -1.0,
           ));
-    } else if (columnIndex == (5 - getHiddenCount(5, showColumns)) &&
-        showColumns[5] == true) {
+    } else if (columnIndex == (5 - getHiddenCount(5, showColumnsStandart)) &&
+        showColumnsStandart[5] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidDepartment != "-"
@@ -755,8 +802,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateSaidDepartment)
                 : -1.0,
           ));
-    } else if (columnIndex == (6 - getHiddenCount(6, showColumns)) &&
-        showColumns[6] == true) {
+    } else if (columnIndex == (6 - getHiddenCount(6, showColumnsStandart)) &&
+        showColumnsStandart[6] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidFirstname != "-"
@@ -766,8 +813,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateSaidFirstname)
                 : -1.0,
           ));
-    } else if (columnIndex == (7 - getHiddenCount(7, showColumns)) &&
-        showColumns[7] == true) {
+    } else if (columnIndex == (7 - getHiddenCount(7, showColumnsStandart)) &&
+        showColumnsStandart[7] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidName != "-"
@@ -777,8 +824,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateSaidName)
                 : -1.0,
           ));
-    } else if (columnIndex == (8 - getHiddenCount(8, showColumns)) &&
-        showColumns[8] == true) {
+    } else if (columnIndex == (8 - getHiddenCount(8, showColumnsStandart)) &&
+        showColumnsStandart[8] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidGreeting != "-"
@@ -788,8 +835,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateSaidGreeting)
                 : -1.0,
           ));
-    } else if (columnIndex == (9 - getHiddenCount(9, showColumns)) &&
-        showColumns[9] == true) {
+    } else if (columnIndex == (9 - getHiddenCount(9, showColumnsStandart)) &&
+        showColumnsStandart[9] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateSaidSpecificWords != "-"
@@ -799,8 +846,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateSaidSpecificWords)
                 : -1.0,
           ));
-    } else if (columnIndex == (10 - getHiddenCount(10, showColumns)) &&
-        showColumns[10] == true) {
+    } else if (columnIndex == (10 - getHiddenCount(10, showColumnsStandart)) &&
+        showColumnsStandart[10] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateReached != "-"
@@ -810,8 +857,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateReached)
                 : -1.0,
           ));
-    } else if (columnIndex == (11 - getHiddenCount(11, showColumns)) &&
-        showColumns[11] == true) {
+    } else if (columnIndex == (11 - getHiddenCount(11, showColumnsStandart)) &&
+        showColumnsStandart[11] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.rateCallCompleted != "-"
@@ -821,8 +868,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.bureauStatistics.rateCallCompleted)
                 : -1.0,
           ));
-    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
-        showColumns[12] == true) {
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumnsStandart)) &&
+        showColumnsStandart[12] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.bureauStatistics.meanRingingTime != "-"
@@ -840,12 +887,12 @@ class _AdminResultsState extends State<AdminResultsScreen> {
   }
 
   void onSortAB(int columnIndex, bool ascending) {
-    if (columnIndex == (0 - getHiddenCount(0, showColumns)) &&
-        showColumns[0] == true) {
+    if (columnIndex == (0 - getHiddenCount(0, showColumnsAB)) &&
+        showColumnsAB[0] == true) {
       bureauResults.sort((user1, user2) =>
           compareString(ascending, user1.bureau, user2.bureau));
-    } else if (columnIndex == (1 - getHiddenCount(1, showColumns)) &&
-        showColumns[1] == true) {
+    } else if (columnIndex == (1 - getHiddenCount(1, showColumnsAB)) &&
+        showColumnsAB[1] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateSaidOrganizationAB != "-"
@@ -857,8 +904,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateSaidOrganizationAB)
                 : -1.0,
           ));
-    } else if (columnIndex == (2 - getHiddenCount(2, showColumns)) &&
-        showColumns[2] == true) {
+    } else if (columnIndex == (2 - getHiddenCount(2, showColumnsAB)) &&
+        showColumnsAB[2] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateSaidBureauAB != "-"
@@ -868,8 +915,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.abAndCallbackStatistics.rateSaidBureauAB)
                 : -1.0,
           ));
-    } else if (columnIndex == (3 - getHiddenCount(3, showColumns)) &&
-        showColumns[3] == true) {
+    } else if (columnIndex == (3 - getHiddenCount(3, showColumnsAB)) &&
+        showColumnsAB[3] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateSaidDepartmentAB != "-"
@@ -881,8 +928,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateSaidDepartmentAB)
                 : -1.0,
           ));
-    } else if (columnIndex == (4 - getHiddenCount(4, showColumns)) &&
-        showColumns[4] == true) {
+    } else if (columnIndex == (4 - getHiddenCount(4, showColumnsAB)) &&
+        showColumnsAB[4] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateSaidFirstnameAB != "-"
@@ -894,8 +941,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateSaidFirstnameAB)
                 : -1.0,
           ));
-    } else if (columnIndex == (5 - getHiddenCount(5, showColumns)) &&
-        showColumns[5] == true) {
+    } else if (columnIndex == (5 - getHiddenCount(5, showColumnsAB)) &&
+        showColumnsAB[5] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateSaidNameAB != "-"
@@ -905,8 +952,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.abAndCallbackStatistics.rateSaidNameAB)
                 : -1.0,
           ));
-    } else if (columnIndex == (6 - getHiddenCount(6, showColumns)) &&
-        showColumns[6] == true) {
+    } else if (columnIndex == (6 - getHiddenCount(6, showColumnsAB)) &&
+        showColumnsAB[6] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateSaidGreetingAB != "-"
@@ -916,8 +963,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 ? double.parse(user2.abAndCallbackStatistics.rateSaidGreetingAB)
                 : -1.0,
           ));
-    } else if (columnIndex == (7 - getHiddenCount(7, showColumns)) &&
-        showColumns[7] == true) {
+    } else if (columnIndex == (7 - getHiddenCount(7, showColumnsAB)) &&
+        showColumnsAB[7] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateSaidSpecificWordsAB != "-"
@@ -929,8 +976,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateSaidSpecificWordsAB)
                 : -1.0,
           ));
-    } else if (columnIndex == (8 - getHiddenCount(8, showColumns)) &&
-        showColumns[8] == true) {
+    } else if (columnIndex == (8 - getHiddenCount(8, showColumnsAB)) &&
+        showColumnsAB[8] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateResponderStartedIfNotReached !=
@@ -944,8 +991,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     .abAndCallbackStatistics.rateResponderStartedIfNotReached)
                 : -1.0,
           ));
-    } else if (columnIndex == (9 - getHiddenCount(9, showColumns)) &&
-        showColumns[9] == true) {
+    } else if (columnIndex == (9 - getHiddenCount(9, showColumnsAB)) &&
+        showColumnsAB[9] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateResponderCorrect != "-"
@@ -957,8 +1004,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateResponderCorrect)
                 : -1.0,
           ));
-    } else if (columnIndex == (10 - getHiddenCount(10, showColumns)) &&
-        showColumns[10] == true) {
+    } else if (columnIndex == (10 - getHiddenCount(10, showColumnsAB)) &&
+        showColumnsAB[10] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateCallbackDoneNoAnswer != "-"
@@ -970,8 +1017,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateCallbackDoneNoAnswer)
                 : -1.0,
           ));
-    } else if (columnIndex == (11 - getHiddenCount(11, showColumns)) &&
-        showColumns[11] == true) {
+    } else if (columnIndex == (11 - getHiddenCount(11, showColumnsAB)) &&
+        showColumnsAB[11] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateCallbackDoneResponder != "-"
@@ -983,8 +1030,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateCallbackDoneResponder)
                 : -1.0,
           ));
-    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
-        showColumns[12] == true) {
+    } else if (columnIndex == (12 - getHiddenCount(12, showColumnsAB)) &&
+        showColumnsAB[12] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateCallbackDoneUnexpected != "-"
@@ -996,8 +1043,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateCallbackDoneUnexpected)
                 : -1.0,
           ));
-    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
-        showColumns[13] == true) {
+    } else if (columnIndex == (13 - getHiddenCount(13, showColumnsAB)) &&
+        showColumnsAB[13] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateCallbackDoneOverall != "-"
@@ -1009,8 +1056,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                     user2.abAndCallbackStatistics.rateCallbackDoneOverall)
                 : -1.0,
           ));
-    } else if (columnIndex == (12 - getHiddenCount(12, showColumns)) &&
-        showColumns[14] == true) {
+    } else if (columnIndex == (14 - getHiddenCount(14, showColumnsAB)) &&
+        showColumnsAB[14] == true) {
       bureauResults.sort((user1, user2) => compareDouble(
             ascending,
             user1.abAndCallbackStatistics.rateCallbackInTime != "-"
