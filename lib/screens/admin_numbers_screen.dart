@@ -552,9 +552,11 @@ class _AdminNumbersState extends State<AdminNumbersScreen> {
       rows: _isLoading ? [] : getRows(_numberPerBureau),
     );
 
+    // Initialize local variables
     final ScrollController controller = ScrollController();
-
     final deviceSize = MediaQuery.of(context).size;
+
+    //Return correct dataTable
     if (deviceSize.width < 1500) {
       return ScrollConfiguration(
         behavior: MyCustomScrollBehavior(),
