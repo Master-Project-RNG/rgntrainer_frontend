@@ -42,10 +42,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
   AdminCallsProvider adminCalls = AdminCallsProvider();
 
 //Used for managing the different openinHours
-  final Map<String, String?> _openingHoursData = {
-    'init': 'test',
-    'init2': 'test2',
-  };
+  final Map<String, String?> _openingHoursData = {};
 
   @override
   void initState() {
@@ -95,7 +92,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
           elevation: 8.0,
           child: Column(
             children: <Widget>[
-              Container(
+              SizedBox(
                 height: 100,
                 child: AppBar(
                   shape: const RoundedRectangleBorder(
@@ -169,9 +166,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    openingHours(widget.currentUser.token, "Kommune"),
-                    openingHours(widget.currentUser.token, "Abteilung"),
-                    openingHours(widget.currentUser.token, "Nummer"),
+                    openingHours(widget.currentUser.token!, "Kommune"),
+                    openingHours(widget.currentUser.token!, "Abteilung"),
+                    openingHours(widget.currentUser.token!, "Nummer"),
                   ],
                 ),
               ),
@@ -182,7 +179,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
     );
   }
 
-  Widget openingHours(token, tabType) {
+  Widget openingHours(String token, String tabType) {
     if (_isLoading == true) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -229,7 +226,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
                 alignment: Alignment.center,
                 child: Text(
                   _pickedBureau.name,
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
               generalWeekOpeningHours(_pickedBureau.name, _pickedBureau),
@@ -253,7 +250,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
           ),
         );
       } else {
-        return Container(
+        return SizedBox(
           height: 400,
           child: Column(
             children: [
@@ -261,9 +258,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
                 thickness: 1,
                 height: 0,
               ),
-              Container(
+              const SizedBox(
                 height: 50,
-                child: const Center(
+                child: Center(
                   child: Text(
                     "Abteilungen",
                     textAlign: TextAlign.center,
@@ -332,47 +329,45 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
       }
     } else //Nummer
     if (_showNummerList == false) {
-      return Container(
-        child: Form(
-          key: _formKeyNumber,
-          child: ListView(
-            controller: _scrollControllerNummer,
-            children: [
-              Container(
-                height: 50,
-                alignment: Alignment.center,
-                child: Text(
-                  _pickedUser.username!,
-                  style: const TextStyle(fontSize: 20),
-                ),
+      return Form(
+        key: _formKeyNumber,
+        child: ListView(
+          controller: _scrollControllerNummer,
+          children: [
+            Container(
+              height: 50,
+              alignment: Alignment.center,
+              child: Text(
+                _pickedUser.username!,
+                style: const TextStyle(fontSize: 20),
               ),
-              generalWeekOpeningHours(_pickedUser.username!, _pickedUser),
-              const SizedBox(
-                height: 20,
-              ),
-              Align(
-                child: SizedBox(
-                  width: 150,
-                  child: ElevatedButton(
-                    onPressed: () => {
-                      _submit(
-                        _pickedUser.username,
-                        _formKeyNumber,
-                        tabType,
-                      )
-                    },
-                    child: const Text(
-                      'Speichern',
-                    ),
+            ),
+            generalWeekOpeningHours(_pickedUser.username!, _pickedUser),
+            const SizedBox(
+              height: 20,
+            ),
+            Align(
+              child: SizedBox(
+                width: 150,
+                child: ElevatedButton(
+                  onPressed: () => {
+                    _submit(
+                      _pickedUser.username,
+                      _formKeyNumber,
+                      tabType,
+                    )
+                  },
+                  child: const Text(
+                    'Speichern',
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     } else {
-      return Container(
+      return SizedBox(
         height: 400,
         child: Column(
           children: [
@@ -380,9 +375,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
               thickness: 1,
               height: 0,
             ),
-            Container(
+            const SizedBox(
               height: 50,
-              child: const Center(
+              child: Center(
                 child: Text(
                   "Nummer",
                   textAlign: TextAlign.center,
@@ -539,14 +534,14 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
           alignment: Alignment.center,
           height: 60,
           width: 40,
-          child: Text("bis"),
+          child: const Text("bis"),
         ),
-        Container(
+        SizedBox(
           height: 50,
           width: 60,
           child: TextFormField(
             decoration: InputDecoration(
-              counter: Offstage(),
+              counter: const Offstage(),
               hintText: _morningClose.substring(0, 5),
             ),
             maxLength: 5,
@@ -571,7 +566,7 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
           width: 80,
           child: Text("und von"),
         ),
-        Container(
+        SizedBox(
           height: 40,
           width: 60,
           child: TextFormField(
@@ -598,9 +593,9 @@ class _CallTimeConfigurationState extends State<CallTimeConfiguration>
           alignment: Alignment.center,
           height: 40,
           width: 40,
-          child: Text("bis"),
+          child: const Text("bis"),
         ),
-        Container(
+        SizedBox(
           height: 40,
           width: 60,
           child: TextFormField(
