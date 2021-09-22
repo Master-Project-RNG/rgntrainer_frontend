@@ -1,12 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 import 'package:rgntrainer_frontend/models/call_type.dart';
 import 'package:rgntrainer_frontend/models/diagram_model.dart';
-import 'package:rgntrainer_frontend/models/user_model.dart';
-import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
-import 'package:rgntrainer_frontend/utils/user_simple_preferences.dart';
 import 'package:intl/intl.dart';
 
 class MyLineChart extends StatefulWidget {
@@ -62,10 +58,14 @@ class _MyLineChartState extends State<MyLineChart> {
           ? _max = double.parse(list[i].bureauStatistics.totalCalls)
           : _max = _max;
     }
-    int scalaMax = ((_max / 10) + 0.5).round() * 10;
-    _result.add(((scalaMax / 4) + 0.5).round() * 1);
-    _result.add(((scalaMax / 4) + 0.5).round() * 2);
-    _result.add(((scalaMax / 4) + 0.5).round() * 3);
+    int scalaMax = 0;
+    for (int j = 0; j < _max; j = j + 80) {
+      scalaMax = j;
+    }
+    scalaMax = scalaMax + 80;
+    _result.add((scalaMax ~/ 4) * 1);
+    _result.add((scalaMax ~/ 4) * 2);
+    _result.add((scalaMax ~/ 4) * 3);
     _result.add(scalaMax);
     return _result;
   }
@@ -100,7 +100,7 @@ class _MyLineChartState extends State<MyLineChart> {
             ? lineBarsDataRateValuesStandart
             : lineBarsDataRateValuesAB,
         minX: 0,
-        maxX: 11,
+        maxX: widget.diagramResults.length.toDouble() - 1,
         maxY: 100,
         minY: 0,
       );
@@ -109,14 +109,14 @@ class _MyLineChartState extends State<MyLineChart> {
         lineTouchData: lineTouchData1,
         gridData: FlGridData(
           show: true,
-          horizontalInterval: 5,
+          horizontalInterval: _numericScalaTotalCalls[0].toDouble(),
         ),
-        titlesData: titlesDataNumericValues(_numericScalaTotalCalls),
+        titlesData: titlesDataNumericValues,
         borderData: borderData,
         lineBarsData: lineBarsDataNumericValues,
         minX: 0,
-        maxX: 11,
-        maxY: double.parse(_numericScalaTotalCalls[3].toString()),
+        maxX: widget.diagramResults.length.toDouble() - 1,
+        maxY: _numericScalaTotalCalls[3].toDouble(),
         minY: 0,
       );
 
@@ -130,7 +130,7 @@ class _MyLineChartState extends State<MyLineChart> {
         ),
       );
 
-  ///Labeling of the Y and X axis
+  ///Labeling of the Y (leftTitles) and X (bottomTitles) axis
   ///Used as a parameter in [LineChartData]
   FlTitlesData get titlesDataRateValues => FlTitlesData(
         bottomTitles: bottomTitles,
@@ -163,24 +163,23 @@ class _MyLineChartState extends State<MyLineChart> {
         ),
       );
 
-  ///Labeling of the Y and X axis
+  ///Labeling of the (leftTitles) and X (bottomTitles) axis
   ///Used as a parameter in [LineChartData]
-  FlTitlesData titlesDataNumericValues(List<int> numericScalaTotalCalls) =>
-      FlTitlesData(
+  FlTitlesData get titlesDataNumericValues => FlTitlesData(
         bottomTitles: bottomTitles,
         leftTitles: leftTitles(
           getTitles: (value) {
-            if (value == numericScalaTotalCalls[0]) {
-              return numericScalaTotalCalls[0].toString();
+            if (value == _numericScalaTotalCalls[0].toDouble()) {
+              return _numericScalaTotalCalls[0].toString();
             }
-            if (value == numericScalaTotalCalls[1]) {
-              return numericScalaTotalCalls[1].toString();
+            if (value == _numericScalaTotalCalls[1].toDouble()) {
+              return _numericScalaTotalCalls[1].toString();
             }
-            if (value == numericScalaTotalCalls[2]) {
-              return numericScalaTotalCalls[2].toString();
+            if (value == _numericScalaTotalCalls[2].toDouble()) {
+              return _numericScalaTotalCalls[2].toString();
             }
-            if (value == numericScalaTotalCalls[3]) {
-              return numericScalaTotalCalls[3].toString();
+            if (value == _numericScalaTotalCalls[3].toDouble()) {
+              return _numericScalaTotalCalls[3].toString();
             }
             return '';
           },
