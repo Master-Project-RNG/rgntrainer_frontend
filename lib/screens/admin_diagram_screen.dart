@@ -73,7 +73,7 @@ class _DiagramScreenState extends State<DiagramScreen> {
               ),
               body: Column(
                 children: [
-                  TitleWidget("Diagram"),
+                  TitleWidget("Diagramme"),
                   MediaQuery.of(context).size.width > 1500
                       ? Expanded(
                           child: Container(

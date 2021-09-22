@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:rgntrainer_frontend/models/bureau_results_model.dart';
 import 'package:rgntrainer_frontend/models/call_type.dart';
-import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
+import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/bureau_results_provider.dart';
 import 'package:rgntrainer_frontend/provider/results_download_provider.dart';
@@ -16,7 +17,6 @@ import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class AdminResultsScreen extends StatefulWidget {
   const AdminResultsScreen({
@@ -126,7 +126,6 @@ class _AdminResultsState extends State<AdminResultsScreen> {
     super.initState();
     _currentUser = UserSimplePreferences.getUser();
     _fetchTotalUserResults();
-    print("CurrentUserToken: ${_currentUser.token!}");
     initializeDateFormatting(); //set CalendarWidget language to German
   }
 
@@ -145,14 +144,14 @@ class _AdminResultsState extends State<AdminResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<PopupMenuEntry<String>> popupMenuEntry_StandartList = List.generate(
+    final List<PopupMenuEntry<String>> popupMenuEntryStandartList =
+        List.generate(
       columnsStandart.length,
       (index) {
         return PopupMenuItem(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState2) {
               return Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   if (isVisible(index, showColumnsStandart))
                     IconButton(
@@ -193,14 +192,13 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       },
     );
 
-    List<PopupMenuEntry<String>> popupMenuEntry_ABList = List.generate(
+    final List<PopupMenuEntry<String>> popupMenuEntryABList = List.generate(
       columnsAB.length,
       (index) {
         return PopupMenuItem(
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState2) {
               return Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   if (isVisible(index, showColumnsAB))
                     IconButton(
@@ -250,16 +248,16 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       },
     );
 
-    Widget ResultTypeButton() {
+    Widget resultTypeButton() {
       return PopupMenuButton(
         onSelected: (result) {
           if (result == 0) {
             setState(() {
-              this.callType = CallType.Standart;
+              callType = CallType.Standart;
             });
           } else if (result == 1) {
             setState(() {
-              this.callType = CallType.Anrufbeantworter;
+              callType = CallType.Anrufbeantworter;
             });
           }
         },
@@ -272,9 +270,9 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 child: Row(
                   children: [
                     if (index == 0)
-                      Text("Standart")
+                      const Text("Standart")
                     else
-                      Text("Anrufbeantworter"),
+                      const Text("Anrufbeantworter"),
                   ],
                 ),
               );
@@ -294,15 +292,15 @@ class _AdminResultsState extends State<AdminResultsScreen> {
             alignment: Alignment.center,
             child: DropdownButton(
               value: callType == CallType.Standart ? 0 : 1,
-              items: [
-                const DropdownMenuItem(
+              items: const [
+                DropdownMenuItem(
                   value: 0,
                   child: Text(
                     "Standart",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                const DropdownMenuItem(
+                DropdownMenuItem(
                   value: 1,
                   child: Text(
                     "Anrufbeantworter",
@@ -316,12 +314,12 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       );
     }
 
-    Widget HideColumnsButton() {
+    Widget hideColumnsButton() {
       return PopupMenuButton(
         itemBuilder: (context) {
           return callType == CallType.Standart
-              ? popupMenuEntry_StandartList
-              : popupMenuEntry_ABList;
+              ? popupMenuEntryStandartList
+              : popupMenuEntryABList;
         },
         child: SizedBox(
           width: 200,
@@ -340,65 +338,63 @@ class _AdminResultsState extends State<AdminResultsScreen> {
       );
     }
 
-    Widget ExportResultsButton() {
+    Widget exportResultsButton() {
       final _myDownloadResultsProvider =
           context.watch<DownloadResultsProvider>();
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
-      return Container(
-        child: PopupMenuButton(
-          onSelected: (result) {
-            if (_isLoading == true) {
-              showDialog(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('Geduld bitte'),
-                  content: Text("Die Einträge werden noch geladen."),
-                  actions: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                      child: const Text('Schliessen!'),
-                    ),
+      return PopupMenuButton(
+        onSelected: (result) {
+          if (_isLoading == true) {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Geduld bitte'),
+                content: const Text("Die Einträge werden noch geladen."),
+                actions: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: const Text('Schliessen!'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            if (result == 0) {
+              _myDownloadResultsProvider.getExcelResults(_currentUser.token);
+            } else if (result == 1) {
+              _myDownloadResultsProvider.getJsonResults(
+                  _currentUser.token, _myBureauResultsProvider.bureauResults);
+            }
+          }
+        },
+        itemBuilder: (context) {
+          return List.generate(
+            2,
+            (index) {
+              return PopupMenuItem(
+                value: index,
+                child: Row(
+                  children: [
+                    if (index == 0) const Text("Excel") else const Text("Json"),
                   ],
                 ),
               );
-            } else {
-              if (result == 0) {
-                _myDownloadResultsProvider.getExcelResults(_currentUser.token);
-              } else if (result == 1) {
-                _myDownloadResultsProvider.getJsonResults(
-                    _currentUser.token, _myBureauResultsProvider.bureauResults);
-              }
-            }
-          },
-          itemBuilder: (context) {
-            return List.generate(
-              2,
-              (index) {
-                return PopupMenuItem(
-                  value: index,
-                  child: Row(
-                    children: [
-                      if (index == 0) Text("Excel") else Text("Json"),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-          child: SizedBox(
-            width: 200,
-            height: 40,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(5))),
-              alignment: Alignment.center,
-              child: const Text(
-                'Exportieren',
-                style: TextStyle(color: Colors.white),
-              ),
+            },
+          );
+        },
+        child: SizedBox(
+          width: 200,
+          height: 40,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: const BorderRadius.all(Radius.circular(5))),
+            alignment: Alignment.center,
+            child: const Text(
+              'Exportieren',
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ),
@@ -408,9 +404,9 @@ class _AdminResultsState extends State<AdminResultsScreen> {
     if (_currentUser.token == null || _currentUser.usertype != "admin") {
       return NoTokenScreen();
     } else {
-      var visibleColumnsStandartCount =
+      final visibleColumnsStandartCount =
           showColumnsStandart.where((item) => item == true).length;
-      var visibleColumnsABCount =
+      final visibleColumnsABCount =
           showColumnsAB.where((item) => item == true).length;
       final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
       return Row(
@@ -452,7 +448,7 @@ class _AdminResultsState extends State<AdminResultsScreen> {
               ),
               body: Column(
                 children: [
-                  TitleWidget("Abfragen"),
+                  TitleWidget("Resultate"),
                   Container(
                     padding:
                         const EdgeInsets.only(left: 50, top: 50, right: 50),
@@ -464,9 +460,9 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                                 "Resultate der Büros für ${_currentUser.username}",
                                 style: const TextStyle(fontSize: 34),
                               ),
-                              ResultTypeButton(),
-                              HideColumnsButton(),
-                              ExportResultsButton(),
+                              resultTypeButton(),
+                              hideColumnsButton(),
+                              exportResultsButton(),
                             ],
                           )
                         : Column(
@@ -475,18 +471,18 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                                 "Resultate der Büros für ${_currentUser.username}",
                                 style: const TextStyle(fontSize: 34),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 15,
                               ),
-                              ResultTypeButton(),
-                              SizedBox(
+                              resultTypeButton(),
+                              const SizedBox(
                                 height: 15,
                               ),
-                              HideColumnsButton(),
-                              SizedBox(
+                              hideColumnsButton(),
+                              const SizedBox(
                                 height: 15,
                               ),
-                              ExportResultsButton(),
+                              exportResultsButton(),
                             ],
                           ),
                   ),
@@ -499,28 +495,23 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                       padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                       child: ListView(
                         children: [
-                          SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Container(
-                              color: Colors.grey[200],
-                              child: (((visibleColumnsStandartCount > 0 &&
-                                          callType == CallType.Standart) ||
-                                      (visibleColumnsABCount > 0 &&
-                                          callType ==
-                                              CallType.Anrufbeantworter))
-                                  ? bureauResultsData(
-                                      _myBureauResultsProvider, callType)
-                                  : Container()),
-                            ),
+                          Container(
+                            color: Colors.grey[200],
+                            child: ((visibleColumnsStandartCount > 0 &&
+                                        callType == CallType.Standart) ||
+                                    (visibleColumnsABCount > 0 &&
+                                        callType == CallType.Anrufbeantworter))
+                                ? buildDataTable(callType)
+                                : Container(),
                           ),
                         ],
                       ),
                     ),
                   ),
                   if (_isLoading == true)
-                    Expanded(
+                    const Expanded(
                       flex: 80,
-                      child: const SizedBox(
+                      child: SizedBox(
                         height: 60,
                         child: Center(
                           child: SizedBox(
@@ -545,25 +536,28 @@ class _AdminResultsState extends State<AdminResultsScreen> {
     }
   }
 
-  Widget bureauResultsData(
-      BureauResultsProvider _myBureauResultsProvider, CallType callType) {
-    DataTable dataTable = DataTable(
+  Widget buildDataTable(CallType callType) {
+    final DataTable dataTable = DataTable(
       headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
-      headingTextStyle: TextStyle(fontWeight: FontWeight.bold),
+      headingTextStyle: const TextStyle(fontWeight: FontWeight.bold),
       dataRowHeight: 35,
       sortAscending: isAscending,
       sortColumnIndex: sortColumnIndex,
       columns: callType == CallType.Standart
           ? getColumns(columnsStandart, showColumnsStandart, callType)
           : getColumns(columnsAB, showColumnsAB, callType),
-      rows: callType == CallType.Standart
-          ? getRowsStandart(
-              _myBureauResultsProvider.bureauResults, showColumnsStandart)
-          : getRowsAB(_myBureauResultsProvider.bureauResults, showColumnsAB),
+      rows: _isLoading
+          ? []
+          : callType == CallType.Standart
+              ? getRowsStandart(showColumnsStandart)
+              : getRowsAB(showColumnsAB),
     );
 
+    // Initialize local variables
     final ScrollController controller = ScrollController();
     final deviceSize = MediaQuery.of(context).size;
+
+    //Return correct datatTable
     if (deviceSize.width < 2850) {
       return ScrollConfiguration(
         behavior: MyCustomScrollBehavior(),
@@ -591,7 +585,7 @@ class _AdminResultsState extends State<AdminResultsScreen> {
 
   List<DataColumn> getColumns(
       List<String> columns, List<bool> showColumns, CallType callType) {
-    List<DataColumn> dataColumnResult = [];
+    final List<DataColumn> dataColumnResult = [];
     for (int i = 0; i < columns.length; i++) {
       if (showColumns[i] == true) {
         dataColumnResult.add(
@@ -605,9 +599,10 @@ class _AdminResultsState extends State<AdminResultsScreen> {
     return dataColumnResult;
   }
 
-  List<DataRow> getRowsStandart(
-      List<BureauResults> bureauResults, List<bool> showColumns) {
-    List<DataRow> dataRowResult = [];
+  List<DataRow> getRowsStandart(List<bool> showColumns) {
+    final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
+    List<BureauResults> bureauResults = _myBureauResultsProvider.bureauResults;
+    final List<DataRow> dataRowResult = [];
     for (int i = 0; i < bureauResults.length; i++) {
       final cells = [];
       if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
@@ -619,39 +614,37 @@ class _AdminResultsState extends State<AdminResultsScreen> {
             bureauResults[i].bureauStatistics.totalCallsReached.toString());
       }
       if (showColumns[3]) {
-        cells.add(bureauResults[i].bureauStatistics.rateSaidOrganization + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateSaidOrganization}%");
       }
       if (showColumns[4]) {
-        cells.add(bureauResults[i].bureauStatistics.rateSaidBureau + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateSaidBureau}%");
       }
       if (showColumns[5]) {
-        cells.add(bureauResults[i].bureauStatistics.rateSaidDepartment + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateSaidDepartment}%");
       }
       if (showColumns[6]) {
-        cells.add(bureauResults[i].bureauStatistics.rateSaidFirstname + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateSaidFirstname}%");
       }
       if (showColumns[7]) {
-        cells.add(bureauResults[i].bureauStatistics.rateSaidName + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateSaidName}%");
       }
       if (showColumns[8]) {
-        cells.add(bureauResults[i].bureauStatistics.rateSaidGreeting + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateSaidGreeting}%");
       }
       if (showColumns[9]) {
         cells
-            .add(bureauResults[i].bureauStatistics.rateSaidSpecificWords + "%");
+            .add("${bureauResults[i].bureauStatistics.rateSaidSpecificWords}%");
       }
       if (showColumns[10]) {
-        cells.add(bureauResults[i].bureauStatistics.rateReached + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateReached}%");
       }
       if (showColumns[11]) {
-        cells.add(bureauResults[i].bureauStatistics.rateCallCompleted + "%");
+        cells.add("${bureauResults[i].bureauStatistics.rateCallCompleted}%");
       }
 
       if (showColumns[12]) {
         cells.add(bureauResults[i].bureauStatistics.meanRingingTime != "-"
-            ? double.parse(bureauResults[i].bureauStatistics.meanRingingTime)
-                    .toStringAsFixed(2) +
-                " Sekunden"
+            ? "${double.parse(bureauResults[i].bureauStatistics.meanRingingTime).toStringAsFixed(2)} Sekunden"
             : "-");
       }
       dataRowResult.add(DataRow(cells: getCells(cells)));
@@ -659,78 +652,68 @@ class _AdminResultsState extends State<AdminResultsScreen> {
     return dataRowResult;
   }
 
-  List<DataRow> getRowsAB(
-      List<BureauResults> bureauResults, List<bool> showColumns) {
-    List<DataRow> dataRowResult = [];
+  List<DataRow> getRowsAB(List<bool> showColumns) {
+    final _myBureauResultsProvider = context.watch<BureauResultsProvider>();
+    List<BureauResults> bureauResults = _myBureauResultsProvider.bureauResults;
+    final List<DataRow> dataRowResult = [];
     for (int i = 0; i < bureauResults.length; i++) {
       final cells = [];
       if (showColumns[0]) cells.add(bureauResults[i].bureau.toString());
       if (showColumns[1]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateSaidOrganizationAB +
-                "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateSaidOrganizationAB}%");
       }
       if (showColumns[2]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateSaidBureauAB + "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateSaidBureauAB}%");
       }
       if (showColumns[3]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateSaidDepartmentAB +
-                "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateSaidDepartmentAB}%");
       }
       if (showColumns[4]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateSaidFirstnameAB + "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateSaidFirstnameAB}%");
       }
       if (showColumns[5]) {
         cells
-            .add(bureauResults[i].abAndCallbackStatistics.rateSaidNameAB + "%");
+            .add("${bureauResults[i].abAndCallbackStatistics.rateSaidNameAB}%");
       }
       if (showColumns[6]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateSaidGreetingAB + "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateSaidGreetingAB}%");
       }
       if (showColumns[7]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateSaidSpecificWordsAB +
-                "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateSaidSpecificWordsAB}%");
       }
       if (showColumns[8]) {
-        cells.add(bureauResults[i]
-                .abAndCallbackStatistics
-                .rateResponderStartedIfNotReached +
-            "%");
+        cells.add(
+            "${bureauResults[i].abAndCallbackStatistics.rateResponderStartedIfNotReached}%");
       }
       if (showColumns[9]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateResponderCorrect +
-                "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateResponderCorrect}%");
       }
       if (showColumns[10]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateCallbackDoneNoAnswer +
-                "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateCallbackDoneNoAnswer}%");
       }
       if (showColumns[11]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateCallbackDoneResponder +
-                "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateCallbackDoneResponder}%");
       }
       if (showColumns[12]) {
-        cells.add(bureauResults[i]
-                .abAndCallbackStatistics
-                .rateCallbackDoneUnexpected +
-            "%");
+        cells.add(
+            "${bureauResults[i].abAndCallbackStatistics.rateCallbackDoneUnexpected}%");
       }
       if (showColumns[13]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateCallbackDoneOverall +
-                "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateCallbackDoneOverall}%");
       }
       if (showColumns[14]) {
         cells.add(
-            bureauResults[i].abAndCallbackStatistics.rateCallbackInTime + "%");
+            "${bureauResults[i].abAndCallbackStatistics.rateCallbackInTime}%");
       }
       dataRowResult.add(DataRow(cells: getCells(cells)));
     }
@@ -881,8 +864,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
           ));
     }
     setState(() {
-      this.sortColumnIndex = columnIndex;
-      this.isAscending = ascending;
+      sortColumnIndex = columnIndex;
+      isAscending = ascending;
     });
   }
 
@@ -1069,8 +1052,8 @@ class _AdminResultsState extends State<AdminResultsScreen> {
           ));
     }
     setState(() {
-      this.sortColumnIndex = columnIndex;
-      this.isAscending = ascending;
+      sortColumnIndex = columnIndex;
+      isAscending = ascending;
     });
   }
 }
