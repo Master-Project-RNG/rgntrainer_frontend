@@ -1000,7 +1000,7 @@ uK:function uK(a,b){this.a=a
 this.b=b},
 G_(){var s=null
 $.WT()
-return new A.wy("http://rngtrainer-backend.herokuapp.com",Y.ar8(),new Y.fl("None",s,s,s,s),B.ff(),P.z(t.N,t.z),P.a1(0,s,!1,t.Z))},
+return new A.wy("http://188.155.65.59:8081",Y.ar8(),new Y.fl("None",s,s,s,s),B.ff(),P.z(t.N,t.z),P.a1(0,s,!1,t.Z))},
 wy:function wy(a,b,c,d,e,f){var _=this
 _.a=a
 _.b=b
@@ -18116,7 +18116,7 @@ this.c=b
 this.d=c},
 fj(){var s=null
 $.WT()
-return new R.we("http://rngtrainer-backend.herokuapp.com",Y.ar8(),new Y.fl("None",s,s,s,s),B.ff(),P.z(t.N,t.z),P.a1(0,s,!1,t.Z))},
+return new R.we("http://188.155.65.59:8081",Y.ar8(),new Y.fl("None",s,s,s,s),B.ff(),P.z(t.N,t.z),P.a1(0,s,!1,t.Z))},
 we:function we(a,b,c,d,e,f){var _=this
 _.a=a
 _.b=b
@@ -20581,7 +20581,7 @@ _.d=d
 _.e=e},
 GC:function GC(a){this.b=a},
 lR(){$.WT()
-return new U.wC("http://rngtrainer-backend.herokuapp.com",P.a1(0,null,!1,t.Z))},
+return new U.wC("http://188.155.65.59:8081",P.a1(0,null,!1,t.Z))},
 wC:function wC(a,b){var _=this
 _.a=a
 _.b=null
@@ -72954,7 +72954,7 @@ F.aqc.prototype={
 $1(a){P.lH("["+a.d+"] "+a.a.a+": "+a.e.j(0)+": "+a.b)},
 $S:424}
 F.K4.prototype={
-I(a,b){var s,r,q=null,p="http://rngtrainer-backend.herokuapp.com",o=T.qG(U.lR(),t.W0)
+I(a,b){var s,r,q=null,p="http://188.155.65.59:8081",o=T.qG(U.lR(),t.W0)
 $.WT()
 s=t.Z
 r=t.s
