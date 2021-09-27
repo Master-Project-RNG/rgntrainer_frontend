@@ -60,6 +60,6 @@ class DownloadResultsProvider with ChangeNotifier {
     anchor.remove();
   }
 
-  String bureauResultsToJson(List<BureauResults> data) => json
-      .encode(List<dynamic>.from(data.map((x) => x.bureauResultstoJson2())));
+  String bureauResultsToJson(List<BureauResults> data) =>
+      json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 }
