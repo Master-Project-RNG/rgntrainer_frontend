@@ -17,6 +17,7 @@ class AuthProvider with ChangeNotifier {
     return currentUser;
   }
 
+  //login
   Future<void> login(
       String? username, String? password, BuildContext ctx) async {
     UserSimplePreferences.resetUser();
@@ -24,6 +25,7 @@ class AuthProvider with ChangeNotifier {
         ctx); //return needed for redirection to correct programm flow
   }
 
+  ///Used for [login]
   Future<void> _authenticate(
       String username, String password, BuildContext ctx) async {
     final url = '$activeHost/login';
@@ -59,6 +61,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  //Logs out the user
   Future<void> logout(String token) async {
     UserSimplePreferences.resetUser();
     final url = '$activeHost/logout';
@@ -79,6 +82,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  //Changes the password
   Future<void> changePassword(BuildContext ctx, String token,
       String oldPassword, String newPassword) async {
     final url = '$activeHost/changePassword';

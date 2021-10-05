@@ -12,8 +12,6 @@ class NumbersProvider with ChangeNotifier {
 
   List<Number> _nummern = [];
 
-  List<String> _bureauNames = [];
-
   List<Number> get bureauResults {
     return _nummern;
   }

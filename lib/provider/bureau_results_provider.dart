@@ -11,9 +11,7 @@ class BureauResultsProvider with ChangeNotifier {
   static final _log = Logger("BureauResultsProvider");
 
   List<BureauResults> _bureauResults = [];
-
   List<Diagram> _diagramResults = [];
-
   List<String> _bureauNames = [];
 
   List<BureauResults> get bureauResults {
@@ -28,6 +26,7 @@ class BureauResultsProvider with ChangeNotifier {
     return _bureauNames;
   }
 
+  //getBureauResults
   Future<List<BureauResults>> getBureauResults(String? token) async {
     final url = Uri.parse('$activeHost/getTotalResults');
     final response = await post(
@@ -58,6 +57,7 @@ class BureauResultsProvider with ChangeNotifier {
     }
   }
 
+  //getTotalResultsWeekly
   Future<List<Diagram>> getTotalResultsWeekly(
       String? token, String bureauName) async {
     final url = Uri.parse('$activeHost/getTotalResultsWeekly');
@@ -90,6 +90,7 @@ class BureauResultsProvider with ChangeNotifier {
     }
   }
 
+  //getBureausNames
   Future<List<String>> getBureausNames(String? token) async {
     final url = Uri.parse('$activeHost/getAllBureaus');
     final response = await post(
@@ -104,7 +105,6 @@ class BureauResultsProvider with ChangeNotifier {
     );
     if (response.statusCode == 200) {
       _log.info("API CALL: /getAllBureaus, statusCode == 200");
-      //TODO: Sort alphabetically
       final dynamic jsonResponse = jsonDecode(response.body);
       final List<String> _result = [];
       // ignore: avoid_function_literals_in_foreach_calls
