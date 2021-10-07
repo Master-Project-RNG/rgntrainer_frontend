@@ -1000,7 +1000,7 @@ uK:function uK(a,b){this.a=a
 this.b=b},
 G_(){var s=null
 $.WT()
-return new A.wy("https://188.155.65.59:8081",B.ff(),new Y.fl("None",s,s,s,s),Y.ar8(),P.z(t.N,t.z),P.a0(0,s,!1,t.Z))},
+return new A.wy("http://188.155.65.59:8081",B.ff(),new Y.fl("None",s,s,s,s),Y.ar8(),P.z(t.N,t.z),P.a0(0,s,!1,t.Z))},
 wy:function wy(a,b,c,d,e,f){var _=this
 _.a=a
 _.b=b
@@ -18119,7 +18119,7 @@ this.c=b
 this.d=c},
 fj(){var s=null
 $.WT()
-return new R.we("https://188.155.65.59:8081",Y.ar8(),new Y.fl("None",s,s,s,s),B.ff(),P.z(t.N,t.z),P.a0(0,s,!1,t.Z))},
+return new R.we("http://188.155.65.59:8081",Y.ar8(),new Y.fl("None",s,s,s,s),B.ff(),P.z(t.N,t.z),P.a0(0,s,!1,t.Z))},
 we:function we(a,b,c,d,e,f){var _=this
 _.a=a
 _.b=b
@@ -20584,7 +20584,7 @@ _.d=d
 _.e=e},
 GC:function GC(a){this.b=a},
 lR(){$.WT()
-return new U.wC("https://188.155.65.59:8081",P.a0(0,null,!1,t.Z))},
+return new U.wC("http://188.155.65.59:8081",P.a0(0,null,!1,t.Z))},
 wC:function wC(a,b){var _=this
 _.a=a
 _.b=null
@@ -72958,7 +72958,7 @@ F.aqc.prototype={
 $1(a){P.lH("["+a.d+"] "+a.a.a+": "+a.e.j(0)+": "+a.b)},
 $S:424}
 F.K4.prototype={
-I(a,b){var s,r,q=null,p="https://188.155.65.59:8081",o=T.qH(U.lR(),t.W0)
+I(a,b){var s,r,q=null,p="http://188.155.65.59:8081",o=T.qH(U.lR(),t.W0)
 $.WT()
 s=t.Z
 o=H.a([o,T.qH(new R.BO(p,H.a([],t.ZM),P.a0(0,q,!1,s)),t.Fo),T.qH(new L.wM(p,H.a([],t.LC),H.a([],t.qz),H.a([],t.s),P.a0(0,q,!1,s)),t.T2),T.qH(new G.xr(p,P.a0(0,q,!1,s)),t.dN),T.qH(R.fj(),t.ur),T.qH(A.G_(),t.fu),T.qH(new B.zf(p,H.a([],t.BZ),P.a0(0,q,!1,s)),t.a5)],t.Ds)
