@@ -2,6 +2,7 @@ class Host {
   static const String localhost = "http://localhost:8080";
   static const String development = "http://rngtrainer-backend.herokuapp.com";
   static const String production = "http://188.155.65.59:8081";
+  static const String productionHttps = "https://188.155.65.59:8081";
 
   static final Host _host = Host._internal();
 
@@ -13,6 +14,6 @@ class Host {
 
   //set the active host!
   String getActiveHost() {
-    return development; // <<<----------------------- Change backend here!
+    return productionHttps; // <<<----------------------- Change backend here!
   }
 }
