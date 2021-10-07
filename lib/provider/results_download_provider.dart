@@ -12,7 +12,7 @@ class DownloadResultsProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
   static final _log = Logger("ResultsDownloadProvider");
 
-  //download
+  //Triggers the download for the excel file
   Future<void> getExcelResults(String? token) async {
     final url = Uri.parse('$activeHost/downloadResults');
     final response = await post(
@@ -45,6 +45,7 @@ class DownloadResultsProvider with ChangeNotifier {
     }
   }
 
+  //Triggers the download of a json file
   Future<void> getJsonResults(
       String? token, List<BureauResults> bureauResults) async {
     final String jsonString = bureauResultsToJson(bureauResults);
@@ -60,6 +61,6 @@ class DownloadResultsProvider with ChangeNotifier {
     anchor.remove();
   }
 
-  String bureauResultsToJson(List<BureauResults> data) => json
-      .encode(List<dynamic>.from(data.map((x) => x.bureauResultstoJson2())));
+  String bureauResultsToJson(List<BureauResults> data) =>
+      json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 }

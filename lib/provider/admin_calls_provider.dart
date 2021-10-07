@@ -1,4 +1,5 @@
 import 'dart:convert';
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +23,7 @@ class AdminCallsProvider with ChangeNotifier {
 
   //get trainer status ()
   Future<Status> getTrainerStatus(String token) async {
-    var url = Uri.parse('$activeHost/status');
+    final url = Uri.parse('$activeHost/status');
     final response = await http.post(
       url,
       headers: {
@@ -46,7 +47,7 @@ class AdminCallsProvider with ChangeNotifier {
 
   //getCallRange
   Future<CallRange> getCallRange(String token) async {
-    var url = Uri.parse('$activeHost/getCallRange');
+    final url = Uri.parse('$activeHost/getCallRange');
     final response = await http.post(
       url,
       headers: {
@@ -134,7 +135,7 @@ class AdminCallsProvider with ChangeNotifier {
 
   //download
   Future<void> getResults(String token) async {
-    var url = Uri.parse('$activeHost/downloadResults');
+    final url = Uri.parse('$activeHost/downloadResults');
     final response = await http.post(
       url,
       headers: {
@@ -165,6 +166,7 @@ class AdminCallsProvider with ChangeNotifier {
     }
   }
 
+  //getOpeningHours
   Future<ConfigurationSummary> getOpeningHours(String token) async {
     final url = Uri.parse('$activeHost/getOpeningHours');
     final response = await http.post(
@@ -189,9 +191,10 @@ class AdminCallsProvider with ChangeNotifier {
     }
   }
 
+  //setOpeningHours
   Future<void> setOpeningHours(
       String token, ConfigurationSummary _openingHours) async {
-    var url = Uri.parse('$activeHost/setOpeningHours');
+    final url = Uri.parse('$activeHost/setOpeningHours');
     final openingJson = jsonEncode(_openingHours.toJsonOpeningHours(token));
     final response = await http.post(
       url,
@@ -209,21 +212,22 @@ class AdminCallsProvider with ChangeNotifier {
   }
 
   bool _isLoadingGetGreeting = false;
+  Bureaus _pickedBureauGreeting = Bureaus.init();
+  User _pickedUserGreeting = User.init();
+
   bool get isLoadingGetGreeting {
     return _isLoadingGetGreeting;
   }
 
-  Bureaus _pickedBureauGreeting = Bureaus.init();
-  Bureaus get getPickerBureauGreeting {
+  Bureaus get getPickedBureauGreeting {
     return _pickedBureauGreeting;
   }
 
-  Bureaus setPickerBureauGreeting(Bureaus b) {
+  Bureaus setPickedBureauGreeting(Bureaus b) {
     return _pickedBureauGreeting = b;
   }
 
-  User _pickedUserGreeting = User.init();
-  User get getPickerUserGreeting {
+  User get getPickedUserGreeting {
     return _pickedUserGreeting;
   }
 
@@ -231,10 +235,11 @@ class AdminCallsProvider with ChangeNotifier {
     return _pickedUserGreeting = u;
   }
 
+  //getGreetingConfiguration
   Future<void> getGreetingConfiguration(String token) async {
     _isLoadingGetGreeting = true;
 
-    var url = Uri.parse('$activeHost/getGreetingConfiguration');
+    final url = Uri.parse('$activeHost/getGreetingConfiguration');
     final response = await http.post(
       url,
       headers: {

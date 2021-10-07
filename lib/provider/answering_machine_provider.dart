@@ -10,6 +10,9 @@ class AnsweringMachineProvider with ChangeNotifier {
   String activeHost = Host().getActiveHost();
   static final _log = Logger("AnsweringMachineProvider");
 
+  User _pickedUserGreeting = User.init();
+  bool _isLoadingGetGreeting = false;
+  Bureaus _pickedBureauGreeting = Bureaus.init();
   ConfigurationSummary greetingConfigurationSummary =
       ConfigurationSummary.init();
 
@@ -17,22 +20,19 @@ class AnsweringMachineProvider with ChangeNotifier {
     return greetingConfigurationSummary;
   }
 
-  bool _isLoadingGetGreeting = false;
   bool get isLoadingGetGreeting {
     return _isLoadingGetGreeting;
   }
 
-  Bureaus _pickedBureauGreeting = Bureaus.init();
-  Bureaus get getPickerBureauGreeting {
+  Bureaus get getPickedBureauGreeting {
     return _pickedBureauGreeting;
   }
 
-  Bureaus setPickerBureauGreeting(Bureaus b) {
+  Bureaus setPickedBureauGreeting(Bureaus b) {
     return _pickedBureauGreeting = b;
   }
 
-  User _pickedUserGreeting = User.init();
-  User get getPickerUserGreeting {
+  User get getPickedUserGreeting {
     return _pickedUserGreeting;
   }
 
@@ -40,6 +40,7 @@ class AnsweringMachineProvider with ChangeNotifier {
     return _pickedUserGreeting = u;
   }
 
+  //getAnsweringMachineConfiguration
   Future<void> getAnsweringMachineConfiguration(String token) async {
     _isLoadingGetGreeting = true;
     final url = Uri.parse('$activeHost/getResponderConfiguration');
@@ -68,6 +69,7 @@ class AnsweringMachineProvider with ChangeNotifier {
     }
   }
 
+  //setAnsweringMachineConfiguration
   Future<void> setAnsweringMachineConfiguration(
       String token, ConfigurationSummary _greetingConfiguration) async {
     final url = Uri.parse('$activeHost/setResponderConfiguration');

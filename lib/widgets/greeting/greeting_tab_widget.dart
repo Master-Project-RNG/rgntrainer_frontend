@@ -121,14 +121,14 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                 height: 50,
                 alignment: Alignment.center,
                 child: Text(
-                  myAdminCallProvider.getPickerBureauGreeting.name,
+                  myAdminCallProvider.getPickedBureauGreeting.name,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
               GeneralGreetingConfigurationWidget(
-                  myAdminCallProvider.getPickerBureauGreeting.name,
+                  myAdminCallProvider.getPickedBureauGreeting.name,
                   myAdminCallProvider
-                      .getPickerBureauGreeting.greetingConfiguration,
+                      .getPickedBureauGreeting.greetingConfiguration,
                   widget.tabType,
                   myAdminCallProvider.getGreetingData),
               const SizedBox(
@@ -140,7 +140,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                   child: ElevatedButton(
                     onPressed: () => {
                       _submit(
-                          myAdminCallProvider.getPickerBureauGreeting.name,
+                          myAdminCallProvider.getPickedBureauGreeting.name,
                           widget.tabType,
                           myAdminCallProvider.getGreetingConfigurationSummary,
                           myAdminCallProvider.getGreetingData,
@@ -215,7 +215,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                                 .activeGreetingConfiguration!,
                           ),
                           onTap: () {
-                            myAdminCallProvider.setPickerBureauGreeting(
+                            myAdminCallProvider.setPickedBureauGreeting(
                                 myAdminCallProvider
                                     .getGreetingConfigurationSummary
                                     .bureaus![index]);
@@ -270,13 +270,13 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
               height: 50,
               alignment: Alignment.center,
               child: Text(
-                myAdminCallProvider.getPickerUserGreeting.username!,
+                myAdminCallProvider.getPickedUserGreeting.username!,
                 style: const TextStyle(fontSize: 20),
               ),
             ),
             GeneralGreetingConfigurationWidget(
-                myAdminCallProvider.getPickerUserGreeting.username!,
-                myAdminCallProvider.getPickerUserGreeting.greetingConfiguration,
+                myAdminCallProvider.getPickedUserGreeting.username!,
+                myAdminCallProvider.getPickedUserGreeting.greetingConfiguration,
                 widget.tabType,
                 myAdminCallProvider.getGreetingData),
             const SizedBox(
@@ -288,7 +288,7 @@ class _GreetingTabWidgetState extends State<GreetingTabWidget> {
                 child: ElevatedButton(
                   onPressed: () => {
                     _submit(
-                        myAdminCallProvider.getPickerUserGreeting.username,
+                        myAdminCallProvider.getPickedUserGreeting.username,
                         /*_formKeyNumber,*/
                         widget.tabType,
                         myAdminCallProvider.getGreetingConfigurationSummary,

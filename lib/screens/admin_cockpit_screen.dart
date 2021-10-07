@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:rgntrainer_frontend/models/status_model.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
@@ -10,7 +11,6 @@ import 'package:rgntrainer_frontend/widgets/ui/calendar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/navbar_widget.dart';
 import 'package:rgntrainer_frontend/widgets/ui/title_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class CockpitScreen extends StatefulWidget {
   @override
@@ -21,8 +21,8 @@ class _CockpitScreenState extends State<CockpitScreen> {
   late User _currentUser = User.init();
   AdminCallsProvider adminCalls = AdminCallsProvider();
   late Status _status = Status.init();
-  var startButtonColor = Colors.green[200];
-  var stopButtonColor = Colors.red[200];
+  Color? startButtonColor = Colors.green[200];
+  Color? stopButtonColor = Colors.red[200];
 
   @override
   void initState() {
@@ -50,8 +50,8 @@ class _CockpitScreenState extends State<CockpitScreen> {
 
   String _printDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    final String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    final String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
@@ -64,8 +64,8 @@ class _CockpitScreenState extends State<CockpitScreen> {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Der Trainer läuft seit"),
-              SizedBox(
+              const Text("Der Trainer läuft seit"),
+              const SizedBox(
                 height: 8,
               ),
               Text(
@@ -164,7 +164,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                     child: Container(
                                       height: double.infinity,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
+                                        borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(20),
                                           bottomLeft: Radius.circular(20),
                                         ),
@@ -185,16 +185,16 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                                 Text(
                                                   _currentUser.username
                                                       .toString(),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.black),
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 30,
                                                 )
                                               ],
                                             ),
                                           ),
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(),
                                           ),
                                           Expanded(
@@ -206,7 +206,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                                   child: getStatus(
                                                       _currentUser.token!),
                                                 )),
-                                                Expanded(
+                                                const Expanded(
                                                   child: SizedBox(),
                                                 )
                                               ],
@@ -217,16 +217,15 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                     ),
                                   ),
                                   Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                        child: Column(
+                                    child: Column(
                                       children: [
                                         Expanded(
                                           child: SizedBox(
                                             width: double.infinity,
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.only(
                                                       topRight:
@@ -265,7 +264,8 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                             width: double.infinity,
                                             child: ElevatedButton(
                                               style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.only(
                                                       bottomRight:
@@ -301,7 +301,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                           ),
                                         ),
                                       ],
-                                    )),
+                                    ),
                                   )
                                 ],
                               ),
@@ -335,7 +335,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        children: [
+                                        children: const [
                                           Text(
                                             "Nummern",
                                             style: TextStyle(fontSize: 20),
@@ -347,7 +347,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                 ),
                                 Expanded(
                                   child: Container(
-                                    margin: EdgeInsets.all(20),
+                                    margin: const EdgeInsets.all(20),
                                     height: 200,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -371,7 +371,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        children: [
+                                        children: const [
                                           Text(
                                             "Konfiguration",
                                             style: TextStyle(fontSize: 20),
@@ -411,7 +411,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        children: [
+                                        children: const [
                                           Text(
                                             "Resultate",
                                             style: TextStyle(fontSize: 20),
@@ -447,7 +447,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        children: [
+                                        children: const [
                                           Text(
                                             "Diagramme",
                                             style: TextStyle(fontSize: 20),
@@ -487,7 +487,7 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        children: [
+                                        children: const [
                                           Text(
                                             "Profil",
                                             style: TextStyle(fontSize: 20),
@@ -498,24 +498,6 @@ class _CockpitScreenState extends State<CockpitScreen> {
                                   ),
                                 ),
                                 Expanded(
-                                  /*
-                                  child: Container(
-                                    margin: const EdgeInsets.all(20),
-                                    height: 200,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 5,
-                                          blurRadius: 7,
-                                          offset: const Offset(0,
-                                              3), // changes position of shadow
-                                        ),
-                                      ],
-                                      color: Colors.grey[300],
-                                    ),
-                                    */
                                   child: Container(),
                                 ),
                               ],
