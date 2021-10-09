@@ -17,9 +17,7 @@
         <li><a href="#project-setup">Project Setup</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#license">License</a></li>
   </ol>
 </details>
 
@@ -104,20 +102,8 @@ With container
 `Press F5` in main.dart
 ```
 
-<!-- USAGE EXAMPLES -->
-## Usage
-```sh
-TODO
-This space will be used to show  examples of how a project can be used. 
-Additional screenshots, code examples and demos work will be in this space. 
-```
-
 <!-- ROADMAP -->
 ## Roadmap
 See the [open issues](https://github.com/Master-Project-RNG/rgntrainer_frontend/issues) for a list of proposed features (and known issues).
 
-<!-- LICENSE -->
-## License
-```sh
-TODO
-```
+
