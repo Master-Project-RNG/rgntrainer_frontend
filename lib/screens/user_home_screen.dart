@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rgntrainer_frontend/my_routes.dart';
 import 'package:rgntrainer_frontend/models/user_model.dart';
-import 'package:rgntrainer_frontend/models/user_results_model.dart';
 import 'package:rgntrainer_frontend/provider/auth_provider.dart';
 import 'package:rgntrainer_frontend/provider/user_results_provider.dart';
 import 'package:rgntrainer_frontend/screens/no_token_screen.dart';
@@ -10,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'dart:html' as html;
+
+import 'configuration/MyCustomScrollBehavior.dart';
 
 class UserHomeScreen extends StatelessWidget {
   @override
@@ -104,16 +105,9 @@ class _UserCardState extends State<UserCard> {
                 height: 5,
               ),
               Container(
-                height: 2,
-                color: Colors.grey,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: userResultsData(_myUserResultsProvider),
-              ),
+                color: Colors.grey[200],
+                child: buildUserResultsData(_myUserResultsProvider),
+              )
             ],
           ),
         ),
@@ -121,8 +115,11 @@ class _UserCardState extends State<UserCard> {
     }
   }
 
-  Widget userResultsData(UserResultsProvider _myUserResultsProvider) {
-    return DataTable(
+  Widget buildUserResultsData(UserResultsProvider _myUserResultsProvider) {
+    final DataTable dataTable = DataTable(
+        headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
+        headingTextStyle: const TextStyle(fontWeight: FontWeight.bold),
+        dataRowHeight: 35,
         columns: const <DataColumn>[
           DataColumn(
             label: Text("Nummer"),
@@ -193,6 +190,23 @@ class _UserCardState extends State<UserCard> {
                   DataCell(getCheck(checked: data.callCompleted)),
                 ]))
             .toList());
+
+    // Initialize local variables
+    final ScrollController controller = ScrollController();
+    final deviceSize = MediaQuery.of(context).size;
+
+    //Return correct dataTable
+    if (deviceSize.width < 3200) {
+      return ScrollConfiguration(
+        behavior: MyCustomScrollBehavior(),
+        child: SingleChildScrollView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            child: dataTable),
+      );
+    } else {
+      return dataTable;
+    }
   }
 }
 
