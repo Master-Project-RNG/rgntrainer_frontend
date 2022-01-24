@@ -141,7 +141,7 @@ class LineChartWidgetState extends State<LineChartWidget> {
               flex: 1,
               child: Text(
                 widget.callType == CallType.Standart
-                    ? "Standart"
+                    ? "Standard"
                     : "Anrufbeantworter",
                 style: TextStyle(
                   color: Theme.of(context).accentColor,

@@ -270,7 +270,7 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 child: Row(
                   children: [
                     if (index == 0)
-                      const Text("Standart")
+                      const Text("Standard")
                     else
                       const Text("Anrufbeantworter"),
                   ],
