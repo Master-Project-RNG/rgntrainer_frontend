@@ -296,7 +296,7 @@ class _AdminResultsState extends State<AdminResultsScreen> {
                 DropdownMenuItem(
                   value: 0,
                   child: Text(
-                    "Standart",
+                    "Standard",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
